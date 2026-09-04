@@ -1,141 +1,795 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Facial Recovery Timer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Bell's Palsy Recovery Routine</title>
+
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
+    * {
+      box-sizing: border-box;
       margin: 0;
-      padding: 20px;
-      text-align: center;
+      padding: 0;
     }
-    .timer-box {
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      max-width: 500px;
-      margin: 0 auto;
+
+    body {
+      font-family:
+        system-ui,
+        -apple-system,
+        "Segoe UI",
+        Roboto,
+        "Helvetica Neue",
+        sans-serif;
+      background: #e7f1ec;
+      background: linear-gradient(160deg, #e7f1ec 0%, #d9eae2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 20px 16px;
+      color: #1e2b26;
     }
+
+    .app {
+      width: 100%;
+      max-width: 440px;
+    }
+
+    /* cards */
+    .card {
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 24px 20px 20px;
+      box-shadow: 0 20px 40px -24px rgba(30, 43, 38, 0.3);
+      margin-bottom: 12px;
+    }
+
+    .screen {
+      display: none;
+      flex-direction: column;
+    }
+
+    .screen.is-active {
+      display: flex;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-weight: 500;
+      letter-spacing: -0.01em;
+    }
+
     h1 {
-      font-size: 1.5rem;
+      font-size: 1.6rem;
+      margin-bottom: 2px;
     }
-    #step {
-      font-size: 1.25rem;
-      margin: 20px 0 10px;
+
+    h2 {
+      font-size: 1.3rem;
     }
-    #desc {
+
+    h3 {
       font-size: 1rem;
-      margin-bottom: 20px;
-      color: #444;
     }
-    #countdown {
-      font-size: 2.5rem;
-      font-weight: bold;
-      margin: 20px 0;
+
+    .meta {
+      color: #3d534a;
+      font-size: 0.9rem;
+      margin-bottom: 14px;
     }
-    button {
-      padding: 10px 20px;
-      font-size: 1rem;
+
+    .safety-box {
+      background: #f2f8f5;
+      border: 1px solid #dce9e3;
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+    }
+
+    .safety-box h3 {
+      color: #1e4d42;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    .safety-box p {
+      font-size: 0.85rem;
+      line-height: 1.45;
+      color: #1e2b26;
+      margin-bottom: 6px;
+    }
+
+    .safety-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    .tips {
+      list-style: none;
+      margin: 0 0 18px 0;
+      padding: 0;
+    }
+
+    .tips li {
+      display: flex;
+      gap: 10px;
+      font-size: 0.85rem;
+      line-height: 1.4;
+      color: #1e2b26;
+      margin-bottom: 6px;
+    }
+
+    .tips li::before {
+      content: "•";
+      color: #1e6b5a;
+      font-weight: 700;
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+
+    .btn {
+      width: 100%;
       border: none;
-      border-radius: 5px;
-      background-color: #4caf50;
+      border-radius: 12px;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 12px 16px;
+      cursor: pointer;
+      background: #2e6b5e;
       color: white;
+      transition: background 0.15s;
+    }
+
+    .btn:hover {
+      background: #235a4f;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-quiet {
+      background: #c3e1d8;
+      color: #1e4d42;
+    }
+
+    .btn-quiet:hover {
+      background: #aed6c9;
+    }
+
+    .btn-link {
+      background: none;
+      border: none;
+      color: #7a8f86;
+      font-size: 0.8rem;
+      text-decoration: underline;
+      padding: 6px;
       cursor: pointer;
     }
-    button:disabled {
-      background-color: #aaa;
-      cursor: not-allowed;
+
+    .session-card {
+      text-align: center;
+      padding: 20px 16px 16px;
+      gap: 10px;
     }
-    video {
-      margin-top: 20px;
+
+    .phase-label {
+      font-size: 0.8rem;
+      color: #3d534a;
+      letter-spacing: 0.3px;
+      margin-bottom: 2px;
+    }
+
+    .step-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #0f1e19;
+      margin: 4px 0 2px;
+      line-height: 1.3;
+      word-break: break-word;
+    }
+
+    .step-desc {
+      font-size: 0.88rem;
+      line-height: 1.5;
+      color: #1e2b26;
+      max-width: 100%;
+      word-break: break-word;
+      margin: 6px 0 8px;
+      padding: 0 4px;
+      overflow: visible;
+      display: block;
+      white-space: normal;
+    }
+
+    .ring-wrap {
+      position: relative;
+      width: 160px;
+      height: 160px;
+      margin: 4px auto 6px;
+    }
+
+    .ring-wrap svg {
+      transform: rotate(-90deg);
       width: 100%;
-      max-width: 500px;
-      border-radius: 10px;
+      height: 100%;
+    }
+
+    .ring-track {
+      fill: none;
+      stroke: #c3e1d8;
+      stroke-width: 12;
+    }
+
+    .ring-progress {
+      fill: none;
+      stroke: #2e6b5e;
+      stroke-width: 12;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.9s linear;
+    }
+
+    .ring-wrap.is-prep .ring-progress {
+      stroke: #c98a3a;
+    }
+
+    .ring-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    #countdown {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #0f1e19;
+      line-height: 1;
+    }
+
+    .unit {
+      font-size: 0.7rem;
+      color: #5b6d66;
+      font-weight: 500;
+    }
+
+    .dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 12px 0 6px;
+      flex-wrap: wrap;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #dce9e3;
+      transition: background 0.2s;
+    }
+
+    .dot.is-done {
+      background: #2e6b5e;
+    }
+
+    .dot.is-current {
+      background: #c98a3a;
+      transform: scale(1.25);
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0 6px;
+    }
+
+    .controls .btn {
+      flex: 2 1 120px;
+    }
+
+    .controls .btn-quiet {
+      flex: 1 1 80px;
+    }
+
+    video#mirror {
+      width: 100%;
+      aspect-ratio: 4/3;
+      border-radius: 14px;
       transform: scaleX(-1);
+      background: #eef5f1;
+      object-fit: cover;
+      display: block;
+      margin-top: 6px;
+    }
+
+    .mirror-note {
+      font-size: 0.78rem;
+      color: #5b6d66;
+      padding: 4px 0 0;
+    }
+
+    /* complete */
+    .complete-mark {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #f1dda6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+    }
+
+    .complete-mark svg {
+      width: 26px;
+      height: 26px;
+      stroke: #2e6b5e;
+    }
+
+    .complete-card p {
+      color: #1e2b26;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+    }
+
+    /* responsive */
+    @media (max-height: 700px) {
+      .ring-wrap {
+        width: 130px;
+        height: 130px;
+      }
+
+      .step-name {
+        font-size: 1.1rem;
+      }
+
+      .step-desc {
+        font-size: 0.82rem;
+      }
+    }
+
+    @media (max-height: 600px) {
+      .ring-wrap {
+        width: 110px;
+        height: 110px;
+      }
+
+      .step-name {
+        font-size: 1rem;
+      }
+
+      .btn {
+        padding: 8px 12px;
+      }
     }
   </style>
 </head>
+
 <body>
-  <div class="timer-box">
-    <h1>Bell's Palsy Recovery Routine</h1>
-    <div id="step">Click Start to Begin</div>
-    <div id="desc"></div>
-    <div id="countdown"></div>
-    <button id="startBtn">Start Routine</button>
-    <video id="mirror" autoplay playsinline muted></video>
+  <div class="app">
+    <!-- INTRO -->
+    <section class="screen is-active" id="screen-intro">
+      <div class="card">
+        <h1>Bell's Palsy Recovery Routine</h1>
+        <p class="meta">9 exercises &middot; about 10 minutes</p>
+
+        <div class="safety-box">
+          <h3>Before you begin</h3>
+
+          <p>
+            Start once your doctor or therapist confirms that you're ready to exercise. For most people, this is often
+            after finishing prescribed medication and once the acute phase has settled.
+          </p>
+
+          <p>Go slowly, especially at first. Don't try hard, stop and rest if it hurts</p>
+        </div>
+
+        <ul class="tips">
+          <li>Sit somewhere well-lit, facing a mirror or the built-in camera</li>
+
+          <li>Exercise twice a day, or follow your therapist's guidelines</li>
+        </ul>
+
+        <button class="btn" id="beginBtn">Begin Routine</button>
+      </div>
+    </section>
+
+    <!-- SESSION -->
+    <section class="screen" id="screen-session">
+      <div class="card session-card">
+        <p class="phase-label" id="phaseLabel">Up next</p>
+
+        <h2 class="step-name" id="stepName">Warm-Up Massage</h2>
+
+        <div class="ring-wrap" id="ringWrap">
+          <svg viewBox="0 0 220 220">
+            <circle class="ring-track" cx="110" cy="110" r="94"></circle>
+
+            <circle class="ring-progress" id="ringProgress" cx="110" cy="110" r="94"></circle>
+          </svg>
+
+          <div class="ring-center">
+            <span id="countdown">6</span>
+            <span class="unit" id="countdownUnit"> starting in </span>
+          </div>
+        </div>
+
+        <p class="step-desc" id="stepDesc">
+          Use gentle circular motions on your forehead, temples, cheeks, around your nose, jawline, and
+          under your eyes.
+        </p>
+
+        <div class="dots" id="dots"></div>
+
+        <div class="controls">
+          <button class="btn" id="pauseBtn">Pause</button>
+
+          <button class="btn btn-quiet" id="skipBtn">Skip</button>
+        </div>
+
+        <video id="mirror" autoplay playsinline muted></video>
+
+        <p class="mirror-note" id="mirrorNote" hidden>
+          Camera isn't available but you can still follow along with a hand mirror
+        </p>
+      </div>
+    </section>
+
+    <!-- COMPLETE -->
+    <section class="screen" id="screen-complete">
+      <div class="card complete-card">
+        <div class="complete-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#2E6B5E" stroke-width="2.5" stroke-linecap="round"
+            stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+
+        <h2>Routine complete</h2>
+
+        <p>Well done. Do this twice daily</p>
+
+        <button class="btn" id="restartBtn">Begin routine</button>
+      </div>
+    </section>
+
+    <div class="visually-hidden" id="liveRegion" aria-live="polite"></div>
   </div>
 
   <script>
     const routine = [
-      { name: "Warm-Up Massage", duration: 60, desc: "Use gentle circular motions: forehead, temples, cheeks, around nose, jawline, and under the eyes. 10 seconds each." },
-      { name: "Blink Hold (10 reps × 3s)", duration: 60, desc: "Gently close both eyes, hold for 3 seconds, then open. Focus on even movement." },
-      { name: "Half Squints (10 reps × 2s)", duration: 60, desc: "Squint eyes halfway, hold for 2 seconds. Keep forehead relaxed." },
-      { name: "Nose Wrinkle (10 reps × 3s)", duration: 60, desc: "Wrinkle nose as if smelling something bad. Try to move both sides. Support weak side with fingers if needed." },
-      { name: "Upper Lip Lift (10 reps × 3s)", duration: 60, desc: "Lift upper lip like snarling. Hold for 3 seconds, relax. Focus on symmetry." },
-      { name: "Smile Hold (6 reps × 5s)", duration: 60, desc: "Smile softly with closed lips. Hold for 5 seconds. Use mirror and fingers to guide even movement." },
-      { name: "'E' and 'O' Sounds (10 reps)", duration: 60, desc: "Say 'Eeeee' and 'Ooooo' slowly. Watch lip corners in mirror for symmetry." },
-      { name: "Cheek Puff (6 reps × 5s)", duration: 60, desc: "Puff both cheeks with air. Hold for 5 seconds. Don’t let air leak from weaker side." },
-      { name: "Cooldown Massage", duration: 120, desc: "Repeat the same gentle massage as warm-up to relax the face." }
+      {
+        name: "Warm-Up Massage",
+        duration: 60,
+        desc: "Use gentle circular motions on your forehead, temples, cheeks, around your nose, jawline, and under your eyes. 10 seconds each.",
+      },
+
+      {
+        name: "Blink Hold (10 reps × 3s)",
+        duration: 60,
+        desc: "Gently close both eyes, hold for 3 seconds, then open. Focus on even movement.",
+      },
+
+      {
+        name: "Half Squints (10 reps × 2s)",
+        duration: 60,
+        desc: "Squint eyes halfway, hold for 2 seconds. Keep forehead relaxed.",
+      },
+
+      {
+        name: "Nose Wrinkle (10 reps × 3s)",
+        duration: 60,
+        desc: "Wrinkle nose as if smelling something bad. Try to move both sides. Support weak side with fingers if needed.",
+      },
+
+      {
+        name: "Upper Lip Lift (10 reps × 3s)",
+        duration: 60,
+        desc: "Lift upper lip like snarling. Hold for 3 seconds, relax. Focus on symmetry.",
+      },
+
+      {
+        name: "Smile Hold (6 reps × 5s)",
+        duration: 60,
+        desc: "Smile softly with closed lips. Hold for 5 seconds. Use mirror and fingers to guide even movement.",
+      },
+
+      {
+        name: "‘E’ and ‘O’ Sounds (10 reps)",
+        duration: 60,
+        desc: "Say ‘Eeeee’ and ‘Ooooo’ slowly. Watch lip corners in mirror for symmetry.",
+      },
+
+      {
+        name: "Cheek Puff (6 reps × 5s)",
+        duration: 60,
+        desc: "Puff both cheeks with air. Hold for 5 seconds. Don’t let air leak from weaker side.",
+      },
+
+      {
+        name: "Cooldown Massage",
+        duration: 120,
+        desc: "Repeat the same gentle massage as warm-up to relax the face.",
+      },
     ];
 
-    let currentStep = 0;
-    let timeLeft = 0;
-    let timer;
+    const PREP_SECONDS = 6;
 
-    const stepDiv = document.getElementById("step");
-    const descDiv = document.getElementById("desc");
-    const countdownDiv = document.getElementById("countdown");
-    const startBtn = document.getElementById("startBtn");
-    const mirrorVideo = document.getElementById("mirror");
+    const CIRCUMFERENCE = 2 * Math.PI * 94;
 
-    async function enableCamera() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        mirrorVideo.srcObject = stream;
-      } catch (err) {
-        mirrorVideo.parentElement.removeChild(mirrorVideo);
-        console.warn("Camera access denied or unavailable.");
-      }
+    let stepIndex = 0;
+
+    let phase = "prep";
+
+    let timeLeft = PREP_SECONDS;
+
+    let phaseDuration = PREP_SECONDS;
+
+    let timerId = null;
+
+    let isPaused = false;
+
+    let cameraStream = null;
+
+    const els = {
+      screens: {
+        intro: document.getElementById("screen-intro"),
+        session: document.getElementById("screen-session"),
+        complete: document.getElementById("screen-complete"),
+      },
+
+      phaseLabel: document.getElementById("phaseLabel"),
+
+      stepName: document.getElementById("stepName"),
+
+      stepDesc: document.getElementById("stepDesc"),
+
+      ringWrap: document.getElementById("ringWrap"),
+
+      ringProgress: document.getElementById("ringProgress"),
+
+      countdown: document.getElementById("countdown"),
+
+      countdownUnit: document.getElementById("countdownUnit"),
+
+      dots: document.getElementById("dots"),
+
+      pauseBtn: document.getElementById("pauseBtn"),
+
+      skipBtn: document.getElementById("skipBtn"),
+
+      beginBtn: document.getElementById("beginBtn"),
+
+      restartBtn: document.getElementById("restartBtn"),
+
+      mirror: document.getElementById("mirror"),
+
+      mirrorNote: document.getElementById("mirrorNote"),
+
+      liveRegion: document.getElementById("liveRegion"),
+    };
+
+    els.ringProgress.style.strokeDasharray = String(CIRCUMFERENCE);
+
+    function showScreen(name) {
+      Object.entries(els.screens).forEach(([key, el]) => {
+        el.classList.toggle("is-active", key === name);
+      });
     }
 
-    function startRoutine() {
-      startBtn.disabled = true;
-      currentStep = 0;
-      runStep();
+    function buildDots() {
+      els.dots.innerHTML = "";
+
+      routine.forEach(() => {
+        const dot = document.createElement("div");
+
+        dot.className = "dot";
+
+        els.dots.appendChild(dot);
+      });
     }
 
-    function runStep() {
-      if (currentStep >= routine.length) {
-        stepDiv.textContent = "✅ Routine Complete!";
-        descDiv.textContent = "Great job! Do this twice daily.";
-        countdownDiv.textContent = "";
-        startBtn.disabled = false;
-        startBtn.textContent = "Restart";
-        return;
-      }
-      const step = routine[currentStep];
-      stepDiv.textContent = step.name;
-      descDiv.textContent = step.desc;
-      timeLeft = step.duration;
-      countdownDiv.textContent = timeLeft;
+    function updateDots() {
+      [...els.dots.children].forEach((dot, i) => {
+        dot.classList.toggle("is-done", i < stepIndex);
 
-      timer = setInterval(() => {
-        timeLeft--;
-        countdownDiv.textContent = timeLeft;
+        dot.classList.toggle("is-current", i === stepIndex);
+      });
+    }
+
+    function formatTime(sec) {
+      if (sec < 60) {
+        return {
+          value: String(sec),
+          unit: sec === 1 ? "second" : "seconds",
+        };
+      }
+
+      const m = Math.floor(sec / 60);
+
+      const s = sec % 60;
+
+      return {
+        value: `${m}:${String(s).padStart(2, "0")}`,
+        unit: "minutes",
+      };
+    }
+
+    function renderTick() {
+      const { value, unit } = formatTime(timeLeft);
+
+      els.countdown.textContent = value;
+
+      els.countdownUnit.textContent = phase === "prep" ? "starting in" : unit;
+
+      const fractionElapsed = (phaseDuration - timeLeft) / phaseDuration;
+
+      els.ringProgress.style.strokeDashoffset = String(CIRCUMFERENCE * fractionElapsed);
+    }
+
+    function crossfade(updateFn) {
+      [els.phaseLabel, els.stepName, els.stepDesc].forEach((el) => el.classList.add("is-fading"));
+
+      window.setTimeout(() => {
+        updateFn();
+
+        [els.phaseLabel, els.stepName, els.stepDesc].forEach((el) => el.classList.remove("is-fading"));
+      }, 200);
+    }
+
+    function announce(text) {
+      els.liveRegion.textContent = text;
+    }
+
+    function beginPhase(nextPhase) {
+      phase = nextPhase;
+
+      const step = routine[stepIndex];
+
+      phaseDuration = phase === "prep" ? PREP_SECONDS : step.duration;
+
+      timeLeft = phaseDuration;
+
+      els.ringWrap.classList.toggle("is-prep", phase === "prep");
+
+      crossfade(() => {
+        if (phase === "prep") {
+          els.phaseLabel.textContent = "Up next";
+
+          els.stepName.textContent = step.name;
+
+          els.stepDesc.textContent = step.desc;
+
+          announce(`Starting in ${PREP_SECONDS} seconds: ${step.name}.`);
+        } else {
+          els.phaseLabel.textContent = `Step ${stepIndex + 1} of ${routine.length}`;
+
+          els.stepName.textContent = step.name;
+
+          els.stepDesc.textContent = step.desc;
+
+          announce(`Now: ${step.name}.`);
+        }
+
+        updateDots();
+
+        renderTick();
+      });
+
+      startTimer();
+    }
+
+    function startTimer() {
+      clearInterval(timerId);
+
+      timerId = setInterval(() => {
+        if (isPaused) return;
+
+        timeLeft -= 1;
+
         if (timeLeft <= 0) {
-          clearInterval(timer);
-          currentStep++;
-          runStep();
+          clearInterval(timerId);
+
+          advance();
+        } else {
+          renderTick();
         }
       }, 1000);
     }
 
-    startBtn.addEventListener("click", startRoutine);
-    enableCamera();
+    function advance() {
+      if (phase === "prep") {
+        beginPhase("active");
+      } else {
+        stepIndex += 1;
+
+        if (stepIndex >= routine.length) {
+          finishSession();
+        } else {
+          beginPhase("prep");
+        }
+      }
+    }
+
+    async function startSession() {
+      stepIndex = 0;
+
+      isPaused = false;
+
+      els.pauseBtn.textContent = "Pause";
+
+      showScreen("session");
+
+      enableCamera();
+
+      beginPhase("prep");
+    }
+
+    function finishSession() {
+      clearInterval(timerId);
+
+      showScreen("complete");
+
+      announce("Routine complete.");
+    }
+
+    function togglePause() {
+      isPaused = !isPaused;
+
+      els.pauseBtn.textContent = isPaused ? "Resume" : "Pause";
+    }
+
+    function skipPhase() {
+      clearInterval(timerId);
+
+      advance();
+    }
+
+    async function enableCamera() {
+      if (cameraStream) return;
+
+      try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+        });
+
+        els.mirror.srcObject = cameraStream;
+
+        els.mirror.hidden = false;
+
+        els.mirrorNote.hidden = true;
+      } catch (err) {
+        els.mirror.hidden = true;
+
+        els.mirrorNote.hidden = false;
+      }
+    }
+
+    buildDots();
+
+    els.beginBtn.addEventListener("click", startSession);
+
+    els.restartBtn.addEventListener("click", startSession);
+
+    els.pauseBtn.addEventListener("click", togglePause);
+
+    els.skipBtn.addEventListener("click", skipPhase);
   </script>
 </body>
+
 </html>
