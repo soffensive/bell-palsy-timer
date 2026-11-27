@@ -31,7 +31,7 @@ The camera image is processed locally and never uploaded. The model and the WebA
 
 **Limits:**
 - It measures visible *movement*, not muscle activity. A muscle can fire without visible motion, especially early in recovery.
-- Only some exercises have a left/right blendshape pair. Cheek puff, pucker, whistle, P/B/M, chin wrinkle and the neck stretch aren't measured.
+- Only some exercises have a left/right blendshape pair. For pucker and whistle, MediaPipe only gives one overall `mouthPucker` value. The app therefore works out each side itself from the face landmarks: how far each mouth corner moves toward the face midline (nose bridge to chin), measured in face widths. Head turns change this distance, so keep your head still. Cheek puff, cheek suck-in, P/B/M, chin wrinkle and the neck stretch aren't measured.
 - It depends on lighting, head pose and glasses. Face the camera straight on.
 - Check the left/right assignment once on your device: wink with your left eye during a blink exercise and the **left** bar must move. If it doesn't, set `SWAP_SIDES = true` in `index.html`.
 

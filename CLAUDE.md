@@ -17,7 +17,7 @@ Guided facial exercise timer for Bell's palsy (facial nerve palsy) recovery. It 
    - Optional fields:
      - `cues`: spoken words per rep instead of "Hold"
      - `titleReps`: the title shows "10 reps" instead of "10 × 3 s"
-     - `meter`: blendshape names measured left/right
+     - `meter`: signal names measured left/right. These are MediaPipe blendshapes (`mouthSmile` → `mouthSmileLeft/Right`) or landmark-derived signals from `derivedSignals()`, e.g. `mouthCornerIn` for pucker/whistle, because `mouthPucker` has no left/right split. Don't mix a derived signal with a blendshape in one `meter` list: `read()` takes the maximum, and derived signals have a much higher resting level.
      - `watch`: blendshapes that must stay still (synkinesis)
      - `synkinesis: true`: used only when synkinesis mode is on
      - `avoidWithSynkinesis`: left out when synkinesis mode is on
