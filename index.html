@@ -1171,9 +1171,10 @@
         reps: "{r} Wdh.",
         rep: "Wdh.",
         "cue.hold": "Halten",
-        "cue.relax": "Entspannen",
-        "cue.done": "Locker lassen",
-        "cue.go": "Los",
+        "cue.tense": "Langsam anspannen",
+        "cue.release": "Langsam lösen",
+        "cue.rest": "Pause",
+        "cue.break": "Pause – Gesicht locker lassen",
         "cue.e": "Iii",
         "cue.o": "Uuu",
         "cue.p": "P",
@@ -1283,9 +1284,10 @@
         reps: "{r} reps",
         rep: "Rep",
         "cue.hold": "Hold",
-        "cue.relax": "Relax",
-        "cue.done": "Take it easy",
-        "cue.go": "Go",
+        "cue.tense": "Slowly tense",
+        "cue.release": "Slowly release",
+        "cue.rest": "Rest",
+        "cue.break": "Break – let your face go loose",
         "cue.e": "Eee",
         "cue.o": "Ooo",
         "cue.p": "P",
@@ -1393,7 +1395,7 @@
 
     const POOL = [
       {
-        id: "eyebrowRaise", group: "forehead", reps: 10, hold: 3, meter: ["browOuterUp"],
+        id: "eyebrowRaise", group: "forehead", reps: 6, hold: 3, meter: ["browOuterUp"],
         name: { de: "Augenbrauen heben", en: "Eyebrow Raise" },
         desc: {
           de: "Hebe beide Augenbrauen langsam, als wärst du überrascht. Halten, dann entspannen. Die schwächere Seite bei Bedarf mit den Fingerspitzen unterstützen.",
@@ -1401,7 +1403,7 @@
         },
       },
       {
-        id: "frown", group: "forehead", reps: 10, hold: 3, meter: ["browDown"],
+        id: "frown", group: "forehead", reps: 6, hold: 3, meter: ["browDown"],
         name: { de: "Stirnrunzeln", en: "Gentle Frown" },
         desc: {
           de: "Ziehe die Augenbrauen sanft zusammen und nach unten, wie beim Stirnrunzeln. Locker halten, dann entspannen.",
@@ -1409,7 +1411,7 @@
         },
       },
       {
-        id: "blinkHold", group: "eyes", reps: 10, hold: 3, meter: ["eyeBlink"],
+        id: "blinkHold", group: "eyes", reps: 6, hold: 3, meter: ["eyeBlink"],
         name: { de: "Augen schließen", en: "Blink Hold" },
         desc: {
           de: "Schließe sanft beide Augen, halte sie geschlossen und öffne sie wieder. Achte auf eine gleichmäßige Bewegung.",
@@ -1417,7 +1419,7 @@
         },
       },
       {
-        id: "halfSquint", group: "eyes", reps: 10, hold: 2, meter: ["eyeSquint"],
+        id: "halfSquint", group: "eyes", reps: 6, hold: 2, meter: ["eyeSquint"],
         name: { de: "Halbes Zusammenkneifen", en: "Half Squints" },
         desc: {
           de: "Kneife die Augen halb zusammen und halte kurz. Die Stirn bleibt dabei entspannt.",
@@ -1425,7 +1427,7 @@
         },
       },
       {
-        id: "slowClose", group: "eyes", reps: 6, hold: 5, meter: ["eyeBlink"],
+        id: "slowClose", group: "eyes", reps: 5, hold: 5, meter: ["eyeBlink"],
         name: { de: "Langsamer Lidschluss", en: "Slow Eye Closure" },
         desc: {
           de: "Schließe die Augen so langsam wie möglich, halte sie sanft geschlossen und öffne sie langsam wieder. Nicht zukneifen.",
@@ -1433,7 +1435,7 @@
         },
       },
       {
-        id: "noseWrinkle", group: "nose", reps: 10, hold: 3, meter: ["noseSneer"],
+        id: "noseWrinkle", group: "nose", reps: 6, hold: 3, meter: ["noseSneer"],
         name: { de: "Nase rümpfen", en: "Nose Wrinkle" },
         desc: {
           de: "Rümpfe die Nase, als würdest du etwas Unangenehmes riechen. Versuche, beide Seiten zu bewegen. Die schwächere Seite bei Bedarf mit den Fingern unterstützen.",
@@ -1441,7 +1443,7 @@
         },
       },
       {
-        id: "nostrilFlare", group: "nose", reps: 10, hold: 3,
+        id: "nostrilFlare", group: "nose", reps: 6, hold: 3,
         name: { de: "Nasenflügel weiten", en: "Nostril Flare" },
         desc: {
           de: "Weite die Nasenflügel, indem du tief durch die Nase einatmest. Halten, dann entspannen.",
@@ -1449,7 +1451,7 @@
         },
       },
       {
-        id: "cheekPuff", group: "cheeks", reps: 6, hold: 5,
+        id: "cheekPuff", group: "cheeks", reps: 5, hold: 5,
         name: { de: "Backen aufblasen", en: "Cheek Puff" },
         desc: {
           de: "Blase beide Backen mit Luft auf und halte. Lass auf der schwächeren Seite keine Luft entweichen.",
@@ -1457,7 +1459,7 @@
         },
       },
       {
-        id: "cheekSuck", group: "cheeks", reps: 6, hold: 5,
+        id: "cheekSuck", group: "cheeks", reps: 5, hold: 5,
         name: { de: "Wangen einsaugen", en: "Cheek Suck-In" },
         desc: {
           de: "Sauge die Wangen sanft zwischen die Zähne ein, wie ein Fischmund. Halten, dann entspannen.",
@@ -1465,7 +1467,7 @@
         },
       },
       {
-        id: "upperLipLift", group: "mouth", reps: 10, hold: 3, meter: ["mouthUpperUp"],
+        id: "upperLipLift", group: "mouth", reps: 6, hold: 3, meter: ["mouthUpperUp"],
         name: { de: "Oberlippe heben", en: "Upper Lip Lift" },
         desc: {
           de: "Hebe die Oberlippe wie beim Zähnefletschen. Halten, dann entspannen. Achte auf Symmetrie.",
@@ -1473,7 +1475,7 @@
         },
       },
       {
-        id: "closedSmile", group: "mouth", reps: 6, hold: 5, meter: ["mouthSmile"],
+        id: "closedSmile", group: "mouth", reps: 5, hold: 5, meter: ["mouthSmile"],
         name: { de: "Lächeln halten", en: "Smile Hold" },
         desc: {
           de: "Lächle sanft mit geschlossenen Lippen und halte. Nutze Spiegel und Finger, um die Bewegung gleichmäßig zu führen.",
@@ -1481,7 +1483,7 @@
         },
       },
       {
-        id: "openSmile", group: "mouth", reps: 6, hold: 5, meter: ["mouthSmile"],
+        id: "openSmile", group: "mouth", reps: 5, hold: 5, meter: ["mouthSmile"],
         name: { de: "Offenes Lächeln", en: "Open Smile" },
         desc: {
           de: "Lächle so, dass die oberen Zähne sichtbar werden. Halten, dann entspannen. Beide Mundwinkel sollen sich gleichmäßig heben.",
@@ -1489,7 +1491,7 @@
         },
       },
       {
-        id: "eoSounds", group: "mouth", reps: 10, hold: 3, titleReps: true, cues: ["cue.e", "cue.o"], meter: ["mouthSmile"],
+        id: "eoSounds", group: "mouth", reps: 8, hold: 3, simple: true, titleReps: true, cues: ["cue.e", "cue.o"], meter: ["mouthSmile"],
         name: { de: "„I“ und „U“ sagen", en: "‘E’ and ‘O’ Sounds" },
         desc: {
           de: "Sage abwechselnd langsam „Iiii“ (Lippen breit) und „Uuuu“ (Lippen rund). Beobachte die Mundwinkel im Spiegel.",
@@ -1497,7 +1499,7 @@
         },
       },
       {
-        id: "pucker", group: "mouth", reps: 10, hold: 3, meter: ["mouthCornerIn"],
+        id: "pucker", group: "mouth", reps: 6, hold: 3, meter: ["mouthCornerIn"],
         name: { de: "Kussmund", en: "Kiss / Pucker" },
         desc: {
           de: "Schiebe die Lippen nach vorne wie zu einem Kuss. Halten, dann entspannen. Bewege beide Seiten gleichmäßig.",
@@ -1505,7 +1507,7 @@
         },
       },
       {
-        id: "whistle", group: "mouth", reps: 10, hold: 3, meter: ["mouthCornerIn"],
+        id: "whistle", group: "mouth", reps: 6, hold: 3, meter: ["mouthCornerIn"],
         name: { de: "Pfeifmund", en: "Whistle Shape" },
         desc: {
           de: "Forme die Lippen zu einem kleinen „o“, als würdest du pfeifen. Halten, dann entspannen.",
@@ -1513,7 +1515,7 @@
         },
       },
       {
-        id: "lipPress", group: "mouth", reps: 10, hold: 3, meter: ["mouthPress"],
+        id: "lipPress", group: "mouth", reps: 6, hold: 3, meter: ["mouthPress"],
         name: { de: "Lippen aufeinanderpressen", en: "Lip Press" },
         desc: {
           de: "Presse die Lippen sanft aufeinander, halten, dann entspannen. Die Zähne dabei nicht zusammenbeißen.",
@@ -1521,7 +1523,7 @@
         },
       },
       {
-        id: "pbm", group: "mouth", reps: 9, hold: 2, titleReps: true, cues: ["cue.p", "cue.b", "cue.m"],
+        id: "pbm", group: "mouth", reps: 9, hold: 2, simple: true, titleReps: true, cues: ["cue.p", "cue.b", "cue.m"],
         name: { de: "P, B, M sprechen", en: "P, B, M Sounds" },
         desc: {
           de: "Sprich langsam und deutlich „P“, „B“ und „M“. Spüre, wie sich die Lippen gleichmäßig schließen.",
@@ -1529,7 +1531,7 @@
         },
       },
       {
-        id: "lowerLipDown", group: "chin", reps: 10, hold: 3, meter: ["mouthLowerDown"],
+        id: "lowerLipDown", group: "chin", reps: 6, hold: 3, meter: ["mouthLowerDown"],
         name: { de: "Unterlippe senken", en: "Lower Lip Down" },
         desc: {
           de: "Ziehe die Unterlippe nach unten, sodass die unteren Zähne sichtbar werden. Halten, dann entspannen.",
@@ -1537,7 +1539,7 @@
         },
       },
       {
-        id: "chinWrinkle", group: "chin", reps: 10, hold: 3,
+        id: "chinWrinkle", group: "chin", reps: 6, hold: 3,
         name: { de: "Kinn kräuseln", en: "Chin Wrinkle" },
         desc: {
           de: "Schiebe die Unterlippe nach oben und vorne, sodass sich das Kinn kräuselt (Schmollmund). Halten, dann entspannen.",
@@ -1545,7 +1547,7 @@
         },
       },
       {
-        id: "mouthCornersDown", group: "neck", reps: 10, hold: 3, meter: ["mouthFrown", "mouthStretch"],
+        id: "mouthCornersDown", group: "neck", reps: 6, hold: 3, meter: ["mouthFrown", "mouthStretch"],
         name: { de: "Mundwinkel senken", en: "Mouth Corners Down" },
         desc: {
           de: "Ziehe beide Mundwinkel nach unten, wie bei einem traurigen Gesicht. Halten, dann entspannen. Achte im Spiegel darauf, dass beide Seiten gleich weit gehen.",
@@ -1553,7 +1555,7 @@
         },
       },
       {
-        id: "platysmaTense", group: "neck", reps: 6, hold: 5, avoidWithSynkinesis: true, meter: ["mouthFrown", "mouthStretch"],
+        id: "platysmaTense", group: "neck", reps: 5, hold: 5, avoidWithSynkinesis: true, meter: ["mouthFrown", "mouthStretch"],
         name: { de: "Hals anspannen (Platysma)", en: "Neck Tense (Platysma)" },
         desc: {
           de: "Ziehe die Mundwinkel nach unten und außen, bis sich vorne am Hals die Muskelstränge abzeichnen. Halten, dann ganz entspannen. Bei Mitbewegungen (Synkinesien) oder Halssträngen nur nach Rücksprache mit deiner Therapeutin / deinem Therapeuten – dann eher die Dehnung üben.",
@@ -1561,7 +1563,7 @@
         },
       },
       {
-        id: "platysmaStretch", group: "neck", reps: 4, hold: 10,
+        id: "platysmaStretch", group: "neck", reps: 3, hold: 10,
         name: { de: "Hals dehnen (Platysma)", en: "Neck Stretch (Platysma)" },
         desc: {
           de: "Neige den Kopf leicht nach hinten, schau zur Decke und schiebe den Unterkiefer sanft nach vorne, bis du vorne am Hals eine Dehnung spürst. Halten, dann langsam zurück.",
@@ -1572,7 +1574,7 @@
          `watch` names the blendshapes that must stay still on the affected
          side; the meter warns when they move along. */
       {
-        id: "smileEyesOpen", group: "mouth", synkinesis: true, reps: 6, hold: 5,
+        id: "smileEyesOpen", group: "mouth", synkinesis: true, reps: 5, hold: 5,
         meter: ["mouthSmile"], watch: ["eyeSquint", "eyeBlink"],
         name: { de: "Lächeln mit offenen Augen", en: "Smile with Eyes Open" },
         desc: {
@@ -1581,7 +1583,7 @@
         },
       },
       {
-        id: "puckerEyesOpen", group: "mouth", synkinesis: true, reps: 6, hold: 5,
+        id: "puckerEyesOpen", group: "mouth", synkinesis: true, reps: 5, hold: 5,
         meter: ["mouthCornerIn"], watch: ["eyeSquint", "eyeBlink"],
         name: { de: "Kussmund mit offenen Augen", en: "Pucker with Eyes Open" },
         desc: {
@@ -1590,7 +1592,7 @@
         },
       },
       {
-        id: "eyeCloseMouthStill", group: "eyes", synkinesis: true, reps: 6, hold: 5,
+        id: "eyeCloseMouthStill", group: "eyes", synkinesis: true, reps: 5, hold: 5,
         meter: ["eyeBlink"], watch: ["mouthSmile", "mouthStretch"],
         name: { de: "Augen schließen, Mund ruhig", en: "Eye Closure, Mouth Still" },
         desc: {
@@ -1607,7 +1609,7 @@
         },
       },
       {
-        id: "chinRelax", group: "chin", synkinesis: true, reps: 6, hold: 5, cues: ["cue.stroke"],
+        id: "chinRelax", group: "chin", synkinesis: true, reps: 8, hold: 4, simple: true, cues: ["cue.stroke"],
         name: { de: "Kinn lockern", en: "Chin Release" },
         desc: {
           de: "Lege die Fingerspitzen unter die Unterlippe und streiche das Kinn sanft nach unten aus. Lass Kinn und Unterlippe dabei ganz locker – dieser Muskel ist bei Synkinesien oft verspannt.",
@@ -1616,13 +1618,19 @@
       },
     ];
 
+    // Exercise length follows from its reps (see repTiming), so the counts
+    // here keep each routine at about 5 / 10 / 15 minutes.
     const LENGTHS = {
-      short: { count: 4, exercise: 60, warmup: 30, cooldown: 30 },
-      standard: { count: 7, exercise: 60, warmup: 60, cooldown: 120 },
-      long: { count: 11, exercise: 60, warmup: 60, cooldown: 120 },
+      short: { count: 3, warmup: 30, cooldown: 30 },
+      standard: { count: 5, warmup: 60, cooldown: 120 },
+      long: { count: 9, warmup: 60, cooldown: 120 },
     };
 
-    const PREP_SECONDS = 6;
+    const PREP_SECONDS = 12; // break before each exercise: let the face go loose
+    // Phases of one rep: slowly tense → hold → slowly release → rest.
+    const TENSE_SECONDS = 2;
+    const RELEASE_SECONDS = 2;
+    const SIMPLE_REST_SECONDS = 3; // sounds and stroking: hold → rest only
     const DAILY_GOAL = 2;
     const CIRCUMFERENCE = 2 * Math.PI * 94;
 
@@ -1780,7 +1788,7 @@
 
       return [
         { ...WARMUP, duration: cfg.warmup },
-        ...picked.map((ex) => ({ ...ex, duration: cfg.exercise })),
+        ...picked.map((ex) => ({ ...ex, duration: stepDuration(ex) })),
         { ...COOLDOWN, duration: cfg.cooldown },
       ];
     }
@@ -1950,25 +1958,53 @@
         return { key: `area${idx}`, label: area, speech: area, hold: false };
       }
 
-      const cycle = Math.floor(step.duration / step.reps);
-      const rep = Math.floor(elapsed / cycle);
-      if (rep >= step.reps) {
-        return { key: "done", label: t("cue.done"), speech: null, hold: false };
+      const timing = repTiming(step);
+      const rep = Math.min(step.reps - 1, Math.floor(elapsed / timing.cycle));
+      let within = elapsed - rep * timing.cycle;
+      let part = "rest";
+      for (const name of ["tense", "hold", "release"]) {
+        if (within < timing[name]) {
+          part = name;
+          break;
+        }
+        within -= timing[name];
       }
-      const holding = elapsed - rep * cycle < step.hold;
-      const holdWord = step.cues ? t(step.cues[rep % step.cues.length]) : t("cue.hold");
-      const word = holding ? holdWord : t("cue.relax");
-      return {
-        key: `${rep}${holding ? "h" : "r"}`,
-        label: `${t("rep")} ${rep + 1}/${step.reps} · ${word}`,
-        speech: word,
-        hold: holding,
+
+      const cueWord = step.cues ? t(step.cues[rep % step.cues.length]) : null;
+      const words = {
+        // stretches use their cue word ("Stretch") for moving in
+        tense: cueWord ?? t("cue.tense"),
+        // sounds and stroking use their cue word for the active part
+        hold: step.simple && cueWord ? cueWord : t("cue.hold"),
+        release: t("cue.release"),
+        rest: t("cue.rest"),
       };
+      return {
+        key: `${rep}${part}`,
+        part,
+        label: `${t("rep")} ${rep + 1}/${step.reps} · ${words[part]}`,
+        speech: words[part],
+        hold: part === "hold",
+      };
+    }
+
+    // Seconds of each phase of one rep, for a (non-massage) exercise.
+    function repTiming(step) {
+      const simple = Boolean(step.simple);
+      const tense = simple ? 0 : TENSE_SECONDS;
+      const release = simple ? 0 : RELEASE_SECONDS;
+      // rest at least as long as the hold, within 4–6 s
+      const rest = simple ? SIMPLE_REST_SECONDS : Math.min(Math.max(step.hold, 4), 6);
+      return { tense, hold: step.hold, release, rest, cycle: tense + step.hold + release + rest };
+    }
+
+    function stepDuration(step) {
+      return step.reps * repTiming(step).cycle;
     }
 
     function updateCue(fire) {
       if (phase !== "active") {
-        els.cueLabel.textContent = "";
+        els.cueLabel.textContent = t("cue.break");
         els.cueLabel.classList.remove("is-hold");
         return;
       }
@@ -1984,8 +2020,10 @@
       if (settings.voice && state.speech) {
         speak(state.speech);
       } else if (!isFirst && !step.massage) {
-        // First cue coincides with the start sound; don't double up.
-        state.hold ? sounds.hold() : sounds.relax();
+        // Tones mark the start of moving in and of letting go.
+        // The first cue coincides with the start sound; don't double up.
+        if (state.part === "tense" || (step.simple && state.part === "hold")) sounds.hold();
+        else if (state.part === "release" || (step.simple && state.part === "rest")) sounds.relax();
       }
       if (step.massage && !isFirst) sounds.hold();
     }

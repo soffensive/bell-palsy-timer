@@ -15,13 +15,16 @@ Guided facial exercise timer for Bell's palsy (facial nerve palsy) recovery. It 
    - `WARMUP` and `COOLDOWN` are always first and last.
    - `POOL` holds the random exercises: `{ id, group, reps, hold, name: {de,en}, desc: {de,en} }`.
    - Optional fields:
-     - `cues`: spoken words per rep instead of "Hold"
-     - `titleReps`: the title shows "10 reps" instead of "10 × 3 s"
+     - `cues`: cue words per rep. For stretches they replace "Slowly tense" (e.g. "Stretch"); for `simple` exercises they replace "Hold" (e.g. "P", "Stroke").
+     - `simple`: no tense/release phases, only hold → 3 s rest (sounds, stroking)
+     - `titleReps`: the title shows "9 reps" instead of "6 × 3 s"
      - `meter`: signal names measured left/right. These are MediaPipe blendshapes (`mouthSmile` → `mouthSmileLeft/Right`) or landmark-derived signals from `derivedSignals()`, e.g. `mouthCornerIn` for pucker/whistle, because `mouthPucker` has no left/right split. Don't mix a derived signal with a blendshape in one `meter` list: `read()` takes the maximum, and derived signals have a much higher resting level.
      - `watch`: blendshapes that must stay still (synkinesis)
      - `synkinesis: true`: used only when synkinesis mode is on
      - `avoidWithSynkinesis`: left out when synkinesis mode is on
-   - The rep cycle is `floor(duration / reps)` seconds and must be greater than `hold`. Every exercise lasts 60 s.
+   - **Calm timing** (deliberately slow: quality over quantity, full relaxation between reps). Each rep is: slowly tense `TENSE_SECONDS` (2) → hold `hold` → slowly release `RELEASE_SECONDS` (2) → rest, which is as long as the hold, clamped to 4–6 s (`repTiming()`). An exercise lasts `reps × cycle` (`stepDuration()`, about 45–75 s). Use 5–6 reps rather than 10.
+   - Between exercises there is a `PREP_SECONDS` (12 s) break: "Pause – let your face go loose".
+   - `LENGTHS` counts (3 / 5 / 9 exercises) keep the routines at about 5 / 10 / 15 minutes. Recheck the totals when changing timing.
    - `GROUPS` sets the face areas, top to bottom. Routines are sorted by it.
 3. **`buildRoutine(lengthKey)`**: in synkinesis mode it first picks `ceil(count / 3)` synkinesis exercises. It fills the rest round-robin over the groups (eyes and mouth first), then sorts by group.
 4. **Storage**: `localStorage` keys are prefixed `bpt.` (lang, length, sound, voice, meter, side, synkinesis, history). The history is an array of `{ date, ts, length, completed, symmetry?, perExercise?, coactivation?, rest?, tension? }`.
@@ -48,7 +51,7 @@ Guided facial exercise timer for Bell's palsy (facial nerve palsy) recovery. It 
 ## Testing (no test suite)
 
 - **Syntax:** pull out the `<script>` block and run `node --check`.
-- **Logic:** pull the pure sections (I18N, POOL, `buildRoutine`, `cueState`, meter functions) into a Node script with stubs. Check that both languages have the same keys, that every `data-i18n` key exists, that rep cycles are valid, and that routine size and composition match each length and synkinesis mode.
+- **Logic:** pull the pure sections (I18N, POOL, `buildRoutine`, `cueState`, meter functions) into a Node script with stubs. Check that both languages have the same keys, that every `data-i18n` key exists, the timing of every exercise (`repTiming`, `stepDuration`), the cue sequence from `cueState` over a whole exercise, the routine totals per length, and that routine size and composition match each length and synkinesis mode.
 - **Browser:** serve with `python3 -m http.server` and run `chromium --headless=new --use-fake-device-for-media-stream --use-fake-ui-for-media-stream --enable-logging=stderr`. Log state with `console.log` from an injected script.
   - Use **real time**, not `--virtual-time-budget`: virtual time barely runs `requestAnimationFrame`, and the fake video never starts.
   - The fake camera shows no face, so expect "Face not detected".
