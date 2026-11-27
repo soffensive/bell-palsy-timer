@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="de">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Bell's Palsy Recovery Routine</title>
+  <title>Fazialisparese – Übungsprogramm</title>
 
   <style>
     * {
@@ -34,6 +34,38 @@
     .app {
       width: 100%;
       max-width: 440px;
+    }
+
+    /* top bar */
+    .topbar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 10px;
+    }
+
+    .lang-switch {
+      display: inline-flex;
+      background: #ffffff;
+      border-radius: 999px;
+      padding: 3px;
+      box-shadow: 0 8px 20px -14px rgba(30, 43, 38, 0.4);
+    }
+
+    .lang-switch button {
+      border: none;
+      background: none;
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #3d534a;
+      padding: 5px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    .lang-switch button[aria-pressed="true"] {
+      background: #2e6b5e;
+      color: #ffffff;
     }
 
     /* cards */
@@ -78,6 +110,51 @@
       color: #3d534a;
       font-size: 0.9rem;
       margin-bottom: 14px;
+    }
+
+    /* stats */
+    .stats {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .stat {
+      flex: 1;
+      background: #f2f8f5;
+      border: 1px solid #dce9e3;
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-size: 0.82rem;
+      color: #3d534a;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stat strong {
+      font-size: 1.05rem;
+      color: #0f1e19;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .goal-dots {
+      display: inline-flex;
+      gap: 4px;
+    }
+
+    .goal-dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #dce9e3;
+    }
+
+    .goal-dots span.is-done {
+      background: #2e6b5e;
     }
 
     .safety-box {
@@ -128,6 +205,118 @@
       line-height: 1;
     }
 
+    /* settings */
+    .setting {
+      margin-bottom: 14px;
+    }
+
+    .setting-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #3d534a;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .segmented {
+      display: flex;
+      background: #eef5f1;
+      border-radius: 12px;
+      padding: 3px;
+      gap: 3px;
+    }
+
+    .segmented button {
+      flex: 1;
+      border: none;
+      background: none;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #3d534a;
+      padding: 8px 6px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .segmented button[aria-pressed="true"] {
+      background: #ffffff;
+      color: #1e4d42;
+      box-shadow: 0 2px 6px -2px rgba(30, 43, 38, 0.25);
+    }
+
+    .toggles {
+      display: flex;
+      gap: 8px;
+    }
+
+    .toggle {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #eef5f1;
+      border-radius: 12px;
+      padding: 9px 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #1e4d42;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .toggle input {
+      accent-color: #2e6b5e;
+      width: 16px;
+      height: 16px;
+    }
+
+    .preview {
+      background: #f9fbfa;
+      border: 1px solid #e6efea;
+      border-radius: 14px;
+      padding: 10px 14px 12px;
+      margin-bottom: 16px;
+    }
+
+    .preview-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .preview-head .setting-label {
+      margin-bottom: 0;
+    }
+
+    .btn-small {
+      border: none;
+      background: #c3e1d8;
+      color: #1e4d42;
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    .btn-small:hover {
+      background: #aed6c9;
+    }
+
+    .preview ol {
+      padding-left: 20px;
+      font-size: 0.84rem;
+      line-height: 1.55;
+      color: #1e2b26;
+    }
+
+    .preview ol li::marker {
+      color: #7a8f86;
+    }
+
     .btn {
       width: 100%;
       border: none;
@@ -159,20 +348,29 @@
       background: #aed6c9;
     }
 
+    .btn-quiet:disabled {
+      opacity: 0.45;
+      cursor: default;
+    }
+
     .btn-link {
       background: none;
       border: none;
       color: #7a8f86;
+      font-family: inherit;
       font-size: 0.8rem;
       text-decoration: underline;
       padding: 6px;
       cursor: pointer;
+      align-self: center;
     }
 
     .session-card {
       text-align: center;
       padding: 20px 16px 16px;
       gap: 10px;
+      display: flex;
+      flex-direction: column;
     }
 
     .phase-label {
@@ -202,6 +400,16 @@
       overflow: visible;
       display: block;
       white-space: normal;
+    }
+
+    .phase-label,
+    .step-name,
+    .step-desc {
+      transition: opacity 0.2s;
+    }
+
+    .is-fading {
+      opacity: 0;
     }
 
     .ring-wrap {
@@ -257,6 +465,17 @@
       font-weight: 500;
     }
 
+    .cue-label {
+      min-height: 1.6em;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #1e4d42;
+    }
+
+    .cue-label.is-hold {
+      color: #c98a3a;
+    }
+
     .dots {
       display: flex;
       justify-content: center;
@@ -284,17 +503,16 @@
 
     .controls {
       display: flex;
-      flex-wrap: wrap;
       gap: 8px;
-      margin: 12px 0 6px;
+      margin: 12px 0 0;
     }
 
     .controls .btn {
-      flex: 2 1 120px;
+      flex: 2 1 0;
     }
 
     .controls .btn-quiet {
-      flex: 1 1 80px;
+      flex: 1 1 0;
     }
 
     video#mirror {
@@ -308,6 +526,10 @@
       margin-top: 6px;
     }
 
+    video#mirror[hidden] {
+      display: none;
+    }
+
     .mirror-note {
       font-size: 0.78rem;
       color: #5b6d66;
@@ -315,6 +537,10 @@
     }
 
     /* complete */
+    .complete-card {
+      text-align: center;
+    }
+
     .complete-mark {
       width: 48px;
       height: 48px;
@@ -336,7 +562,20 @@
       color: #1e2b26;
       font-size: 0.92rem;
       line-height: 1.5;
-      margin-bottom: 18px;
+      margin: 8px 0 14px;
+    }
+
+    .complete-card .stats {
+      text-align: left;
+    }
+
+    .complete-card .btn-link {
+      margin-top: 6px;
+    }
+
+    .footer-link {
+      display: flex;
+      justify-content: center;
     }
 
     .visually-hidden {
@@ -382,71 +621,100 @@
 
 <body>
   <div class="app">
+    <div class="topbar">
+      <div class="lang-switch" role="group" aria-label="Sprache / Language">
+        <button type="button" data-lang="de" aria-pressed="false">DE</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+    </div>
+
     <!-- INTRO -->
     <section class="screen is-active" id="screen-intro">
       <div class="card">
-        <h1>Bell's Palsy Recovery Routine</h1>
-        <p class="meta">9 exercises &middot; about 10 minutes</p>
+        <h1 data-i18n="title"></h1>
+        <p class="meta" id="introMeta"></p>
+
+        <div class="stats" id="introStats"></div>
 
         <div class="safety-box">
-          <h3>Before you begin</h3>
-
-          <p>
-            Start once your doctor or therapist confirms that you're ready to exercise. For most people, this is often
-            after finishing prescribed medication and once the acute phase has settled.
-          </p>
-
-          <p>Go slowly, especially at first. Don't try hard, stop and rest if it hurts</p>
+          <h3 data-i18n="safety.title"></h3>
+          <p data-i18n="safety.p1"></p>
+          <p data-i18n="safety.p2"></p>
         </div>
 
         <ul class="tips">
-          <li>Sit somewhere well-lit, facing a mirror or the built-in camera</li>
-
-          <li>Exercise twice a day, or follow your therapist's guidelines</li>
+          <li data-i18n="tips.1"></li>
+          <li data-i18n="tips.2"></li>
         </ul>
 
-        <button class="btn" id="beginBtn">Begin Routine</button>
+        <div class="setting">
+          <span class="setting-label" data-i18n="length.label"></span>
+          <div class="segmented" id="lengthPicker" role="group">
+            <button type="button" data-length="short" data-i18n="length.short"></button>
+            <button type="button" data-length="standard" data-i18n="length.standard"></button>
+            <button type="button" data-length="long" data-i18n="length.long"></button>
+          </div>
+        </div>
+
+        <div class="setting">
+          <div class="toggles">
+            <label class="toggle"><input type="checkbox" id="soundToggle" /> <span data-i18n="toggle.sound"></span></label>
+            <label class="toggle"><input type="checkbox" id="voiceToggle" /> <span data-i18n="toggle.voice"></span></label>
+          </div>
+        </div>
+
+        <div class="preview">
+          <div class="preview-head">
+            <span class="setting-label" data-i18n="preview.title"></span>
+            <button type="button" class="btn-small" id="shuffleBtn" data-i18n="preview.shuffle"></button>
+          </div>
+          <ol id="previewList"></ol>
+        </div>
+
+        <button class="btn" id="beginBtn" data-i18n="begin"></button>
+
+        <div class="footer-link">
+          <button type="button" class="btn-link" id="resetHistoryBtn" data-i18n="history.reset"></button>
+        </div>
       </div>
     </section>
 
     <!-- SESSION -->
     <section class="screen" id="screen-session">
       <div class="card session-card">
-        <p class="phase-label" id="phaseLabel">Up next</p>
+        <p class="phase-label" id="phaseLabel"></p>
 
-        <h2 class="step-name" id="stepName">Warm-Up Massage</h2>
+        <h2 class="step-name" id="stepName"></h2>
 
         <div class="ring-wrap" id="ringWrap">
           <svg viewBox="0 0 220 220">
             <circle class="ring-track" cx="110" cy="110" r="94"></circle>
-
             <circle class="ring-progress" id="ringProgress" cx="110" cy="110" r="94"></circle>
           </svg>
 
           <div class="ring-center">
-            <span id="countdown">6</span>
-            <span class="unit" id="countdownUnit"> starting in </span>
+            <span id="countdown"></span>
+            <span class="unit" id="countdownUnit"></span>
           </div>
         </div>
 
-        <p class="step-desc" id="stepDesc">
-          Use gentle circular motions on your forehead, temples, cheeks, around your nose, jawline, and
-          under your eyes.
-        </p>
+        <p class="cue-label" id="cueLabel"></p>
+
+        <p class="step-desc" id="stepDesc"></p>
 
         <div class="dots" id="dots"></div>
 
         <div class="controls">
-          <button class="btn" id="pauseBtn">Pause</button>
-
-          <button class="btn btn-quiet" id="skipBtn">Skip</button>
+          <button class="btn btn-quiet" id="prevBtn" type="button">◀</button>
+          <button class="btn" id="pauseBtn" type="button"></button>
+          <button class="btn btn-quiet" id="skipBtn" type="button">▶</button>
         </div>
+
+        <button type="button" class="btn-link" id="endBtn" data-i18n="end"></button>
 
         <video id="mirror" autoplay playsinline muted></video>
 
-        <p class="mirror-note" id="mirrorNote" hidden>
-          Camera isn't available but you can still follow along with a hand mirror
-        </p>
+        <p class="mirror-note" id="mirrorNote" data-i18n="mirrorNote" hidden></p>
       </div>
     </section>
 
@@ -460,11 +728,14 @@
           </svg>
         </div>
 
-        <h2>Routine completed</h2>
+        <h2 data-i18n="complete.title"></h2>
 
-        <p>Well done. Do this twice daily</p>
+        <p id="completeMsg"></p>
 
-        <button class="btn" id="restartBtn">Restart routine</button>
+        <div class="stats" id="completeStats"></div>
+
+        <button class="btn" id="restartBtn" data-i18n="complete.restart"></button>
+        <button type="button" class="btn-link" id="homeBtn" data-i18n="complete.home"></button>
       </div>
     </section>
 
@@ -472,134 +743,749 @@
   </div>
 
   <script>
-    const routine = [
-      {
-        name: "Warm-Up Massage",
-        duration: 60,
-        desc: "Use gentle circular motions on your forehead, temples, cheeks, around your nose, jawline, and under your eyes. 10 seconds each.",
+    /* ------------------------------------------------------------------ */
+    /* Translations                                                        */
+    /* To add a language: add a block here and a name/desc entry to every  */
+    /* exercise below, plus a button in .lang-switch.                      */
+    /* ------------------------------------------------------------------ */
+    const I18N = {
+      de: {
+        speechLang: "de-DE",
+        title: "Fazialisparese – Übungsprogramm",
+        meta: "{n} Übungen · ca. {m} Minuten",
+        "safety.title": "Bevor du beginnst",
+        "safety.p1":
+          "Beginne erst, wenn deine Ärztin, dein Arzt oder deine Therapeutin bestätigt, dass du bereit für die Übungen bist. Meist ist das nach Abschluss der verordneten Medikamente und nach Abklingen der akuten Phase.",
+        "safety.p2":
+          "Mach langsam, besonders am Anfang. Nicht anstrengen – hör auf und ruh dich aus, wenn es schmerzt.",
+        "tips.1": "Setz dich an einen hellen Ort, vor einen Spiegel oder die Kamera",
+        "tips.2": "Übe zweimal täglich oder nach Anweisung deiner Therapeutin / deines Therapeuten",
+        "length.label": "Dauer",
+        "length.short": "Kurz",
+        "length.standard": "Standard",
+        "length.long": "Lang",
+        "toggle.sound": "Töne",
+        "toggle.voice": "Sprachansage",
+        "preview.title": "Heutige Übungen",
+        "preview.shuffle": "🔀 Neu mischen",
+        begin: "Übungen starten",
+        end: "Einheit beenden",
+        pause: "Pause",
+        resume: "Weiter",
+        prev: "Zurück",
+        skip: "Überspringen",
+        upNext: "Als Nächstes",
+        stepOf: "Übung {i} von {n}",
+        startingIn: "Start in",
+        "unit.second": "Sekunde",
+        "unit.seconds": "Sekunden",
+        "unit.minutes": "Minuten",
+        repsHold: "{r} × {h} s",
+        reps: "{r} Wdh.",
+        rep: "Wdh.",
+        "cue.hold": "Halten",
+        "cue.relax": "Entspannen",
+        "cue.done": "Locker lassen",
+        "cue.go": "Los",
+        "cue.e": "Iii",
+        "cue.o": "Uuu",
+        "cue.p": "P",
+        "cue.b": "B",
+        "cue.m": "M",
+        "area.0": "Stirn",
+        "area.1": "Schläfen",
+        "area.2": "Wangen",
+        "area.3": "Rund um die Nase",
+        "area.4": "Kieferlinie",
+        "area.5": "Unter den Augen",
+        "announce.prep": "Als Nächstes: {name}.",
+        "announce.now": "Jetzt: {name}.",
+        "announce.done": "Geschafft! Einheit abgeschlossen.",
+        mirrorNote: "Die Kamera ist nicht verfügbar – du kannst aber auch einen Handspiegel benutzen.",
+        "complete.title": "Einheit abgeschlossen",
+        "complete.goalReached": "Gut gemacht! Dein Tagesziel von 2 Einheiten ist erreicht.",
+        "complete.oneMore": "Gut gemacht! Heute noch eine Einheit für dein Tagesziel.",
+        "complete.restart": "Neue Runde (neu gemischt)",
+        "complete.home": "Zur Startseite",
+        "stats.today": "Heute",
+        "stats.todayValue": "{n} / 2",
+        "stats.streak": "Serie",
+        "stats.days": "{n} Tage",
+        "stats.day": "1 Tag",
+        "history.reset": "Verlauf zurücksetzen",
+        "history.confirm": "Den gesamten Übungsverlauf löschen?",
       },
-
-      {
-        name: "Blink Hold (10 reps × 3s)",
-        duration: 60,
-        desc: "Gently close both eyes, hold for 3 seconds, then open. Focus on even movement.",
+      en: {
+        speechLang: "en-US",
+        title: "Bell's Palsy Recovery Routine",
+        meta: "{n} exercises · about {m} minutes",
+        "safety.title": "Before you begin",
+        "safety.p1":
+          "Start once your doctor or therapist confirms that you're ready to exercise. For most people, this is often after finishing prescribed medication and once the acute phase has settled.",
+        "safety.p2": "Go slowly, especially at first. Don't try hard, stop and rest if it hurts.",
+        "tips.1": "Sit somewhere well-lit, facing a mirror or the built-in camera",
+        "tips.2": "Exercise twice a day, or follow your therapist's guidelines",
+        "length.label": "Length",
+        "length.short": "Short",
+        "length.standard": "Standard",
+        "length.long": "Long",
+        "toggle.sound": "Sounds",
+        "toggle.voice": "Voice cues",
+        "preview.title": "Today's exercises",
+        "preview.shuffle": "🔀 Shuffle",
+        begin: "Begin Routine",
+        end: "End session",
+        pause: "Pause",
+        resume: "Resume",
+        prev: "Previous",
+        skip: "Skip",
+        upNext: "Up next",
+        stepOf: "Step {i} of {n}",
+        startingIn: "starting in",
+        "unit.second": "second",
+        "unit.seconds": "seconds",
+        "unit.minutes": "minutes",
+        repsHold: "{r} × {h}s",
+        reps: "{r} reps",
+        rep: "Rep",
+        "cue.hold": "Hold",
+        "cue.relax": "Relax",
+        "cue.done": "Take it easy",
+        "cue.go": "Go",
+        "cue.e": "Eee",
+        "cue.o": "Ooo",
+        "cue.p": "P",
+        "cue.b": "B",
+        "cue.m": "M",
+        "area.0": "Forehead",
+        "area.1": "Temples",
+        "area.2": "Cheeks",
+        "area.3": "Around the nose",
+        "area.4": "Jawline",
+        "area.5": "Under the eyes",
+        "announce.prep": "Up next: {name}.",
+        "announce.now": "Now: {name}.",
+        "announce.done": "Well done! Routine complete.",
+        mirrorNote: "Camera isn't available but you can still follow along with a hand mirror.",
+        "complete.title": "Routine completed",
+        "complete.goalReached": "Well done! You've reached your daily goal of 2 sessions.",
+        "complete.oneMore": "Well done! One more session today to reach your daily goal.",
+        "complete.restart": "Another round (reshuffled)",
+        "complete.home": "Back to start",
+        "stats.today": "Today",
+        "stats.todayValue": "{n} / 2",
+        "stats.streak": "Streak",
+        "stats.days": "{n} days",
+        "stats.day": "1 day",
+        "history.reset": "Reset history",
+        "history.confirm": "Delete your whole exercise history?",
       },
+    };
 
-      {
-        name: "Half Squints (10 reps × 2s)",
-        duration: 60,
-        desc: "Squint eyes halfway, hold for 2 seconds. Keep forehead relaxed.",
+    /* ------------------------------------------------------------------ */
+    /* Exercises                                                           */
+    /* ------------------------------------------------------------------ */
+    const MASSAGE_AREAS = 6;
+
+    const WARMUP = {
+      id: "warmup",
+      massage: true,
+      name: { de: "Aufwärm-Massage", en: "Warm-Up Massage" },
+      desc: {
+        de: "Massiere sanft mit kreisenden Bewegungen Stirn, Schläfen, Wangen, die Nase entlang, die Kieferlinie und unter den Augen – je {n} Sekunden.",
+        en: "Use gentle circular motions on your forehead, temples, cheeks, around your nose, jawline, and under your eyes. {n} seconds each.",
       },
+    };
 
-      {
-        name: "Nose Wrinkle (10 reps × 3s)",
-        duration: 60,
-        desc: "Wrinkle nose as if smelling something bad. Try to move both sides. Support weak side with fingers if needed.",
+    const COOLDOWN = {
+      id: "cooldown",
+      massage: true,
+      name: { de: "Abschluss-Massage", en: "Cooldown Massage" },
+      desc: {
+        de: "Wiederhole die sanfte Massage vom Anfang, um das Gesicht zu entspannen – je {n} Sekunden pro Bereich.",
+        en: "Repeat the same gentle massage as the warm-up to relax the face. {n} seconds per area.",
       },
+    };
 
+    // group order = top to bottom of the face; routines are sorted by it.
+    const GROUPS = ["forehead", "eyes", "nose", "cheeks", "mouth", "chin"];
+
+    const POOL = [
       {
-        name: "Upper Lip Lift (10 reps × 3s)",
-        duration: 60,
-        desc: "Lift upper lip like snarling. Hold for 3 seconds, relax. Focus on symmetry.",
+        id: "eyebrowRaise", group: "forehead", reps: 10, hold: 3,
+        name: { de: "Augenbrauen heben", en: "Eyebrow Raise" },
+        desc: {
+          de: "Hebe beide Augenbrauen langsam, als wärst du überrascht. Halten, dann entspannen. Die schwächere Seite bei Bedarf mit den Fingerspitzen unterstützen.",
+          en: "Slowly raise both eyebrows as if surprised. Hold, then relax. Gently help the weaker side with your fingertips if needed.",
+        },
       },
-
       {
-        name: "Smile Hold (6 reps × 5s)",
-        duration: 60,
-        desc: "Smile softly with closed lips. Hold for 5 seconds. Use mirror and fingers to guide even movement.",
+        id: "frown", group: "forehead", reps: 10, hold: 3,
+        name: { de: "Stirnrunzeln", en: "Gentle Frown" },
+        desc: {
+          de: "Ziehe die Augenbrauen sanft zusammen und nach unten, wie beim Stirnrunzeln. Locker halten, dann entspannen.",
+          en: "Draw your eyebrows together and down, as if frowning. Keep it soft, hold, then relax.",
+        },
       },
-
       {
-        name: "‘E’ and ‘O’ Sounds (10 reps)",
-        duration: 60,
-        desc: "Say ‘Eeeee’ and ‘Ooooo’ slowly. Watch lip corners in mirror for symmetry.",
+        id: "blinkHold", group: "eyes", reps: 10, hold: 3,
+        name: { de: "Augen schließen", en: "Blink Hold" },
+        desc: {
+          de: "Schließe sanft beide Augen, halte sie geschlossen und öffne sie wieder. Achte auf eine gleichmäßige Bewegung.",
+          en: "Gently close both eyes, hold, then open. Focus on even movement.",
+        },
       },
-
       {
-        name: "Cheek Puff (6 reps × 5s)",
-        duration: 60,
-        desc: "Puff both cheeks with air. Hold for 5 seconds. Don’t let air leak from weaker side.",
+        id: "halfSquint", group: "eyes", reps: 10, hold: 2,
+        name: { de: "Halbes Zusammenkneifen", en: "Half Squints" },
+        desc: {
+          de: "Kneife die Augen halb zusammen und halte kurz. Die Stirn bleibt dabei entspannt.",
+          en: "Squint your eyes halfway and hold. Keep your forehead relaxed.",
+        },
       },
-
       {
-        name: "Cooldown Massage",
-        duration: 120,
-        desc: "Repeat the same gentle massage as warm-up to relax the face.",
+        id: "slowClose", group: "eyes", reps: 6, hold: 5,
+        name: { de: "Langsamer Lidschluss", en: "Slow Eye Closure" },
+        desc: {
+          de: "Schließe die Augen so langsam wie möglich, halte sie sanft geschlossen und öffne sie langsam wieder. Nicht zukneifen.",
+          en: "Close your eyes as slowly as you can, keep them gently closed, then open slowly. Don't squeeze.",
+        },
+      },
+      {
+        id: "noseWrinkle", group: "nose", reps: 10, hold: 3,
+        name: { de: "Nase rümpfen", en: "Nose Wrinkle" },
+        desc: {
+          de: "Rümpfe die Nase, als würdest du etwas Unangenehmes riechen. Versuche, beide Seiten zu bewegen. Die schwächere Seite bei Bedarf mit den Fingern unterstützen.",
+          en: "Wrinkle your nose as if smelling something bad. Try to move both sides. Support the weaker side with your fingers if needed.",
+        },
+      },
+      {
+        id: "nostrilFlare", group: "nose", reps: 10, hold: 3,
+        name: { de: "Nasenflügel weiten", en: "Nostril Flare" },
+        desc: {
+          de: "Weite die Nasenflügel, indem du tief durch die Nase einatmest. Halten, dann entspannen.",
+          en: "Widen your nostrils by breathing in deeply through your nose. Hold, then relax.",
+        },
+      },
+      {
+        id: "cheekPuff", group: "cheeks", reps: 6, hold: 5,
+        name: { de: "Backen aufblasen", en: "Cheek Puff" },
+        desc: {
+          de: "Blase beide Backen mit Luft auf und halte. Lass auf der schwächeren Seite keine Luft entweichen.",
+          en: "Puff both cheeks with air and hold. Don't let air leak from the weaker side.",
+        },
+      },
+      {
+        id: "cheekSuck", group: "cheeks", reps: 6, hold: 5,
+        name: { de: "Wangen einsaugen", en: "Cheek Suck-In" },
+        desc: {
+          de: "Sauge die Wangen sanft zwischen die Zähne ein, wie ein Fischmund. Halten, dann entspannen.",
+          en: "Gently suck your cheeks in between your teeth, like a fish face. Hold, then relax.",
+        },
+      },
+      {
+        id: "upperLipLift", group: "mouth", reps: 10, hold: 3,
+        name: { de: "Oberlippe heben", en: "Upper Lip Lift" },
+        desc: {
+          de: "Hebe die Oberlippe wie beim Zähnefletschen. Halten, dann entspannen. Achte auf Symmetrie.",
+          en: "Lift your upper lip like snarling. Hold, then relax. Focus on symmetry.",
+        },
+      },
+      {
+        id: "closedSmile", group: "mouth", reps: 6, hold: 5,
+        name: { de: "Lächeln halten", en: "Smile Hold" },
+        desc: {
+          de: "Lächle sanft mit geschlossenen Lippen und halte. Nutze Spiegel und Finger, um die Bewegung gleichmäßig zu führen.",
+          en: "Smile softly with closed lips and hold. Use the mirror and your fingers to guide even movement.",
+        },
+      },
+      {
+        id: "openSmile", group: "mouth", reps: 6, hold: 5,
+        name: { de: "Offenes Lächeln", en: "Open Smile" },
+        desc: {
+          de: "Lächle so, dass die oberen Zähne sichtbar werden. Halten, dann entspannen. Beide Mundwinkel sollen sich gleichmäßig heben.",
+          en: "Smile showing your upper teeth. Hold, then relax. Watch both corners of your mouth rise evenly.",
+        },
+      },
+      {
+        id: "eoSounds", group: "mouth", reps: 10, hold: 3, cues: ["cue.e", "cue.o"],
+        name: { de: "„I“ und „U“ sagen", en: "‘E’ and ‘O’ Sounds" },
+        desc: {
+          de: "Sage abwechselnd langsam „Iiii“ (Lippen breit) und „Uuuu“ (Lippen rund). Beobachte die Mundwinkel im Spiegel.",
+          en: "Say ‘Eeeee’ and ‘Ooooo’ slowly, alternating. Watch your lip corners in the mirror for symmetry.",
+        },
+      },
+      {
+        id: "pucker", group: "mouth", reps: 10, hold: 3,
+        name: { de: "Kussmund", en: "Kiss / Pucker" },
+        desc: {
+          de: "Schiebe die Lippen nach vorne wie zu einem Kuss. Halten, dann entspannen. Bewege beide Seiten gleichmäßig.",
+          en: "Push your lips forward as if to kiss. Hold, then relax. Keep the movement even on both sides.",
+        },
+      },
+      {
+        id: "whistle", group: "mouth", reps: 10, hold: 3,
+        name: { de: "Pfeifmund", en: "Whistle Shape" },
+        desc: {
+          de: "Forme die Lippen zu einem kleinen „o“, als würdest du pfeifen. Halten, dann entspannen.",
+          en: "Round your lips into a small ‘o’ as if whistling. Hold, then relax.",
+        },
+      },
+      {
+        id: "lipPress", group: "mouth", reps: 10, hold: 3,
+        name: { de: "Lippen aufeinanderpressen", en: "Lip Press" },
+        desc: {
+          de: "Presse die Lippen sanft aufeinander, halten, dann entspannen. Die Zähne dabei nicht zusammenbeißen.",
+          en: "Press your lips gently together, hold, then relax. Don't clench your teeth.",
+        },
+      },
+      {
+        id: "pbm", group: "mouth", reps: 9, hold: 2, cues: ["cue.p", "cue.b", "cue.m"],
+        name: { de: "P, B, M sprechen", en: "P, B, M Sounds" },
+        desc: {
+          de: "Sprich langsam und deutlich „P“, „B“ und „M“. Spüre, wie sich die Lippen gleichmäßig schließen.",
+          en: "Say ‘P’, ‘B’ and ‘M’ slowly and clearly. Feel your lips close evenly.",
+        },
+      },
+      {
+        id: "lowerLipDown", group: "chin", reps: 10, hold: 3,
+        name: { de: "Unterlippe senken", en: "Lower Lip Down" },
+        desc: {
+          de: "Ziehe die Unterlippe nach unten, sodass die unteren Zähne sichtbar werden. Halten, dann entspannen.",
+          en: "Pull your lower lip down to show your lower teeth. Hold, then relax.",
+        },
+      },
+      {
+        id: "chinWrinkle", group: "chin", reps: 10, hold: 3,
+        name: { de: "Kinn kräuseln", en: "Chin Wrinkle" },
+        desc: {
+          de: "Schiebe die Unterlippe nach oben und vorne, sodass sich das Kinn kräuselt (Schmollmund). Halten, dann entspannen.",
+          en: "Push your lower lip up and out so your chin wrinkles (a pouting face). Hold, then relax.",
+        },
       },
     ];
 
-    const PREP_SECONDS = 6;
+    const LENGTHS = {
+      short: { count: 4, exercise: 60, warmup: 30, cooldown: 30 },
+      standard: { count: 7, exercise: 60, warmup: 60, cooldown: 120 },
+      long: { count: 11, exercise: 60, warmup: 60, cooldown: 120 },
+    };
 
+    const PREP_SECONDS = 6;
+    const DAILY_GOAL = 2;
     const CIRCUMFERENCE = 2 * Math.PI * 94;
 
+    /* ------------------------------------------------------------------ */
+    /* Storage                                                             */
+    /* ------------------------------------------------------------------ */
+    const store = {
+      get(key, fallback) {
+        try {
+          const raw = localStorage.getItem("bpt." + key);
+          return raw === null ? fallback : JSON.parse(raw);
+        } catch {
+          return fallback;
+        }
+      },
+      set(key, value) {
+        try {
+          localStorage.setItem("bpt." + key, JSON.stringify(value));
+        } catch {
+          /* storage unavailable: settings just won't persist */
+        }
+      },
+    };
+
+    const settings = {
+      lang: store.get("lang", (navigator.language || "en").toLowerCase().startsWith("de") ? "de" : "en"),
+      length: store.get("length", "standard"),
+      sound: store.get("sound", true),
+      voice: store.get("voice", false),
+    };
+    if (!I18N[settings.lang]) settings.lang = "en";
+    if (!LENGTHS[settings.length]) settings.length = "standard";
+
+    function t(key, vars = {}) {
+      let str = I18N[settings.lang][key] ?? I18N.en[key] ?? key;
+      for (const [k, v] of Object.entries(vars)) str = str.replaceAll(`{${k}}`, v);
+      return str;
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* State                                                               */
+    /* ------------------------------------------------------------------ */
+    let routine = [];
     let stepIndex = 0;
-
     let phase = "prep";
-
     let timeLeft = PREP_SECONDS;
-
     let phaseDuration = PREP_SECONDS;
-
     let timerId = null;
-
     let isPaused = false;
-
+    let inSession = false;
+    let lastCueKey = null;
     let cameraStream = null;
+    let wakeLock = null;
+    let audioCtx = null;
+
+    const $ = (id) => document.getElementById(id);
 
     const els = {
       screens: {
-        intro: document.getElementById("screen-intro"),
-        session: document.getElementById("screen-session"),
-        complete: document.getElementById("screen-complete"),
+        intro: $("screen-intro"),
+        session: $("screen-session"),
+        complete: $("screen-complete"),
       },
-
-      phaseLabel: document.getElementById("phaseLabel"),
-
-      stepName: document.getElementById("stepName"),
-
-      stepDesc: document.getElementById("stepDesc"),
-
-      ringWrap: document.getElementById("ringWrap"),
-
-      ringProgress: document.getElementById("ringProgress"),
-
-      countdown: document.getElementById("countdown"),
-
-      countdownUnit: document.getElementById("countdownUnit"),
-
-      dots: document.getElementById("dots"),
-
-      pauseBtn: document.getElementById("pauseBtn"),
-
-      skipBtn: document.getElementById("skipBtn"),
-
-      beginBtn: document.getElementById("beginBtn"),
-
-      restartBtn: document.getElementById("restartBtn"),
-
-      mirror: document.getElementById("mirror"),
-
-      mirrorNote: document.getElementById("mirrorNote"),
-
-      liveRegion: document.getElementById("liveRegion"),
+      introMeta: $("introMeta"),
+      introStats: $("introStats"),
+      lengthPicker: $("lengthPicker"),
+      soundToggle: $("soundToggle"),
+      voiceToggle: $("voiceToggle"),
+      previewList: $("previewList"),
+      shuffleBtn: $("shuffleBtn"),
+      resetHistoryBtn: $("resetHistoryBtn"),
+      phaseLabel: $("phaseLabel"),
+      stepName: $("stepName"),
+      stepDesc: $("stepDesc"),
+      cueLabel: $("cueLabel"),
+      ringWrap: $("ringWrap"),
+      ringProgress: $("ringProgress"),
+      countdown: $("countdown"),
+      countdownUnit: $("countdownUnit"),
+      dots: $("dots"),
+      prevBtn: $("prevBtn"),
+      pauseBtn: $("pauseBtn"),
+      skipBtn: $("skipBtn"),
+      endBtn: $("endBtn"),
+      beginBtn: $("beginBtn"),
+      restartBtn: $("restartBtn"),
+      homeBtn: $("homeBtn"),
+      completeMsg: $("completeMsg"),
+      completeStats: $("completeStats"),
+      mirror: $("mirror"),
+      mirrorNote: $("mirrorNote"),
+      liveRegion: $("liveRegion"),
     };
 
     els.ringProgress.style.strokeDasharray = String(CIRCUMFERENCE);
 
+    /* ------------------------------------------------------------------ */
+    /* Routine generation                                                  */
+    /* ------------------------------------------------------------------ */
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function buildRoutine(lengthKey) {
+      const cfg = LENGTHS[lengthKey];
+
+      // Bucket the pool by face area, shuffle each bucket.
+      const buckets = {};
+      GROUPS.forEach((g) => (buckets[g] = shuffle(POOL.filter((ex) => ex.group === g))));
+
+      // Round-robin over groups so even short routines cover several areas.
+      // Eyes and mouth come first: they matter most for daily function.
+      const order = ["eyes", "mouth", ...shuffle(GROUPS.filter((g) => g !== "eyes" && g !== "mouth"))];
+      const picked = [];
+      while (picked.length < cfg.count && order.some((g) => buckets[g].length)) {
+        for (const g of order) {
+          if (picked.length >= cfg.count) break;
+          if (buckets[g].length) picked.push(buckets[g].pop());
+        }
+      }
+
+      // Natural flow: top of the face to the bottom.
+      picked.sort((a, b) => GROUPS.indexOf(a.group) - GROUPS.indexOf(b.group));
+
+      return [
+        { ...WARMUP, duration: cfg.warmup },
+        ...picked.map((ex) => ({ ...ex, duration: cfg.exercise })),
+        { ...COOLDOWN, duration: cfg.cooldown },
+      ];
+    }
+
+    function stepTitle(step) {
+      const name = step.name[settings.lang] ?? step.name.en;
+      if (step.massage) return name;
+      const detail = step.cues ? t("reps", { r: step.reps }) : t("repsHold", { r: step.reps, h: step.hold });
+      return `${name} (${detail})`;
+    }
+
+    function stepDescription(step) {
+      const desc = step.desc[settings.lang] ?? step.desc.en;
+      return step.massage ? desc.replaceAll("{n}", Math.round(step.duration / MASSAGE_AREAS)) : desc;
+    }
+
+    function totalMinutes() {
+      const seconds = routine.reduce((sum, s) => sum + s.duration + PREP_SECONDS, 0);
+      return Math.max(1, Math.round(seconds / 60));
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* History                                                             */
+    /* ------------------------------------------------------------------ */
+    function dayKey(date = new Date()) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, "0");
+      const d = String(date.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
+
+    function getHistory() {
+      const h = store.get("history", []);
+      return Array.isArray(h) ? h : [];
+    }
+
+    function recordSession(completed) {
+      const history = getHistory();
+      history.push({ date: dayKey(), ts: Date.now(), length: settings.length, completed });
+      store.set("history", history.slice(-1000));
+    }
+
+    function todayCount() {
+      const today = dayKey();
+      return getHistory().filter((s) => s.completed && s.date === today).length;
+    }
+
+    function streakDays() {
+      const days = new Set(getHistory().filter((s) => s.completed).map((s) => s.date));
+      const cursor = new Date();
+      if (!days.has(dayKey(cursor))) cursor.setDate(cursor.getDate() - 1); // today not done yet: count from yesterday
+      let streak = 0;
+      while (days.has(dayKey(cursor))) {
+        streak += 1;
+        cursor.setDate(cursor.getDate() - 1);
+      }
+      return streak;
+    }
+
+    function renderStats(container) {
+      const count = todayCount();
+      const streak = streakDays();
+      const dots = Array.from({ length: DAILY_GOAL }, (_, i) =>
+        `<span class="${i < count ? "is-done" : ""}"></span>`
+      ).join("");
+      const streakText = streak === 1 ? t("stats.day") : t("stats.days", { n: streak });
+
+      container.innerHTML = `
+        <div class="stat">${t("stats.today")}
+          <strong>${t("stats.todayValue", { n: count })} <span class="goal-dots">${dots}</span></strong>
+        </div>
+        <div class="stat">${t("stats.streak")}
+          <strong>🔥 ${streakText}</strong>
+        </div>`;
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Sound & voice                                                       */
+    /* ------------------------------------------------------------------ */
+    function ensureAudio() {
+      if (!settings.sound) return;
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return;
+      if (!audioCtx) audioCtx = new Ctx();
+      if (audioCtx.state === "suspended") audioCtx.resume();
+    }
+
+    function tone(freq, duration = 0.15, delay = 0, volume = 0.18) {
+      if (!settings.sound || !audioCtx) return;
+      const start = audioCtx.currentTime + delay;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = "sine";
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(volume, start + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+      osc.connect(gain).connect(audioCtx.destination);
+      osc.start(start);
+      osc.stop(start + duration + 0.05);
+    }
+
+    const sounds = {
+      prep: () => tone(520, 0.18),
+      start: () => {
+        tone(660, 0.14);
+        tone(880, 0.2, 0.16);
+      },
+      hold: () => tone(740, 0.1, 0, 0.1),
+      relax: () => tone(440, 0.1, 0, 0.08),
+      finish: () => {
+        tone(523, 0.2);
+        tone(659, 0.2, 0.18);
+        tone(784, 0.35, 0.36);
+      },
+    };
+
+    function speak(text) {
+      if (!settings.voice || !("speechSynthesis" in window)) return;
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      const lang = t("speechLang");
+      u.lang = lang;
+      const voice = speechSynthesis.getVoices().find((v) => v.lang.replace("_", "-").startsWith(lang.slice(0, 2)));
+      if (voice) u.voice = voice;
+      u.rate = 0.95;
+      speechSynthesis.speak(u);
+    }
+
+    function stopSpeech() {
+      if ("speechSynthesis" in window) speechSynthesis.cancel();
+    }
+
+    /* Which cue applies `elapsed` seconds into the active phase of `step`. */
+    function cueState(step, elapsed) {
+      if (step.massage) {
+        const seg = step.duration / MASSAGE_AREAS;
+        const idx = Math.min(MASSAGE_AREAS - 1, Math.floor(elapsed / seg));
+        const area = t(`area.${idx}`);
+        return { key: `area${idx}`, label: area, speech: area, hold: false };
+      }
+
+      const cycle = Math.floor(step.duration / step.reps);
+      const rep = Math.floor(elapsed / cycle);
+      if (rep >= step.reps) {
+        return { key: "done", label: t("cue.done"), speech: null, hold: false };
+      }
+      const holding = elapsed - rep * cycle < step.hold;
+      const holdWord = step.cues ? t(step.cues[rep % step.cues.length]) : t("cue.hold");
+      const word = holding ? holdWord : t("cue.relax");
+      return {
+        key: `${rep}${holding ? "h" : "r"}`,
+        label: `${t("rep")} ${rep + 1}/${step.reps} · ${word}`,
+        speech: word,
+        hold: holding,
+      };
+    }
+
+    function updateCue(fire) {
+      if (phase !== "active") {
+        els.cueLabel.textContent = "";
+        els.cueLabel.classList.remove("is-hold");
+        return;
+      }
+      const step = routine[stepIndex];
+      const state = cueState(step, phaseDuration - timeLeft);
+      els.cueLabel.textContent = state.label;
+      els.cueLabel.classList.toggle("is-hold", state.hold);
+
+      if (!fire || state.key === lastCueKey) return;
+      const isFirst = lastCueKey === null;
+      lastCueKey = state.key;
+
+      if (settings.voice && state.speech) {
+        speak(state.speech);
+      } else if (!isFirst && !step.massage) {
+        // First cue coincides with the start sound; don't double up.
+        state.hold ? sounds.hold() : sounds.relax();
+      }
+      if (step.massage && !isFirst) sounds.hold();
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Wake lock & camera                                                  */
+    /* ------------------------------------------------------------------ */
+    async function requestWakeLock() {
+      if (!("wakeLock" in navigator) || wakeLock) return;
+      try {
+        wakeLock = await navigator.wakeLock.request("screen");
+        wakeLock.addEventListener("release", () => (wakeLock = null));
+      } catch {
+        wakeLock = null;
+      }
+    }
+
+    function releaseWakeLock() {
+      if (wakeLock) wakeLock.release().catch(() => {});
+      wakeLock = null;
+    }
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible" && inSession) requestWakeLock();
+    });
+
+    async function enableCamera() {
+      if (cameraStream) return;
+      try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
+        if (!inSession) {
+          stopCamera(); // session ended while the permission prompt was open
+          return;
+        }
+        els.mirror.srcObject = cameraStream;
+        els.mirror.hidden = false;
+        els.mirrorNote.hidden = true;
+      } catch {
+        els.mirror.hidden = true;
+        els.mirrorNote.hidden = false;
+      }
+    }
+
+    function stopCamera() {
+      if (cameraStream) cameraStream.getTracks().forEach((track) => track.stop());
+      cameraStream = null;
+      els.mirror.srcObject = null;
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Rendering                                                           */
+    /* ------------------------------------------------------------------ */
     function showScreen(name) {
-      Object.entries(els.screens).forEach(([key, el]) => {
-        el.classList.toggle("is-active", key === name);
+      Object.entries(els.screens).forEach(([key, el]) => el.classList.toggle("is-active", key === name));
+    }
+
+    function applyLanguage() {
+      document.documentElement.lang = settings.lang;
+      document.title = t("title");
+      document.querySelectorAll("[data-i18n]").forEach((el) => (el.textContent = t(el.dataset.i18n)));
+      document.querySelectorAll(".lang-switch button").forEach((b) =>
+        b.setAttribute("aria-pressed", String(b.dataset.lang === settings.lang))
+      );
+      els.prevBtn.setAttribute("aria-label", t("prev"));
+      els.prevBtn.title = t("prev");
+      els.skipBtn.setAttribute("aria-label", t("skip"));
+      els.skipBtn.title = t("skip");
+      els.pauseBtn.textContent = isPaused ? t("resume") : t("pause");
+
+      renderIntro();
+      if (inSession) {
+        renderStepText();
+        renderTick();
+        updateCue(false);
+      }
+      if (els.screens.complete.classList.contains("is-active")) renderComplete();
+    }
+
+    function renderIntro() {
+      els.introMeta.textContent = t("meta", { n: routine.length, m: totalMinutes() });
+      els.previewList.innerHTML = "";
+      routine.forEach((step) => {
+        const li = document.createElement("li");
+        li.textContent = stepTitle(step);
+        els.previewList.appendChild(li);
       });
+      els.lengthPicker.querySelectorAll("button").forEach((b) =>
+        b.setAttribute("aria-pressed", String(b.dataset.length === settings.length))
+      );
+      els.soundToggle.checked = settings.sound;
+      els.voiceToggle.checked = settings.voice;
+      renderStats(els.introStats);
+    }
+
+    function renderComplete() {
+      els.completeMsg.textContent = todayCount() >= DAILY_GOAL ? t("complete.goalReached") : t("complete.oneMore");
+      renderStats(els.completeStats);
     }
 
     function buildDots() {
       els.dots.innerHTML = "";
-
       routine.forEach(() => {
         const dot = document.createElement("div");
-
         dot.className = "dot";
-
         els.dots.appendChild(dot);
       });
     }
@@ -607,48 +1493,41 @@
     function updateDots() {
       [...els.dots.children].forEach((dot, i) => {
         dot.classList.toggle("is-done", i < stepIndex);
-
         dot.classList.toggle("is-current", i === stepIndex);
       });
     }
 
     function formatTime(sec) {
       if (sec < 60) {
-        return {
-          value: String(sec),
-          unit: sec === 1 ? "second" : "seconds",
-        };
+        return { value: String(sec), unit: sec === 1 ? t("unit.second") : t("unit.seconds") };
       }
-
       const m = Math.floor(sec / 60);
-
       const s = sec % 60;
-
-      return {
-        value: `${m}:${String(s).padStart(2, "0")}`,
-        unit: "minutes",
-      };
+      return { value: `${m}:${String(s).padStart(2, "0")}`, unit: t("unit.minutes") };
     }
 
     function renderTick() {
       const { value, unit } = formatTime(timeLeft);
-
       els.countdown.textContent = value;
-
-      els.countdownUnit.textContent = phase === "prep" ? "starting in" : unit;
-
+      els.countdownUnit.textContent = phase === "prep" ? t("startingIn") : unit;
       const fractionElapsed = (phaseDuration - timeLeft) / phaseDuration;
-
       els.ringProgress.style.strokeDashoffset = String(CIRCUMFERENCE * fractionElapsed);
     }
 
-    function crossfade(updateFn) {
-      [els.phaseLabel, els.stepName, els.stepDesc].forEach((el) => el.classList.add("is-fading"));
+    function renderStepText() {
+      const step = routine[stepIndex];
+      els.phaseLabel.textContent =
+        phase === "prep" ? t("upNext") : t("stepOf", { i: stepIndex + 1, n: routine.length });
+      els.stepName.textContent = stepTitle(step);
+      els.stepDesc.textContent = stepDescription(step);
+    }
 
+    function crossfade(updateFn) {
+      const fading = [els.phaseLabel, els.stepName, els.stepDesc];
+      fading.forEach((el) => el.classList.add("is-fading"));
       window.setTimeout(() => {
         updateFn();
-
-        [els.phaseLabel, els.stepName, els.stepDesc].forEach((el) => el.classList.remove("is-fading"));
+        fading.forEach((el) => el.classList.remove("is-fading"));
       }, 200);
     }
 
@@ -656,58 +1535,49 @@
       els.liveRegion.textContent = text;
     }
 
+    /* ------------------------------------------------------------------ */
+    /* Session flow                                                        */
+    /* ------------------------------------------------------------------ */
     function beginPhase(nextPhase) {
       phase = nextPhase;
-
       const step = routine[stepIndex];
+      const name = step.name[settings.lang] ?? step.name.en;
 
       phaseDuration = phase === "prep" ? PREP_SECONDS : step.duration;
-
       timeLeft = phaseDuration;
-
+      lastCueKey = null;
       els.ringWrap.classList.toggle("is-prep", phase === "prep");
+      els.prevBtn.disabled = stepIndex === 0 && phase === "prep";
+
+      if (phase === "prep") {
+        sounds.prep();
+        speak(t("announce.prep", { name }));
+        announce(t("announce.prep", { name }));
+      } else {
+        sounds.start();
+        announce(t("announce.now", { name }));
+      }
 
       crossfade(() => {
-        if (phase === "prep") {
-          els.phaseLabel.textContent = "Up next";
-
-          els.stepName.textContent = step.name;
-
-          els.stepDesc.textContent = step.desc;
-
-          announce(`Starting in ${PREP_SECONDS} seconds: ${step.name}.`);
-        } else {
-          els.phaseLabel.textContent = `Step ${stepIndex + 1} of ${routine.length}`;
-
-          els.stepName.textContent = step.name;
-
-          els.stepDesc.textContent = step.desc;
-
-          announce(`Now: ${step.name}.`);
-        }
-
+        renderStepText();
         updateDots();
-
-        renderTick();
       });
-
+      renderTick();
+      updateCue(true);
       startTimer();
     }
 
     function startTimer() {
       clearInterval(timerId);
-
       timerId = setInterval(() => {
         if (isPaused) return;
-
         timeLeft -= 1;
-
         if (timeLeft <= 0) {
           clearInterval(timerId);
-
           advance();
         } else {
           renderTick();
+          updateCue(true);
         }
       }, 1000);
     }
@@ -717,78 +1587,140 @@
         beginPhase("active");
       } else {
         stepIndex += 1;
-
-        if (stepIndex >= routine.length) {
-          finishSession();
-        } else {
-          beginPhase("prep");
-        }
+        if (stepIndex >= routine.length) finishSession();
+        else beginPhase("prep");
       }
     }
 
-    async function startSession() {
+    function setPaused(value) {
+      isPaused = value;
+      els.pauseBtn.textContent = isPaused ? t("resume") : t("pause");
+      if (isPaused) stopSpeech();
+    }
+
+    function startSession() {
+      ensureAudio();
       stepIndex = 0;
-
-      isPaused = false;
-
-      els.pauseBtn.textContent = "Pause";
-
+      inSession = true;
+      setPaused(false);
+      buildDots();
       showScreen("session");
-
       enableCamera();
-
+      requestWakeLock();
       beginPhase("prep");
     }
 
-    function finishSession() {
+    function stopSession() {
       clearInterval(timerId);
-
-      showScreen("complete");
-
-      announce("Routine complete.");
+      inSession = false;
+      stopSpeech();
+      stopCamera();
+      releaseWakeLock();
     }
 
-    function togglePause() {
-      isPaused = !isPaused;
+    function finishSession() {
+      stopSession();
+      recordSession(true);
+      sounds.finish();
+      speak(t("announce.done"));
+      announce(t("announce.done"));
+      renderComplete();
+      showScreen("complete");
+    }
 
-      els.pauseBtn.textContent = isPaused ? "Resume" : "Pause";
+    function endSession() {
+      stopSession();
+      recordSession(false);
+      goHome();
+    }
+
+    function goHome() {
+      routine = buildRoutine(settings.length);
+      renderIntro();
+      showScreen("intro");
     }
 
     function skipPhase() {
       clearInterval(timerId);
-
+      stopSpeech();
+      setPaused(false);
       advance();
     }
 
-    async function enableCamera() {
-      if (cameraStream) return;
-
-      try {
-        cameraStream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-        });
-
-        els.mirror.srcObject = cameraStream;
-
-        els.mirror.hidden = false;
-
-        els.mirrorNote.hidden = true;
-      } catch (err) {
-        els.mirror.hidden = true;
-
-        els.mirrorNote.hidden = false;
+    function prevPhase() {
+      clearInterval(timerId);
+      stopSpeech();
+      setPaused(false);
+      const elapsed = phaseDuration - timeLeft;
+      if (phase === "active" && elapsed > 3) {
+        beginPhase("prep"); // restart current exercise
+      } else if (stepIndex > 0) {
+        stepIndex -= 1;
+        beginPhase("prep");
+      } else {
+        beginPhase("prep");
       }
     }
 
-    buildDots();
+    /* ------------------------------------------------------------------ */
+    /* Wiring                                                              */
+    /* ------------------------------------------------------------------ */
+    document.querySelectorAll(".lang-switch button").forEach((b) =>
+      b.addEventListener("click", () => {
+        settings.lang = b.dataset.lang;
+        store.set("lang", settings.lang);
+        applyLanguage();
+      })
+    );
+
+    els.lengthPicker.querySelectorAll("button").forEach((b) =>
+      b.addEventListener("click", () => {
+        settings.length = b.dataset.length;
+        store.set("length", settings.length);
+        routine = buildRoutine(settings.length);
+        renderIntro();
+      })
+    );
+
+    els.soundToggle.addEventListener("change", () => {
+      settings.sound = els.soundToggle.checked;
+      store.set("sound", settings.sound);
+    });
+
+    els.voiceToggle.addEventListener("change", () => {
+      settings.voice = els.voiceToggle.checked;
+      store.set("voice", settings.voice);
+      if (!settings.voice) stopSpeech();
+    });
+
+    els.shuffleBtn.addEventListener("click", () => {
+      routine = buildRoutine(settings.length);
+      renderIntro();
+    });
+
+    els.resetHistoryBtn.addEventListener("click", () => {
+      if (confirm(t("history.confirm"))) {
+        store.set("history", []);
+        renderIntro();
+      }
+    });
 
     els.beginBtn.addEventListener("click", startSession);
-
-    els.restartBtn.addEventListener("click", startSession);
-
-    els.pauseBtn.addEventListener("click", togglePause);
-
+    els.restartBtn.addEventListener("click", () => {
+      routine = buildRoutine(settings.length);
+      startSession();
+    });
+    els.homeBtn.addEventListener("click", goHome);
+    els.pauseBtn.addEventListener("click", () => setPaused(!isPaused));
     els.skipBtn.addEventListener("click", skipPhase);
+    els.prevBtn.addEventListener("click", prevPhase);
+    els.endBtn.addEventListener("click", endSession);
+
+    // Some browsers load speech voices asynchronously.
+    if ("speechSynthesis" in window) speechSynthesis.getVoices();
+
+    routine = buildRoutine(settings.length);
+    applyLanguage();
   </script>
 </body>
 
