@@ -476,6 +476,104 @@
       color: #c98a3a;
     }
 
+    /* symmetry meter */
+    .meter {
+      background: #f2f8f5;
+      border: 1px solid #dce9e3;
+      border-radius: 14px;
+      padding: 10px 12px;
+      text-align: left;
+      font-size: 0.8rem;
+      color: #3d534a;
+    }
+
+    .meter[hidden] {
+      display: none;
+    }
+
+    .meter-row {
+      display: grid;
+      grid-template-columns: 7.5em 1fr;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .meter-bar {
+      height: 10px;
+      background: #dce9e3;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .meter-bar span {
+      display: block;
+      height: 100%;
+      width: 0;
+      background: #2e6b5e;
+      border-radius: 999px;
+      transition: width 0.12s linear;
+    }
+
+    .meter-row.is-affected .meter-bar span {
+      background: #c98a3a;
+    }
+
+    .meter-row.is-affected .meter-side {
+      font-weight: 600;
+      color: #8a5a1c;
+    }
+
+    .meter-foot {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .meter-foot strong {
+      color: #0f1e19;
+    }
+
+    .setting-note {
+      font-size: 0.76rem;
+      color: #5b6d66;
+      line-height: 1.4;
+      margin-top: 6px;
+    }
+
+    .toggles + .toggles {
+      margin-top: 8px;
+    }
+
+    .results {
+      list-style: none;
+      text-align: left;
+      background: #f9fbfa;
+      border: 1px solid #e6efea;
+      border-radius: 14px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      font-size: 0.84rem;
+    }
+
+    .results li {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 3px 0;
+    }
+
+    .results li.total {
+      border-top: 1px solid #e6efea;
+      margin-top: 4px;
+      padding-top: 7px;
+      font-weight: 600;
+    }
+
+    .results[hidden] {
+      display: none;
+    }
+
     .dots {
       display: flex;
       justify-content: center;
@@ -661,6 +759,18 @@
             <label class="toggle"><input type="checkbox" id="soundToggle" /> <span data-i18n="toggle.sound"></span></label>
             <label class="toggle"><input type="checkbox" id="voiceToggle" /> <span data-i18n="toggle.voice"></span></label>
           </div>
+          <div class="toggles">
+            <label class="toggle"><input type="checkbox" id="meterToggle" /> <span data-i18n="toggle.meter"></span></label>
+          </div>
+        </div>
+
+        <div class="setting" id="sideSetting" hidden>
+          <span class="setting-label" data-i18n="side.label"></span>
+          <div class="segmented" id="sidePicker" role="group">
+            <button type="button" data-side="left" data-i18n="side.left"></button>
+            <button type="button" data-side="right" data-i18n="side.right"></button>
+          </div>
+          <p class="setting-note" data-i18n="meter.note"></p>
         </div>
 
         <div class="preview">
@@ -700,6 +810,21 @@
 
         <p class="cue-label" id="cueLabel"></p>
 
+        <div class="meter" id="meter" hidden>
+          <div class="meter-row" data-side="left">
+            <span class="meter-side"></span>
+            <div class="meter-bar"><span></span></div>
+          </div>
+          <div class="meter-row" data-side="right">
+            <span class="meter-side"></span>
+            <div class="meter-bar"><span></span></div>
+          </div>
+          <div class="meter-foot">
+            <span id="meterStatus"></span>
+            <strong id="meterScore"></strong>
+          </div>
+        </div>
+
         <p class="step-desc" id="stepDesc"></p>
 
         <div class="dots" id="dots"></div>
@@ -733,6 +858,8 @@
         <p id="completeMsg"></p>
 
         <div class="stats" id="completeStats"></div>
+
+        <ul class="results" id="symmetryResults" hidden></ul>
 
         <button class="btn" id="restartBtn" data-i18n="complete.restart"></button>
         <button type="button" class="btn-link" id="homeBtn" data-i18n="complete.home"></button>
@@ -814,6 +941,24 @@
         "stats.day": "1 Tag",
         "history.reset": "Verlauf zurücksetzen",
         "history.confirm": "Den gesamten Übungsverlauf löschen?",
+        "toggle.meter": "Symmetrie messen (Kamera)",
+        "side.label": "Betroffene Seite",
+        "side.left": "Links",
+        "side.right": "Rechts",
+        "meter.note":
+          "Die Kamera misst, wie stark sich linke und rechte Gesichtshälfte bewegen. Die Auswertung läuft nur auf deinem Gerät – es wird kein Video gesendet. Beim ersten Mal werden ca. 20 MB geladen.",
+        "meter.left": "Links",
+        "meter.right": "Rechts",
+        "meter.affected": "betroffen",
+        "meter.loading": "Lade Gesichtserkennung …",
+        "meter.error": "Gesichtserkennung nicht verfügbar",
+        "meter.noFace": "Gesicht nicht erkannt",
+        "meter.calibrating": "Entspannt bleiben – Ruhewert wird gemessen",
+        "meter.measuring": "Messung läuft",
+        "meter.score": "Symmetrie {n} %",
+        "results.total": "Durchschnitt",
+        "stats.symmetry": "Symmetrie",
+        "stats.symChange": "{d} ggü. Vorwoche",
       },
       en: {
         speechLang: "en-US",
@@ -879,6 +1024,24 @@
         "stats.day": "1 day",
         "history.reset": "Reset history",
         "history.confirm": "Delete your whole exercise history?",
+        "toggle.meter": "Measure symmetry (camera)",
+        "side.label": "Affected side",
+        "side.left": "Left",
+        "side.right": "Right",
+        "meter.note":
+          "The camera measures how much the left and right halves of your face move. Everything is processed on your device – no video is sent anywhere. About 20 MB are downloaded the first time.",
+        "meter.left": "Left",
+        "meter.right": "Right",
+        "meter.affected": "affected",
+        "meter.loading": "Loading face tracking …",
+        "meter.error": "Face tracking unavailable",
+        "meter.noFace": "Face not detected",
+        "meter.calibrating": "Stay relaxed – measuring resting face",
+        "meter.measuring": "Measuring",
+        "meter.score": "Symmetry {n}%",
+        "results.total": "Average",
+        "stats.symmetry": "Symmetry",
+        "stats.symChange": "{d} vs. last week",
       },
     };
 
@@ -908,11 +1071,11 @@
     };
 
     // group order = top to bottom of the face; routines are sorted by it.
-    const GROUPS = ["forehead", "eyes", "nose", "cheeks", "mouth", "chin"];
+    const GROUPS = ["forehead", "eyes", "nose", "cheeks", "mouth", "chin", "neck"];
 
     const POOL = [
       {
-        id: "eyebrowRaise", group: "forehead", reps: 10, hold: 3,
+        id: "eyebrowRaise", group: "forehead", reps: 10, hold: 3, meter: ["browOuterUp"],
         name: { de: "Augenbrauen heben", en: "Eyebrow Raise" },
         desc: {
           de: "Hebe beide Augenbrauen langsam, als wärst du überrascht. Halten, dann entspannen. Die schwächere Seite bei Bedarf mit den Fingerspitzen unterstützen.",
@@ -920,7 +1083,7 @@
         },
       },
       {
-        id: "frown", group: "forehead", reps: 10, hold: 3,
+        id: "frown", group: "forehead", reps: 10, hold: 3, meter: ["browDown"],
         name: { de: "Stirnrunzeln", en: "Gentle Frown" },
         desc: {
           de: "Ziehe die Augenbrauen sanft zusammen und nach unten, wie beim Stirnrunzeln. Locker halten, dann entspannen.",
@@ -928,7 +1091,7 @@
         },
       },
       {
-        id: "blinkHold", group: "eyes", reps: 10, hold: 3,
+        id: "blinkHold", group: "eyes", reps: 10, hold: 3, meter: ["eyeBlink"],
         name: { de: "Augen schließen", en: "Blink Hold" },
         desc: {
           de: "Schließe sanft beide Augen, halte sie geschlossen und öffne sie wieder. Achte auf eine gleichmäßige Bewegung.",
@@ -936,7 +1099,7 @@
         },
       },
       {
-        id: "halfSquint", group: "eyes", reps: 10, hold: 2,
+        id: "halfSquint", group: "eyes", reps: 10, hold: 2, meter: ["eyeSquint"],
         name: { de: "Halbes Zusammenkneifen", en: "Half Squints" },
         desc: {
           de: "Kneife die Augen halb zusammen und halte kurz. Die Stirn bleibt dabei entspannt.",
@@ -944,7 +1107,7 @@
         },
       },
       {
-        id: "slowClose", group: "eyes", reps: 6, hold: 5,
+        id: "slowClose", group: "eyes", reps: 6, hold: 5, meter: ["eyeBlink"],
         name: { de: "Langsamer Lidschluss", en: "Slow Eye Closure" },
         desc: {
           de: "Schließe die Augen so langsam wie möglich, halte sie sanft geschlossen und öffne sie langsam wieder. Nicht zukneifen.",
@@ -952,7 +1115,7 @@
         },
       },
       {
-        id: "noseWrinkle", group: "nose", reps: 10, hold: 3,
+        id: "noseWrinkle", group: "nose", reps: 10, hold: 3, meter: ["noseSneer"],
         name: { de: "Nase rümpfen", en: "Nose Wrinkle" },
         desc: {
           de: "Rümpfe die Nase, als würdest du etwas Unangenehmes riechen. Versuche, beide Seiten zu bewegen. Die schwächere Seite bei Bedarf mit den Fingern unterstützen.",
@@ -984,7 +1147,7 @@
         },
       },
       {
-        id: "upperLipLift", group: "mouth", reps: 10, hold: 3,
+        id: "upperLipLift", group: "mouth", reps: 10, hold: 3, meter: ["mouthUpperUp"],
         name: { de: "Oberlippe heben", en: "Upper Lip Lift" },
         desc: {
           de: "Hebe die Oberlippe wie beim Zähnefletschen. Halten, dann entspannen. Achte auf Symmetrie.",
@@ -992,7 +1155,7 @@
         },
       },
       {
-        id: "closedSmile", group: "mouth", reps: 6, hold: 5,
+        id: "closedSmile", group: "mouth", reps: 6, hold: 5, meter: ["mouthSmile"],
         name: { de: "Lächeln halten", en: "Smile Hold" },
         desc: {
           de: "Lächle sanft mit geschlossenen Lippen und halte. Nutze Spiegel und Finger, um die Bewegung gleichmäßig zu führen.",
@@ -1000,7 +1163,7 @@
         },
       },
       {
-        id: "openSmile", group: "mouth", reps: 6, hold: 5,
+        id: "openSmile", group: "mouth", reps: 6, hold: 5, meter: ["mouthSmile"],
         name: { de: "Offenes Lächeln", en: "Open Smile" },
         desc: {
           de: "Lächle so, dass die oberen Zähne sichtbar werden. Halten, dann entspannen. Beide Mundwinkel sollen sich gleichmäßig heben.",
@@ -1008,7 +1171,7 @@
         },
       },
       {
-        id: "eoSounds", group: "mouth", reps: 10, hold: 3, cues: ["cue.e", "cue.o"],
+        id: "eoSounds", group: "mouth", reps: 10, hold: 3, cues: ["cue.e", "cue.o"], meter: ["mouthSmile"],
         name: { de: "„I“ und „U“ sagen", en: "‘E’ and ‘O’ Sounds" },
         desc: {
           de: "Sage abwechselnd langsam „Iiii“ (Lippen breit) und „Uuuu“ (Lippen rund). Beobachte die Mundwinkel im Spiegel.",
@@ -1032,7 +1195,7 @@
         },
       },
       {
-        id: "lipPress", group: "mouth", reps: 10, hold: 3,
+        id: "lipPress", group: "mouth", reps: 10, hold: 3, meter: ["mouthPress"],
         name: { de: "Lippen aufeinanderpressen", en: "Lip Press" },
         desc: {
           de: "Presse die Lippen sanft aufeinander, halten, dann entspannen. Die Zähne dabei nicht zusammenbeißen.",
@@ -1048,7 +1211,7 @@
         },
       },
       {
-        id: "lowerLipDown", group: "chin", reps: 10, hold: 3,
+        id: "lowerLipDown", group: "chin", reps: 10, hold: 3, meter: ["mouthLowerDown"],
         name: { de: "Unterlippe senken", en: "Lower Lip Down" },
         desc: {
           de: "Ziehe die Unterlippe nach unten, sodass die unteren Zähne sichtbar werden. Halten, dann entspannen.",
@@ -1061,6 +1224,30 @@
         desc: {
           de: "Schiebe die Unterlippe nach oben und vorne, sodass sich das Kinn kräuselt (Schmollmund). Halten, dann entspannen.",
           en: "Push your lower lip up and out so your chin wrinkles (a pouting face). Hold, then relax.",
+        },
+      },
+      {
+        id: "mouthCornersDown", group: "neck", reps: 10, hold: 3, meter: ["mouthFrown", "mouthStretch"],
+        name: { de: "Mundwinkel senken", en: "Mouth Corners Down" },
+        desc: {
+          de: "Ziehe beide Mundwinkel nach unten, wie bei einem traurigen Gesicht. Halten, dann entspannen. Achte im Spiegel darauf, dass beide Seiten gleich weit gehen.",
+          en: "Pull both corners of your mouth down, like a sad face. Hold, then relax. Check in the mirror that both sides move equally.",
+        },
+      },
+      {
+        id: "platysmaTense", group: "neck", reps: 6, hold: 5, meter: ["mouthFrown", "mouthStretch"],
+        name: { de: "Hals anspannen (Platysma)", en: "Neck Tense (Platysma)" },
+        desc: {
+          de: "Ziehe die Mundwinkel nach unten und außen, bis sich vorne am Hals die Muskelstränge abzeichnen. Halten, dann ganz entspannen. Bei Mitbewegungen (Synkinesien) oder Halssträngen nur nach Rücksprache mit deiner Therapeutin / deinem Therapeuten – dann eher die Dehnung üben.",
+          en: "Pull the corners of your mouth down and out until the cords at the front of your neck show. Hold, then relax completely. If you have synkinesis or visible neck bands, only do this after asking your therapist – prefer the neck stretch instead.",
+        },
+      },
+      {
+        id: "platysmaStretch", group: "neck", reps: 4, hold: 10,
+        name: { de: "Hals dehnen (Platysma)", en: "Neck Stretch (Platysma)" },
+        desc: {
+          de: "Neige den Kopf leicht nach hinten, schau zur Decke und schiebe den Unterkiefer sanft nach vorne, bis du vorne am Hals eine Dehnung spürst. Halten, dann langsam zurück.",
+          en: "Tilt your head slightly back, look up at the ceiling and gently push your lower jaw forward until you feel a stretch at the front of your neck. Hold, then slowly return.",
         },
       },
     ];
@@ -1101,8 +1288,11 @@
       length: store.get("length", "standard"),
       sound: store.get("sound", true),
       voice: store.get("voice", false),
+      meter: store.get("meter", false),
+      side: store.get("side", "right"),
     };
     if (!I18N[settings.lang]) settings.lang = "en";
+    if (settings.side !== "left" && settings.side !== "right") settings.side = "right";
     if (!LENGTHS[settings.length]) settings.length = "standard";
 
     function t(key, vars = {}) {
@@ -1140,6 +1330,13 @@
       lengthPicker: $("lengthPicker"),
       soundToggle: $("soundToggle"),
       voiceToggle: $("voiceToggle"),
+      meterToggle: $("meterToggle"),
+      sideSetting: $("sideSetting"),
+      sidePicker: $("sidePicker"),
+      meter: $("meter"),
+      meterStatus: $("meterStatus"),
+      meterScore: $("meterScore"),
+      symmetryResults: $("symmetryResults"),
       previewList: $("previewList"),
       shuffleBtn: $("shuffleBtn"),
       resetHistoryBtn: $("resetHistoryBtn"),
@@ -1242,7 +1439,13 @@
 
     function recordSession(completed) {
       const history = getHistory();
-      history.push({ date: dayKey(), ts: Date.now(), length: settings.length, completed });
+      const entry = { date: dayKey(), ts: Date.now(), length: settings.length, completed };
+      const symmetry = completed ? sessionSymmetry() : null;
+      if (symmetry != null) {
+        entry.symmetry = symmetry;
+        entry.perExercise = { ...sessionResults };
+      }
+      history.push(entry);
       store.set("history", history.slice(-1000));
     }
 
@@ -1277,6 +1480,24 @@
         </div>
         <div class="stat">${t("stats.streak")}
           <strong>🔥 ${streakText}</strong>
+        </div>${symmetryTile()}`;
+    }
+
+    // Latest measured symmetry, compared with the measurement about a week before it.
+    function symmetryTile() {
+      const measured = getHistory().filter((s) => typeof s.symmetry === "number");
+      if (!measured.length) return "";
+      const latest = measured[measured.length - 1];
+      const weekBefore = [...measured].reverse().find((s) => s.ts <= latest.ts - 6 * 24 * 3600 * 1000);
+      let change = "";
+      if (weekBefore) {
+        const d = latest.symmetry - weekBefore.symmetry;
+        const arrow = d > 0 ? "↑" : d < 0 ? "↓" : "→";
+        change = `<span>${arrow} ${t("stats.symChange", { d: (d > 0 ? "+" : "") + d })}</span>`;
+      }
+      return `
+        <div class="stat">${t("stats.symmetry")}
+          <strong>${latest.symmetry} %</strong>${change}
         </div>`;
     }
 
@@ -1432,6 +1653,197 @@
     }
 
     /* ------------------------------------------------------------------ */
+    /* Symmetry meter (camera biofeedback)                                 */
+    /* ------------------------------------------------------------------ */
+    const MEDIAPIPE_BASE = "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.2.3";
+    const FACE_MODEL_URL =
+      "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task";
+    // MediaPipe names blendshapes like ARKit: "...Left" = the person's own left side.
+    // If a wink test shows the bars swapped, set this to true.
+    const SWAP_SIDES = false;
+    const MIN_ACTIVITY = 0.1; // ignore reps where neither side moved noticeably
+    const SAMPLE_INTERVAL_MS = 66; // ~15 measurements per second
+
+    // An activity source reports per-side muscle activity (0..1) for a list of
+    // signal names. Today the camera is the only source; an EMG device (see
+    // docs/biofeedback.md) can implement the same load / start / stop / read API.
+    const cameraSource = {
+      status: "off", // off | loading | ready | error
+      landmarker: null,
+      scores: null, // latest blendshape scores by name; null when no face is visible
+      rafId: null,
+      lastRun: 0,
+      onSample: null,
+
+      async load() {
+        if (this.landmarker || this.status === "loading") return;
+        this.status = "loading";
+        try {
+          const vision = await import(`${MEDIAPIPE_BASE}/vision_bundle.mjs`);
+          const fileset = await vision.FilesetResolver.forVisionTasks(`${MEDIAPIPE_BASE}/wasm`);
+          const create = (delegate) =>
+            vision.FaceLandmarker.createFromOptions(fileset, {
+              baseOptions: { modelAssetPath: FACE_MODEL_URL, delegate },
+              runningMode: "VIDEO",
+              numFaces: 1,
+              outputFaceBlendshapes: true,
+            });
+          try {
+            this.landmarker = await create("GPU");
+          } catch {
+            this.landmarker = await create("CPU");
+          }
+          this.status = "ready";
+        } catch (err) {
+          console.warn("Face tracking unavailable:", err);
+          this.status = "error";
+        }
+      },
+
+      start(onSample) {
+        this.onSample = onSample;
+        if (this.rafId) return;
+        const loop = (now) => {
+          this.rafId = requestAnimationFrame(loop);
+          if (now - this.lastRun < SAMPLE_INTERVAL_MS) return;
+          this.lastRun = now;
+          const video = els.mirror;
+          if (this.status === "ready" && cameraStream && video.readyState >= 2) {
+            try {
+              const result = this.landmarker.detectForVideo(video, now);
+              const cats = result.faceBlendshapes?.[0]?.categories;
+              this.scores = cats ? Object.fromEntries(cats.map((c) => [c.categoryName, c.score])) : null;
+            } catch {
+              this.scores = null;
+            }
+          }
+          this.onSample?.();
+        };
+        this.rafId = requestAnimationFrame(loop);
+      },
+
+      stop() {
+        cancelAnimationFrame(this.rafId);
+        this.rafId = null;
+        this.scores = null;
+      },
+
+      read(names) {
+        if (!this.scores) return null;
+        const side = (suffix) => Math.max(...names.map((n) => this.scores[n + suffix] ?? 0));
+        const left = side("Left");
+        const right = side("Right");
+        return SWAP_SIDES ? { left: right, right: left } : { left, right };
+      },
+    };
+
+    const activitySource = cameraSource;
+
+    let measure = null; // measurement state of the current step
+    let sessionResults = {}; // exercise id -> symmetry %
+
+    const mean = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
+
+    function median(arr) {
+      if (!arr.length) return 0;
+      const sorted = [...arr].sort((a, b) => a - b);
+      return sorted[Math.floor(sorted.length / 2)];
+    }
+
+    function resetMeasure() {
+      measure = { rest: { left: [], right: [] }, base: null, peak: null, repKey: null, reps: [], max: 0.2, lastScore: null };
+    }
+
+    function finishRep() {
+      if (!measure) return;
+      if (measure.peak) {
+        const { left, right } = measure.peak;
+        const high = Math.max(left, right);
+        if (high >= MIN_ACTIVITY) {
+          measure.lastScore = Math.round((Math.min(left, right) / high) * 100);
+          measure.reps.push(measure.lastScore);
+        }
+      }
+      measure.peak = null;
+    }
+
+    function finishStepMeasure() {
+      const step = routine[stepIndex];
+      if (!measure || !step?.meter) return;
+      finishRep();
+      if (measure.reps.length) sessionResults[step.id] = Math.round(mean(measure.reps));
+    }
+
+    function renderMeterLabels() {
+      els.meter.querySelectorAll(".meter-row").forEach((row) => {
+        const affected = row.dataset.side === settings.side;
+        row.classList.toggle("is-affected", affected);
+        row.querySelector(".meter-side").textContent =
+          t(`meter.${row.dataset.side}`) + (affected ? ` · ${t("meter.affected")}` : "");
+      });
+    }
+
+    function setBars(activity) {
+      els.meter.querySelectorAll(".meter-row").forEach((row) => {
+        const value = activity[row.dataset.side] / (measure?.max || 1);
+        row.querySelector(".meter-bar span").style.width = `${Math.min(100, value * 100)}%`;
+      });
+    }
+
+    function onMeterSample() {
+      const step = routine[stepIndex];
+      const show = Boolean(settings.meter && inSession && cameraStream && step?.meter);
+      els.meter.hidden = !show;
+      if (!show) return;
+
+      let raw = null;
+      let status;
+      if (activitySource.status === "loading") status = t("meter.loading");
+      else if (activitySource.status === "error") status = t("meter.error");
+      else {
+        raw = activitySource.read(step.meter);
+        status = !raw ? t("meter.noFace") : phase === "prep" ? t("meter.calibrating") : t("meter.measuring");
+      }
+
+      let activity = { left: 0, right: 0 };
+      if (raw && measure && !isPaused) {
+        if (phase === "prep") {
+          // Face at rest before the exercise: collect the baseline.
+          measure.rest.left.push(raw.left);
+          measure.rest.right.push(raw.right);
+        } else {
+          if (!measure.base) measure.base = { left: median(measure.rest.left), right: median(measure.rest.right) };
+          activity = {
+            left: Math.max(0, raw.left - measure.base.left),
+            right: Math.max(0, raw.right - measure.base.right),
+          };
+          measure.max = Math.max(measure.max, activity.left, activity.right);
+
+          const cue = cueState(step, phaseDuration - timeLeft);
+          const repKey = cue.hold ? cue.key : null;
+          if (repKey !== measure.repKey) {
+            finishRep();
+            measure.repKey = repKey;
+          }
+          if (repKey) {
+            measure.peak ??= { left: 0, right: 0 };
+            measure.peak.left = Math.max(measure.peak.left, activity.left);
+            measure.peak.right = Math.max(measure.peak.right, activity.right);
+          }
+        }
+      }
+
+      setBars(activity);
+      els.meterStatus.textContent = status;
+      els.meterScore.textContent = measure?.lastScore != null ? t("meter.score", { n: measure.lastScore }) : "";
+    }
+
+    function sessionSymmetry() {
+      const values = Object.values(sessionResults);
+      return values.length ? Math.round(mean(values)) : null;
+    }
+
+    /* ------------------------------------------------------------------ */
     /* Rendering                                                           */
     /* ------------------------------------------------------------------ */
     function showScreen(name) {
@@ -1451,6 +1863,7 @@
       els.skipBtn.title = t("skip");
       els.pauseBtn.textContent = isPaused ? t("resume") : t("pause");
 
+      renderMeterLabels();
       renderIntro();
       if (inSession) {
         renderStepText();
@@ -1473,12 +1886,33 @@
       );
       els.soundToggle.checked = settings.sound;
       els.voiceToggle.checked = settings.voice;
+      els.meterToggle.checked = settings.meter;
+      els.sideSetting.hidden = !settings.meter;
+      els.sidePicker.querySelectorAll("button").forEach((b) =>
+        b.setAttribute("aria-pressed", String(b.dataset.side === settings.side))
+      );
       renderStats(els.introStats);
     }
 
     function renderComplete() {
       els.completeMsg.textContent = todayCount() >= DAILY_GOAL ? t("complete.goalReached") : t("complete.oneMore");
       renderStats(els.completeStats);
+
+      const total = sessionSymmetry();
+      els.symmetryResults.hidden = total == null;
+      els.symmetryResults.innerHTML = "";
+      if (total == null) return;
+      const rows = routine
+        .filter((step) => step.id in sessionResults)
+        .map((step) => [step.name[settings.lang] ?? step.name.en, sessionResults[step.id]]);
+      rows.push([t("results.total"), total]);
+      rows.forEach(([label, value], i) => {
+        const li = document.createElement("li");
+        if (i === rows.length - 1) li.className = "total";
+        li.append(Object.assign(document.createElement("span"), { textContent: label }));
+        li.append(Object.assign(document.createElement("span"), { textContent: `${value} %` }));
+        els.symmetryResults.appendChild(li);
+      });
     }
 
     function buildDots() {
@@ -1546,6 +1980,7 @@
       phaseDuration = phase === "prep" ? PREP_SECONDS : step.duration;
       timeLeft = phaseDuration;
       lastCueKey = null;
+      if (phase === "prep") resetMeasure();
       els.ringWrap.classList.toggle("is-prep", phase === "prep");
       els.prevBtn.disabled = stepIndex === 0 && phase === "prep";
 
@@ -1586,6 +2021,7 @@
       if (phase === "prep") {
         beginPhase("active");
       } else {
+        finishStepMeasure();
         stepIndex += 1;
         if (stepIndex >= routine.length) finishSession();
         else beginPhase("prep");
@@ -1602,11 +2038,16 @@
       ensureAudio();
       stepIndex = 0;
       inSession = true;
+      sessionResults = {};
       setPaused(false);
       buildDots();
       showScreen("session");
       enableCamera();
       requestWakeLock();
+      if (settings.meter) {
+        activitySource.load();
+        activitySource.start(onMeterSample);
+      }
       beginPhase("prep");
     }
 
@@ -1616,6 +2057,8 @@
       stopSpeech();
       stopCamera();
       releaseWakeLock();
+      activitySource.stop();
+      els.meter.hidden = true;
     }
 
     function finishSession() {
@@ -1686,6 +2129,21 @@
       settings.sound = els.soundToggle.checked;
       store.set("sound", settings.sound);
     });
+
+    els.meterToggle.addEventListener("change", () => {
+      settings.meter = els.meterToggle.checked;
+      store.set("meter", settings.meter);
+      renderIntro();
+    });
+
+    els.sidePicker.querySelectorAll("button").forEach((b) =>
+      b.addEventListener("click", () => {
+        settings.side = b.dataset.side;
+        store.set("side", settings.side);
+        renderMeterLabels();
+        renderIntro();
+      })
+    );
 
     els.voiceToggle.addEventListener("change", () => {
       settings.voice = els.voiceToggle.checked;
