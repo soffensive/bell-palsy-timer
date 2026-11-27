@@ -31,7 +31,8 @@ Guided facial exercise timer for Bell's palsy (facial nerve palsy) recovery. It 
    - The resting baseline is recorded during the 6 s prep. The per-side peak is taken during each hold. Rep symmetry is `min / max`.
    - Co-movement: a `watch` signal on the affected side rising ≥ `COACT_THRESHOLD` during a hold.
    - `SWAP_SIDES = false` has been verified on a real device (a left wink moves the "Left" bar).
-7. **Session flow**: `startSession → beginPhase("prep" | "active") → advance → finishSession`. `stopSession` clears the timer, speech, camera, wake lock and meter.
+7. **Session layout**: the `.stage` holds the video, the ring, the cue and the meter. When the camera works, `#sessionCard` gets `.has-camera`. The mirror then fills about 58% of the screen height, with the timer in the top-right corner and the cue pill plus a compact meter strip at the bottom. Without a camera, the large ring layout is used. The language switch is hidden during a session (`body[data-screen]`). The whole session must fit on a phone screen (about 412×915 CSS px) without scrolling.
+8. **Session flow**: `startSession → beginPhase("prep" | "active") → advance → finishSession`. `stopSession` clears the timer, speech, camera, wake lock and meter.
 
 ## Conventions
 
@@ -47,7 +48,7 @@ Guided facial exercise timer for Bell's palsy (facial nerve palsy) recovery. It 
 - **Browser:** serve with `python3 -m http.server` and run `chromium --headless=new --use-fake-device-for-media-stream --use-fake-ui-for-media-stream --enable-logging=stderr`. Log state with `console.log` from an injected script.
   - Use **real time**, not `--virtual-time-budget`: virtual time barely runs `requestAnimationFrame`, and the fake video never starts.
   - The fake camera shows no face, so expect "Face not detected".
-  - `--screenshot` captures the page before scripts that run later.
+  - `--screenshot` captures the page before scripts that run later. For mid-session or phone-sized screenshots, launch Chromium with `--remote-debugging-port` and drive it from Node 24, which has a built-in `WebSocket`. Call `Emulation.setDeviceMetricsOverride({ width: 412, height: 915, mobile: true })`, click and skip with `Runtime.evaluate`, then `Page.captureScreenshot`.
   - Stop background servers by PID. `pkill -f <pattern>` matches and kills its own shell.
 - Real face tracking, voice and wake lock can only be checked on a real device.
 

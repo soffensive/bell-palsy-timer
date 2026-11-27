@@ -622,19 +622,146 @@
       flex: 1 1 0;
     }
 
-    video#mirror {
-      width: 100%;
-      aspect-ratio: 4/3;
-      border-radius: 14px;
-      transform: scaleX(-1);
-      background: #eef5f1;
-      object-fit: cover;
-      display: block;
-      margin-top: 6px;
+    /* ---- camera stage: the mirror is the main element when a camera is on ---- */
+    .stage {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
-    video#mirror[hidden] {
+    .stage-overlay {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    video#mirror {
       display: none;
+    }
+
+    .has-camera .stage {
+      position: relative;
+      height: 58vh;
+      height: 58dvh;
+      min-height: 280px;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #0f1e19;
+      margin: 2px -4px 0;
+    }
+
+    .has-camera video#mirror {
+      display: block;
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scaleX(-1);
+    }
+
+    .has-camera .ring-wrap {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 92px;
+      height: 92px;
+      margin: 0;
+      padding: 4px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.88);
+      box-shadow: 0 6px 16px -8px rgba(0, 0, 0, 0.5);
+    }
+
+    .has-camera #countdown {
+      font-size: 1.4rem;
+    }
+
+    .has-camera .unit {
+      font-size: 0.56rem;
+    }
+
+    .has-camera .stage-overlay {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .has-camera .cue-label {
+      min-height: 0;
+      font-size: 1.3rem;
+      padding: 6px 18px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 6px 16px -8px rgba(0, 0, 0, 0.5);
+    }
+
+    .has-camera .cue-label:empty {
+      display: none;
+    }
+
+    /* compact meter strip so it doesn't cover the mouth:
+       [Left ▬▬▬] [Right · affected ▬▬▬] / status + score */
+    .has-camera .meter {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 12px;
+      row-gap: 4px;
+      padding: 7px 10px;
+      font-size: 0.74rem;
+      background: rgba(255, 255, 255, 0.85);
+      border: none;
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+    }
+
+    .has-camera .meter[hidden] {
+      display: none;
+    }
+
+    .has-camera .meter-row {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 3px;
+      margin: 0;
+    }
+
+    .has-camera .meter.no-bars .meter-row {
+      display: none;
+    }
+
+    .has-camera .meter-side {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .has-camera .meter-bar {
+      height: 8px;
+    }
+
+    .has-camera .meter-foot {
+      grid-column: 1 / -1;
+    }
+
+    /* keep the session screen compact: no language switch while exercising */
+    body[data-screen="session"] .topbar {
+      display: none;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 10px 8px;
+      }
+
+      .session-card {
+        padding: 14px 12px 12px;
+      }
     }
 
     .mirror-note {
@@ -804,37 +931,45 @@
 
     <!-- SESSION -->
     <section class="screen" id="screen-session">
-      <div class="card session-card">
+      <div class="card session-card" id="sessionCard">
         <p class="phase-label" id="phaseLabel"></p>
 
         <h2 class="step-name" id="stepName"></h2>
 
-        <div class="ring-wrap" id="ringWrap">
-          <svg viewBox="0 0 220 220">
-            <circle class="ring-track" cx="110" cy="110" r="94"></circle>
-            <circle class="ring-progress" id="ringProgress" cx="110" cy="110" r="94"></circle>
-          </svg>
+        <!-- With a camera, the stage shows the mirror image with the timer, cue
+             and meter on top of it. Without one, it shows the large ring. -->
+        <div class="stage">
+          <video id="mirror" autoplay playsinline muted hidden></video>
 
-          <div class="ring-center">
-            <span id="countdown"></span>
-            <span class="unit" id="countdownUnit"></span>
-          </div>
-        </div>
+          <div class="ring-wrap" id="ringWrap">
+            <svg viewBox="0 0 220 220">
+              <circle class="ring-track" cx="110" cy="110" r="94"></circle>
+              <circle class="ring-progress" id="ringProgress" cx="110" cy="110" r="94"></circle>
+            </svg>
 
-        <p class="cue-label" id="cueLabel"></p>
+            <div class="ring-center">
+              <span id="countdown"></span>
+              <span class="unit" id="countdownUnit"></span>
+            </div>
+          </div>
 
-        <div class="meter" id="meter" hidden>
-          <div class="meter-row" data-side="left">
-            <span class="meter-side"></span>
-            <div class="meter-bar"><span></span></div>
-          </div>
-          <div class="meter-row" data-side="right">
-            <span class="meter-side"></span>
-            <div class="meter-bar"><span></span></div>
-          </div>
-          <div class="meter-foot">
-            <span id="meterStatus"></span>
-            <strong id="meterScore"></strong>
+          <div class="stage-overlay">
+            <p class="cue-label" id="cueLabel"></p>
+
+            <div class="meter" id="meter" hidden>
+              <div class="meter-row" data-side="left">
+                <span class="meter-side"></span>
+                <div class="meter-bar"><span></span></div>
+              </div>
+              <div class="meter-row" data-side="right">
+                <span class="meter-side"></span>
+                <div class="meter-bar"><span></span></div>
+              </div>
+              <div class="meter-foot">
+                <span id="meterStatus"></span>
+                <strong id="meterScore"></strong>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -849,8 +984,6 @@
         </div>
 
         <button type="button" class="btn-link" id="endBtn" data-i18n="end"></button>
-
-        <video id="mirror" autoplay playsinline muted></video>
 
         <p class="mirror-note" id="mirrorNote" data-i18n="mirrorNote" hidden></p>
       </div>
@@ -1405,6 +1538,7 @@
       soundToggle: $("soundToggle"),
       voiceToggle: $("voiceToggle"),
       meterToggle: $("meterToggle"),
+      sessionCard: $("sessionCard"),
       synkinesisToggle: $("synkinesisToggle"),
       synkinesisNote: $("synkinesisNote"),
       sideSetting: $("sideSetting"),
@@ -1717,7 +1851,9 @@
     async function enableCamera() {
       if (cameraStream) return;
       try {
-        cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "user", width: { ideal: 720 }, height: { ideal: 960 } },
+        });
         if (!inSession) {
           stopCamera(); // session ended while the permission prompt was open
           return;
@@ -1725,9 +1861,11 @@
         els.mirror.srcObject = cameraStream;
         els.mirror.hidden = false;
         els.mirrorNote.hidden = true;
+        els.sessionCard.classList.add("has-camera");
       } catch {
         els.mirror.hidden = true;
         els.mirrorNote.hidden = false;
+        els.sessionCard.classList.remove("has-camera");
       }
     }
 
@@ -1735,6 +1873,8 @@
       if (cameraStream) cameraStream.getTracks().forEach((track) => track.stop());
       cameraStream = null;
       els.mirror.srcObject = null;
+      els.mirror.hidden = true;
+      els.sessionCard.classList.remove("has-camera");
     }
 
     /* ------------------------------------------------------------------ */
@@ -1976,6 +2116,7 @@
     /* ------------------------------------------------------------------ */
     function showScreen(name) {
       Object.entries(els.screens).forEach(([key, el]) => el.classList.toggle("is-active", key === name));
+      document.body.dataset.screen = name;
     }
 
     function applyLanguage() {
