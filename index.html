@@ -534,6 +534,15 @@
       color: #0f1e19;
     }
 
+    .meter.no-bars .meter-row {
+      display: none;
+    }
+
+    #meterStatus.is-warning {
+      color: #a1461f;
+      font-weight: 600;
+    }
+
     .setting-note {
       font-size: 0.76rem;
       color: #5b6d66;
@@ -762,6 +771,10 @@
           <div class="toggles">
             <label class="toggle"><input type="checkbox" id="meterToggle" /> <span data-i18n="toggle.meter"></span></label>
           </div>
+          <div class="toggles">
+            <label class="toggle"><input type="checkbox" id="synkinesisToggle" /> <span data-i18n="toggle.synkinesis"></span></label>
+          </div>
+          <p class="setting-note" id="synkinesisNote" data-i18n="synkinesis.note" hidden></p>
         </div>
 
         <div class="setting" id="sideSetting" hidden>
@@ -959,6 +972,13 @@
         "results.total": "Durchschnitt",
         "stats.symmetry": "Symmetrie",
         "stats.symChange": "{d} ggü. Vorwoche",
+        "toggle.synkinesis": "Synkinesen-Übungen",
+        "synkinesis.note":
+          "Für die spätere Phase, wenn sich Gesichtsteile ungewollt mitbewegen (z. B. das Auge beim Lächeln). Übe klein, langsam und entspannt. Mit der Symmetrie-Messung warnt die App bei Mitbewegung. „Hals anspannen“ wird dann ausgelassen.",
+        "cue.stretch": "Dehnen",
+        "cue.stroke": "Ausstreichen",
+        "meter.coact": "⚠ Mitbewegung – kleiner und langsamer",
+        "results.coact": "Mitbewegung {n}/{of}",
       },
       en: {
         speechLang: "en-US",
@@ -1042,6 +1062,13 @@
         "results.total": "Average",
         "stats.symmetry": "Symmetry",
         "stats.symChange": "{d} vs. last week",
+        "toggle.synkinesis": "Synkinesis exercises",
+        "synkinesis.note":
+          "For the later phase, when parts of the face move along unintentionally (e.g. the eye during a smile). Practise small, slow and relaxed. With symmetry measuring on, the app warns about co-movement. “Neck Tense” is left out.",
+        "cue.stretch": "Stretch",
+        "cue.stroke": "Stroke",
+        "meter.coact": "⚠ Co-movement – smaller and slower",
+        "results.coact": "co-movement {n}/{of}",
       },
     };
 
@@ -1171,7 +1198,7 @@
         },
       },
       {
-        id: "eoSounds", group: "mouth", reps: 10, hold: 3, cues: ["cue.e", "cue.o"], meter: ["mouthSmile"],
+        id: "eoSounds", group: "mouth", reps: 10, hold: 3, titleReps: true, cues: ["cue.e", "cue.o"], meter: ["mouthSmile"],
         name: { de: "„I“ und „U“ sagen", en: "‘E’ and ‘O’ Sounds" },
         desc: {
           de: "Sage abwechselnd langsam „Iiii“ (Lippen breit) und „Uuuu“ (Lippen rund). Beobachte die Mundwinkel im Spiegel.",
@@ -1203,7 +1230,7 @@
         },
       },
       {
-        id: "pbm", group: "mouth", reps: 9, hold: 2, cues: ["cue.p", "cue.b", "cue.m"],
+        id: "pbm", group: "mouth", reps: 9, hold: 2, titleReps: true, cues: ["cue.p", "cue.b", "cue.m"],
         name: { de: "P, B, M sprechen", en: "P, B, M Sounds" },
         desc: {
           de: "Sprich langsam und deutlich „P“, „B“ und „M“. Spüre, wie sich die Lippen gleichmäßig schließen.",
@@ -1235,7 +1262,7 @@
         },
       },
       {
-        id: "platysmaTense", group: "neck", reps: 6, hold: 5, meter: ["mouthFrown", "mouthStretch"],
+        id: "platysmaTense", group: "neck", reps: 6, hold: 5, avoidWithSynkinesis: true, meter: ["mouthFrown", "mouthStretch"],
         name: { de: "Hals anspannen (Platysma)", en: "Neck Tense (Platysma)" },
         desc: {
           de: "Ziehe die Mundwinkel nach unten und außen, bis sich vorne am Hals die Muskelstränge abzeichnen. Halten, dann ganz entspannen. Bei Mitbewegungen (Synkinesien) oder Halssträngen nur nach Rücksprache mit deiner Therapeutin / deinem Therapeuten – dann eher die Dehnung üben.",
@@ -1248,6 +1275,52 @@
         desc: {
           de: "Neige den Kopf leicht nach hinten, schau zur Decke und schiebe den Unterkiefer sanft nach vorne, bis du vorne am Hals eine Dehnung spürst. Halten, dann langsam zurück.",
           en: "Tilt your head slightly back, look up at the ceiling and gently push your lower jaw forward until you feel a stretch at the front of your neck. Hold, then slowly return.",
+        },
+      },
+      /* Synkinesis exercises: only used when the synkinesis setting is on.
+         `watch` names the blendshapes that must stay still on the affected
+         side; the meter warns when they move along. */
+      {
+        id: "smileEyesOpen", group: "mouth", synkinesis: true, reps: 6, hold: 5,
+        meter: ["mouthSmile"], watch: ["eyeSquint", "eyeBlink"],
+        name: { de: "Lächeln mit offenen Augen", en: "Smile with Eyes Open" },
+        desc: {
+          de: "Lächle langsam und nur ein wenig, während die Augen ganz offen und entspannt bleiben. Beobachte im Spiegel: Wird das Auge kleiner, ist die Bewegung zu groß – lieber kleiner und langsamer.",
+          en: "Smile slowly and only slightly while keeping your eyes fully open and relaxed. Watch the mirror: if the eye narrows, the movement is too big – go smaller and slower.",
+        },
+      },
+      {
+        id: "puckerEyesOpen", group: "mouth", synkinesis: true, reps: 6, hold: 5,
+        watch: ["eyeSquint", "eyeBlink"],
+        name: { de: "Kussmund mit offenen Augen", en: "Pucker with Eyes Open" },
+        desc: {
+          de: "Schiebe die Lippen langsam nach vorne, während die Augen offen und entspannt bleiben. Nur so weit bewegen, wie es ohne Mitbewegung des Auges geht.",
+          en: "Slowly push your lips forward while your eyes stay open and relaxed. Only move as far as you can without the eye joining in.",
+        },
+      },
+      {
+        id: "eyeCloseMouthStill", group: "eyes", synkinesis: true, reps: 6, hold: 5,
+        meter: ["eyeBlink"], watch: ["mouthSmile", "mouthStretch"],
+        name: { de: "Augen schließen, Mund ruhig", en: "Eye Closure, Mouth Still" },
+        desc: {
+          de: "Schließe die Augen langsam und sanft, ohne dass sich Mundwinkel oder Wange mitbewegen. Lege bei Bedarf einen Finger an den Mundwinkel, um Mitbewegungen zu spüren.",
+          en: "Close your eyes slowly and gently without your mouth corner or cheek moving along. Rest a finger on the mouth corner to feel any co-movement.",
+        },
+      },
+      {
+        id: "cheekStretch", group: "cheeks", synkinesis: true, reps: 3, hold: 15, cues: ["cue.stretch"],
+        name: { de: "Wangendehnung von innen", en: "Inner Cheek Stretch" },
+        desc: {
+          de: "Mit sauberen Händen den Daumen auf der betroffenen Seite innen an die Wange legen, den Zeigefinger außen. Die Wange sanft nach außen dehnen und halten, dann lösen. Es darf nicht wehtun.",
+          en: "With clean hands, place your thumb inside the cheek on the affected side and your index finger outside. Gently stretch the cheek outward and hold, then release. It shouldn't hurt.",
+        },
+      },
+      {
+        id: "chinRelax", group: "chin", synkinesis: true, reps: 6, hold: 5, cues: ["cue.stroke"],
+        name: { de: "Kinn lockern", en: "Chin Release" },
+        desc: {
+          de: "Lege die Fingerspitzen unter die Unterlippe und streiche das Kinn sanft nach unten aus. Lass Kinn und Unterlippe dabei ganz locker – dieser Muskel ist bei Synkinesien oft verspannt.",
+          en: "Place your fingertips below your lower lip and gently stroke your chin downward. Let your chin and lower lip go completely loose – this muscle is often tense with synkinesis.",
         },
       },
     ];
@@ -1290,6 +1363,7 @@
       voice: store.get("voice", false),
       meter: store.get("meter", false),
       side: store.get("side", "right"),
+      synkinesis: store.get("synkinesis", false),
     };
     if (!I18N[settings.lang]) settings.lang = "en";
     if (settings.side !== "left" && settings.side !== "right") settings.side = "right";
@@ -1331,6 +1405,8 @@
       soundToggle: $("soundToggle"),
       voiceToggle: $("voiceToggle"),
       meterToggle: $("meterToggle"),
+      synkinesisToggle: $("synkinesisToggle"),
+      synkinesisNote: $("synkinesisNote"),
       sideSetting: $("sideSetting"),
       sidePicker: $("sidePicker"),
       meter: $("meter"),
@@ -1380,14 +1456,21 @@
     function buildRoutine(lengthKey) {
       const cfg = LENGTHS[lengthKey];
 
-      // Bucket the pool by face area, shuffle each bucket.
+      // With synkinesis mode on, about a third of the routine are synkinesis
+      // exercises and strengthening that can worsen synkinesis is left out.
+      // With it off, synkinesis exercises are not used.
+      const allowed = POOL.filter((ex) => (settings.synkinesis ? !ex.avoidWithSynkinesis : !ex.synkinesis));
+      const synk = shuffle(allowed.filter((ex) => ex.synkinesis)).slice(0, Math.ceil(cfg.count / 3));
+      const regular = allowed.filter((ex) => !ex.synkinesis);
+
+      // Bucket the regular pool by face area, shuffle each bucket.
       const buckets = {};
-      GROUPS.forEach((g) => (buckets[g] = shuffle(POOL.filter((ex) => ex.group === g))));
+      GROUPS.forEach((g) => (buckets[g] = shuffle(regular.filter((ex) => ex.group === g))));
 
       // Round-robin over groups so even short routines cover several areas.
       // Eyes and mouth come first: they matter most for daily function.
       const order = ["eyes", "mouth", ...shuffle(GROUPS.filter((g) => g !== "eyes" && g !== "mouth"))];
-      const picked = [];
+      const picked = [...synk];
       while (picked.length < cfg.count && order.some((g) => buckets[g].length)) {
         for (const g of order) {
           if (picked.length >= cfg.count) break;
@@ -1408,7 +1491,7 @@
     function stepTitle(step) {
       const name = step.name[settings.lang] ?? step.name.en;
       if (step.massage) return name;
-      const detail = step.cues ? t("reps", { r: step.reps }) : t("repsHold", { r: step.reps, h: step.hold });
+      const detail = step.titleReps ? t("reps", { r: step.reps }) : t("repsHold", { r: step.reps, h: step.hold });
       return `${name} (${detail})`;
     }
 
@@ -1445,6 +1528,7 @@
         entry.symmetry = symmetry;
         entry.perExercise = { ...sessionResults };
       }
+      if (completed && Object.keys(sessionCoact).length) entry.coactivation = { ...sessionCoact };
       history.push(entry);
       store.set("history", history.slice(-1000));
     }
@@ -1535,6 +1619,7 @@
       },
       hold: () => tone(740, 0.1, 0, 0.1),
       relax: () => tone(440, 0.1, 0, 0.08),
+      warn: () => tone(330, 0.25, 0, 0.12),
       finish: () => {
         tone(523, 0.2);
         tone(659, 0.2, 0.18);
@@ -1662,6 +1747,7 @@
     // If a wink test shows the bars swapped, set this to true.
     const SWAP_SIDES = false;
     const MIN_ACTIVITY = 0.1; // ignore reps where neither side moved noticeably
+    const COACT_THRESHOLD = 0.2; // movement of a "watch" signal that counts as co-movement
     const SAMPLE_INTERVAL_MS = 66; // ~15 measurements per second
 
     // An activity source reports per-side muscle activity (0..1) for a list of
@@ -1741,6 +1827,7 @@
 
     let measure = null; // measurement state of the current step
     let sessionResults = {}; // exercise id -> symmetry %
+    let sessionCoact = {}; // exercise id -> { n: reps with co-movement, of: reps measured }
 
     const mean = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
 
@@ -1751,12 +1838,33 @@
     }
 
     function resetMeasure() {
-      measure = { rest: { left: [], right: [] }, base: null, peak: null, repKey: null, reps: [], max: 0.2, lastScore: null };
+      measure = {
+        rest: { left: [], right: [] },
+        base: null,
+        peak: null,
+        repKey: null,
+        reps: [],
+        max: 0.2,
+        lastScore: null,
+        // synkinesis watch (affected side only)
+        watchRest: [],
+        watchBase: null,
+        watchPeak: 0,
+        watchReps: 0,
+        coactReps: 0,
+        coactNow: false,
+      };
     }
 
     function finishRep() {
       if (!measure) return;
-      if (measure.peak) {
+      if (measure.peak && routine[stepIndex]?.watch && measure.watchBase != null) {
+        measure.watchReps += 1;
+        if (measure.watchPeak >= COACT_THRESHOLD) measure.coactReps += 1;
+      }
+      measure.watchPeak = 0;
+      measure.coactNow = false;
+      if (measure.peak && routine[stepIndex]?.meter) {
         const { left, right } = measure.peak;
         const high = Math.max(left, right);
         if (high >= MIN_ACTIVITY) {
@@ -1769,9 +1877,10 @@
 
     function finishStepMeasure() {
       const step = routine[stepIndex];
-      if (!measure || !step?.meter) return;
+      if (!measure || !(step?.meter || step?.watch)) return;
       finishRep();
       if (measure.reps.length) sessionResults[step.id] = Math.round(mean(measure.reps));
+      if (measure.watchReps) sessionCoact[step.id] = { n: measure.coactReps, of: measure.watchReps };
     }
 
     function renderMeterLabels() {
@@ -1792,18 +1901,22 @@
 
     function onMeterSample() {
       const step = routine[stepIndex];
-      const show = Boolean(settings.meter && inSession && cameraStream && step?.meter);
+      const show = Boolean(settings.meter && inSession && cameraStream && (step?.meter || step?.watch));
       els.meter.hidden = !show;
       if (!show) return;
+      els.meter.classList.toggle("no-bars", !step.meter);
 
       let raw = null;
       let status;
       if (activitySource.status === "loading") status = t("meter.loading");
       else if (activitySource.status === "error") status = t("meter.error");
       else {
-        raw = activitySource.read(step.meter);
+        raw = activitySource.read(step.meter ?? step.watch);
         status = !raw ? t("meter.noFace") : phase === "prep" ? t("meter.calibrating") : t("meter.measuring");
       }
+
+      // Watched signal on the affected side (synkinesis exercises).
+      const watched = raw && step.watch ? activitySource.read(step.watch)[settings.side] : null;
 
       let activity = { left: 0, right: 0 };
       if (raw && measure && !isPaused) {
@@ -1811,6 +1924,7 @@
           // Face at rest before the exercise: collect the baseline.
           measure.rest.left.push(raw.left);
           measure.rest.right.push(raw.right);
+          if (watched != null) measure.watchRest.push(watched);
         } else {
           if (!measure.base) measure.base = { left: median(measure.rest.left), right: median(measure.rest.right) };
           activity = {
@@ -1830,9 +1944,23 @@
             measure.peak.left = Math.max(measure.peak.left, activity.left);
             measure.peak.right = Math.max(measure.peak.right, activity.right);
           }
+
+          if (watched != null) {
+            measure.watchBase ??= median(measure.watchRest);
+            const coact = Math.max(0, watched - measure.watchBase);
+            if (repKey) {
+              measure.watchPeak = Math.max(measure.watchPeak, coact);
+              if (coact >= COACT_THRESHOLD && !measure.coactNow) {
+                measure.coactNow = true;
+                sounds.warn();
+              }
+            }
+          }
         }
       }
 
+      if (measure?.coactNow) status = t("meter.coact");
+      els.meterStatus.classList.toggle("is-warning", Boolean(measure?.coactNow));
       setBars(activity);
       els.meterStatus.textContent = status;
       els.meterScore.textContent = measure?.lastScore != null ? t("meter.score", { n: measure.lastScore }) : "";
@@ -1887,6 +2015,8 @@
       els.soundToggle.checked = settings.sound;
       els.voiceToggle.checked = settings.voice;
       els.meterToggle.checked = settings.meter;
+      els.synkinesisToggle.checked = settings.synkinesis;
+      els.synkinesisNote.hidden = !settings.synkinesis;
       els.sideSetting.hidden = !settings.meter;
       els.sidePicker.querySelectorAll("button").forEach((b) =>
         b.setAttribute("aria-pressed", String(b.dataset.side === settings.side))
@@ -1899,18 +2029,24 @@
       renderStats(els.completeStats);
 
       const total = sessionSymmetry();
-      els.symmetryResults.hidden = total == null;
-      els.symmetryResults.innerHTML = "";
-      if (total == null) return;
       const rows = routine
-        .filter((step) => step.id in sessionResults)
-        .map((step) => [step.name[settings.lang] ?? step.name.en, sessionResults[step.id]]);
-      rows.push([t("results.total"), total]);
-      rows.forEach(([label, value], i) => {
+        .filter((step) => step.id in sessionResults || step.id in sessionCoact)
+        .map((step) => {
+          const parts = [];
+          if (step.id in sessionResults) parts.push(`${sessionResults[step.id]} %`);
+          const c = sessionCoact[step.id];
+          if (c) parts.push((c.n ? "⚠ " : "") + t("results.coact", { n: c.n, of: c.of }));
+          return { label: step.name[settings.lang] ?? step.name.en, value: parts.join(" · ") };
+        });
+      if (total != null) rows.push({ label: t("results.total"), value: `${total} %`, total: true });
+
+      els.symmetryResults.hidden = rows.length === 0;
+      els.symmetryResults.innerHTML = "";
+      rows.forEach((row) => {
         const li = document.createElement("li");
-        if (i === rows.length - 1) li.className = "total";
-        li.append(Object.assign(document.createElement("span"), { textContent: label }));
-        li.append(Object.assign(document.createElement("span"), { textContent: `${value} %` }));
+        if (row.total) li.className = "total";
+        li.append(Object.assign(document.createElement("span"), { textContent: row.label }));
+        li.append(Object.assign(document.createElement("span"), { textContent: row.value }));
         els.symmetryResults.appendChild(li);
       });
     }
@@ -2039,6 +2175,7 @@
       stepIndex = 0;
       inSession = true;
       sessionResults = {};
+      sessionCoact = {};
       setPaused(false);
       buildDots();
       showScreen("session");
@@ -2128,6 +2265,13 @@
     els.soundToggle.addEventListener("change", () => {
       settings.sound = els.soundToggle.checked;
       store.set("sound", settings.sound);
+    });
+
+    els.synkinesisToggle.addEventListener("change", () => {
+      settings.synkinesis = els.synkinesisToggle.checked;
+      store.set("synkinesis", settings.synkinesis);
+      routine = buildRoutine(settings.length);
+      renderIntro();
     });
 
     els.meterToggle.addEventListener("change", () => {

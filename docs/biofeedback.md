@@ -24,7 +24,8 @@ How it works in the app:
 1. During the 6-second "up next" countdown the face is at rest, so the app records a **baseline** for each side.
 2. During each *hold* phase it records the **peak activity per side** above that baseline.
 3. Rep symmetry = `min(left, right) / max(left, right)`. Reps where neither side moved noticeably are ignored.
-4. Exercise score = mean of its reps. Session score = mean of the measured exercises. The session score is saved in the history, and the start page shows it with the change compared with about a week earlier.
+4. **Synkinesis exercises** also *watch* a second signal on the affected side, for example the eye (`eyeSquint`, `eyeBlink`) during a smile. If it rises ≥ 0.2 above rest during a hold, the app warns ("Co-movement – smaller and slower") and counts that rep. The end screen shows e.g. "co-movement 2/6".
+5. Exercise score = mean of its reps. Session score = mean of the measured exercises. The session score is saved in the history, and the start page shows it with the change compared with about a week earlier.
 
 The camera image is processed locally and never uploaded. The model and the WebAssembly runtime (about 20 MB) are downloaded from jsDelivr / Google Storage the first time.
 
