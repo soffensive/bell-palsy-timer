@@ -5,6 +5,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Fazialisparese – Übungsprogramm</title>
+  <meta name="theme-color" content="#2e6b5e" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Fazialis" />
 
   <style>
     * {
@@ -113,6 +120,42 @@
     }
 
     /* stats */
+    /* app & data card (start page) */
+    .app-card h3 {
+      font-weight: 600;
+      color: #1e4d42;
+      margin-bottom: 10px;
+    }
+
+    .app-card .btn {
+      margin-bottom: 8px;
+    }
+
+    .app-block {
+      margin-top: 12px;
+    }
+
+    .app-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .app-row input[type="time"] {
+      font-family: inherit;
+      font-size: 0.85rem;
+      border: 1px solid #dce9e3;
+      border-radius: 10px;
+      padding: 5px 8px;
+      background: #f9fbfa;
+      color: #1e2b26;
+    }
+
+    .app-row .btn-small {
+      padding: 7px 12px;
+    }
+
     /* trends (start page) */
     .trends {
       background: #f9fbfa;
@@ -1038,6 +1081,33 @@
         </div>
 
         <button class="btn" id="beginBtn" data-i18n="begin"></button>
+      </div>
+
+      <div class="card app-card">
+        <h3 data-i18n="app.title"></h3>
+
+        <button type="button" class="btn" id="installBtn" data-i18n="app.install" hidden></button>
+        <p class="setting-note" id="iosHint" data-i18n="app.iosHint" hidden></p>
+
+        <div class="app-block">
+          <span class="setting-label" data-i18n="reminder.label"></span>
+          <div class="app-row">
+            <input type="time" id="remind1" aria-label="1" />
+            <input type="time" id="remind2" aria-label="2" />
+            <button type="button" class="btn-small" id="reminderBtn" data-i18n="reminder.button"></button>
+          </div>
+          <p class="setting-note" data-i18n="reminder.note"></p>
+        </div>
+
+        <div class="app-block">
+          <span class="setting-label" data-i18n="backup.label"></span>
+          <div class="app-row">
+            <button type="button" class="btn-small" id="exportBtn" data-i18n="backup.export"></button>
+            <button type="button" class="btn-small" id="importBtn" data-i18n="backup.import"></button>
+            <input type="file" id="importFile" accept="application/json,.json" hidden />
+          </div>
+          <p class="setting-note" id="backupMsg" data-i18n="backup.note"></p>
+        </div>
 
         <div class="footer-link">
           <button type="button" class="btn-link" id="resetHistoryBtn" data-i18n="history.reset"></button>
@@ -1216,6 +1286,21 @@
         "stats.day": "1 Tag",
         "history.reset": "Verlauf zurücksetzen",
         "history.confirm": "Den gesamten Übungsverlauf löschen?",
+        "app.title": "App & Daten",
+        "app.install": "📲 Als App installieren",
+        "app.iosHint": "Als App installieren: im Safari auf das Teilen-Symbol tippen → „Zum Home-Bildschirm“.",
+        "reminder.label": "Erinnerung im Kalender (2× täglich)",
+        "reminder.button": "📅 Zum Kalender",
+        "reminder.note": "Lädt eine Kalenderdatei mit zwei täglichen Terminen samt Erinnerung. Öffne sie, um sie in deinen Kalender zu übernehmen.",
+        "reminder.eventTitle": "Gesichtsübungen",
+        "reminder.eventDesc": "Zeit für deine Gesichtsübungen.",
+        "backup.label": "Verlauf sichern",
+        "backup.export": "⬇ Sicherung speichern",
+        "backup.import": "⬆ Sicherung laden",
+        "backup.note": "Dein Verlauf liegt nur auf diesem Gerät. Speichere ab und zu eine Sicherung, z. B. vor einem Handywechsel.",
+        "backup.confirm": "Die Sicherung enthält {n} Einheiten. Mit deinem Verlauf zusammenführen?",
+        "backup.imported": "{n} neue Einheiten übernommen.",
+        "backup.invalid": "Diese Datei ist keine gültige Sicherung.",
         "toggle.meter": "Symmetrie messen (Kamera)",
         "side.label": "Betroffene Seite",
         "side.left": "Links",
@@ -1334,6 +1419,21 @@
         "stats.day": "1 day",
         "history.reset": "Reset history",
         "history.confirm": "Delete your whole exercise history?",
+        "app.title": "App & data",
+        "app.install": "📲 Install as app",
+        "app.iosHint": "Install as app: in Safari tap the Share icon → “Add to Home Screen”.",
+        "reminder.label": "Calendar reminder (twice a day)",
+        "reminder.button": "📅 Add to calendar",
+        "reminder.note": "Downloads a calendar file with two daily events and alerts. Open it to add them to your calendar.",
+        "reminder.eventTitle": "Facial exercises",
+        "reminder.eventDesc": "Time for your facial exercises.",
+        "backup.label": "Back up history",
+        "backup.export": "⬇ Save backup",
+        "backup.import": "⬆ Load backup",
+        "backup.note": "Your history is stored only on this device. Save a backup now and then, e.g. before switching phones.",
+        "backup.confirm": "The backup contains {n} sessions. Merge them into your history?",
+        "backup.imported": "{n} new sessions added.",
+        "backup.invalid": "This file isn't a valid backup.",
         "toggle.meter": "Measure symmetry (camera)",
         "side.label": "Affected side",
         "side.left": "Left",
@@ -1687,6 +1787,7 @@
       side: store.get("side", "right"),
       synkinesis: store.get("synkinesis", false),
       tempo: store.get("tempo", "calm"),
+      reminders: store.get("reminders", ["08:00", "18:00"]),
     };
     if (!TEMPOS[settings.tempo]) settings.tempo = "calm";
 
@@ -1734,6 +1835,15 @@
       meterToggle: $("meterToggle"),
       sessionCard: $("sessionCard"),
       tempoPicker: $("tempoPicker"),
+      installBtn: $("installBtn"),
+      iosHint: $("iosHint"),
+      remind1: $("remind1"),
+      remind2: $("remind2"),
+      reminderBtn: $("reminderBtn"),
+      exportBtn: $("exportBtn"),
+      importBtn: $("importBtn"),
+      importFile: $("importFile"),
+      backupMsg: $("backupMsg"),
       tempoNote: $("tempoNote"),
       synkinesisToggle: $("synkinesisToggle"),
       synkinesisNote: $("synkinesisNote"),
@@ -2503,6 +2613,7 @@
       );
       renderStats(els.introStats);
       renderTrends();
+      renderAppCard();
     }
 
     function renderComplete() {
@@ -2701,6 +2812,128 @@
     }
 
     /* ------------------------------------------------------------------ */
+    /* App: install, calendar reminders, backup                            */
+    /* ------------------------------------------------------------------ */
+    let installPrompt = null;
+    const isStandalone = () =>
+      window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+    const isIOS = () =>
+      /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+    function renderAppCard() {
+      els.installBtn.hidden = !installPrompt || isStandalone();
+      els.iosHint.hidden = !(isIOS() && !isStandalone());
+      els.remind1.value = settings.reminders[0];
+      els.remind2.value = settings.reminders[1];
+    }
+
+    window.addEventListener("beforeinstallprompt", (event) => {
+      event.preventDefault(); // show our own button instead of the mini-infobar
+      installPrompt = event;
+      renderAppCard();
+    });
+    window.addEventListener("appinstalled", () => {
+      installPrompt = null;
+      renderAppCard();
+    });
+
+    async function installApp() {
+      if (!installPrompt) return;
+      installPrompt.prompt();
+      await installPrompt.userChoice.catch(() => {});
+      installPrompt = null;
+      renderAppCard();
+    }
+
+    function downloadFile(name, type, content) {
+      const url = URL.createObjectURL(new Blob([content], { type }));
+      const a = Object.assign(document.createElement("a"), { href: url, download: name });
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    /* iCalendar file with two daily repeating events (floating local time). */
+    function buildIcs(times, now = new Date()) {
+      const pad = (n) => String(n).padStart(2, "0");
+      const esc = (s) => s.replace(/\\/g, "\\\\").replace(/[,;]/g, (c) => "\\" + c).replace(/\n/g, "\\n");
+      // fold long lines (RFC 5545: max 75 octets; 60 chars leaves room for umlauts)
+      const fold = (line) => line.match(/.{1,60}/gu).join("\r\n ");
+      const day = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}`;
+      const stamp = now.toISOString().replace(/[-:]/g, "").replace(/\.\d+/, "");
+      const appUrl = location.protocol.startsWith("http") ? location.origin + location.pathname : "";
+      const desc = t("reminder.eventDesc") + (appUrl ? ` ${appUrl}` : "");
+      const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//bell-palsy-timer//EN", "CALSCALE:GREGORIAN"];
+      times.forEach((time, i) => {
+        const [hh, mm] = time.split(":");
+        lines.push(
+          "BEGIN:VEVENT",
+          `UID:bpt-${now.getTime()}-${i}@bell-palsy-timer`,
+          `DTSTAMP:${stamp}`,
+          `DTSTART:${day}T${hh}${mm}00`,
+          "DURATION:PT10M",
+          "RRULE:FREQ=DAILY",
+          `SUMMARY:${esc(t("reminder.eventTitle"))}`,
+          `DESCRIPTION:${esc(desc)}`,
+          "BEGIN:VALARM",
+          "ACTION:DISPLAY",
+          `DESCRIPTION:${esc(t("reminder.eventTitle"))}`,
+          "TRIGGER:PT0M",
+          "END:VALARM",
+          "END:VEVENT"
+        );
+      });
+      lines.push("END:VCALENDAR");
+      return lines.map(fold).join("\r\n") + "\r\n";
+    }
+
+    function addReminders() {
+      const times = [els.remind1.value || "08:00", els.remind2.value || "18:00"];
+      settings.reminders = times;
+      store.set("reminders", times);
+      downloadFile("gesichtsuebungen.ics", "text/calendar", buildIcs(times));
+    }
+
+    function exportBackup() {
+      const data = { app: "bell-palsy-timer", version: 1, exported: new Date().toISOString(), settings, history: getHistory() };
+      downloadFile(`bell-palsy-history-${dayKey()}.json`, "application/json", JSON.stringify(data, null, 2));
+    }
+
+    function isValidBackup(data) {
+      return (
+        data?.app === "bell-palsy-timer" &&
+        Array.isArray(data.history) &&
+        data.history.every((s) => s && typeof s.ts === "number" && typeof s.date === "string")
+      );
+    }
+
+    // Adds sessions from a backup that aren't in the history yet (matched by timestamp).
+    function mergeHistory(current, incoming) {
+      const known = new Set(current.map((s) => s.ts));
+      const added = incoming.filter((s) => !known.has(s.ts));
+      return { merged: [...current, ...added].sort((a, b) => a.ts - b.ts), added: added.length };
+    }
+
+    async function importBackup(file) {
+      let data = null;
+      try {
+        data = JSON.parse(await file.text());
+      } catch {
+        /* handled below */
+      }
+      if (!isValidBackup(data)) {
+        els.backupMsg.textContent = t("backup.invalid");
+        return;
+      }
+      if (!confirm(t("backup.confirm", { n: data.history.length }))) return;
+      const { merged, added } = mergeHistory(getHistory(), data.history);
+      store.set("history", merged);
+      renderIntro();
+      els.backupMsg.textContent = t("backup.imported", { n: added });
+    }
+
+    /* ------------------------------------------------------------------ */
     /* Session flow                                                        */
     /* ------------------------------------------------------------------ */
     function beginPhase(nextPhase) {
@@ -2798,6 +3031,8 @@
       stopSession();
       sessionRestSummary = summarizeRest();
       recordSession(true);
+      // ask the browser not to evict the history (granted silently for installed apps)
+      navigator.storage?.persist?.().catch(() => {});
       lastSessionTs = getHistory().at(-1)?.ts ?? null;
       buildDiary();
       sounds.finish();
@@ -2917,6 +3152,15 @@
     });
 
     els.diary.addEventListener("submit", saveDiary);
+    els.installBtn.addEventListener("click", installApp);
+    els.reminderBtn.addEventListener("click", addReminders);
+    els.exportBtn.addEventListener("click", exportBackup);
+    els.importBtn.addEventListener("click", () => els.importFile.click());
+    els.importFile.addEventListener("change", () => {
+      const file = els.importFile.files[0];
+      els.importFile.value = "";
+      if (file) importBackup(file);
+    });
     els.beginBtn.addEventListener("click", startSession);
     els.restartBtn.addEventListener("click", () => {
       routine = buildRoutine(settings.length);
@@ -2933,6 +3177,11 @@
 
     routine = buildRoutine(settings.length);
     applyLanguage();
+
+    // Offline support / installability (needs http(s); skipped for file://).
+    if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+      navigator.serviceWorker.register("./sw.js").catch((err) => console.warn("Service worker failed:", err));
+    }
   </script>
 </body>
 
