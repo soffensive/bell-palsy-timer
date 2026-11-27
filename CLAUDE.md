@@ -22,12 +22,16 @@ Guided facial exercise timer for Bell's palsy (facial nerve palsy) recovery. It 
      - `watch`: blendshapes that must stay still (synkinesis)
      - `synkinesis: true`: used only when synkinesis mode is on
      - `avoidWithSynkinesis`: left out when synkinesis mode is on
-   - **Calm timing** (deliberately slow: quality over quantity, full relaxation between reps). Each rep is: slowly tense `TENSE_SECONDS` (2) → hold `hold` → slowly release `RELEASE_SECONDS` (2) → rest, which is as long as the hold, clamped to 4–6 s (`repTiming()`). An exercise lasts `reps × cycle` (`stepDuration()`, about 45–75 s). Use 5–6 reps rather than 10.
-   - Between exercises there is a `PREP_SECONDS` (12 s) break: "Pause – let your face go loose".
-   - `LENGTHS` counts (3 / 5 / 9 exercises) keep the routines at about 5 / 10 / 15 minutes. Recheck the totals when changing timing.
+   - **Timing** (deliberately slow: quality over quantity, full relaxation between reps). Each rep is: slowly tense → hold `hold` → slowly release → rest, which is as long as the hold, within the tempo's limits (`repTiming()`). An exercise lasts `reps × cycle` (`stepDuration()`). Use 5–6 reps rather than 10.
+   - The **tempo** setting (`settings.tempo`, `TEMPOS`) changes only transitions and breaks, not reps or holds:
+     - `calm` (default): 2 s tense, 2 s release, 4–6 s rest, 12 s break before each exercise
+     - `brisk`: 1 s / 1 s, 3–4 s rest, 8 s break
+   - Use `prepSeconds()` for the break, never a constant.
+   - `LENGTHS` counts (3 / 5 / 9 exercises) keep calm routines at about 5 / 10 / 15 minutes; brisk ones are about 20 % shorter. Recheck the totals when changing timing.
+   - Changing the tempo on the start page retimes the current routine without reshuffling it.
    - `GROUPS` sets the face areas, top to bottom. Routines are sorted by it.
 3. **`buildRoutine(lengthKey)`**: in synkinesis mode it first picks `ceil(count / 3)` synkinesis exercises. It fills the rest round-robin over the groups (eyes and mouth first), then sorts by group.
-4. **Storage**: `localStorage` keys are prefixed `bpt.` (lang, length, sound, voice, meter, side, synkinesis, history). The history is an array of `{ date, ts, length, completed, symmetry?, perExercise?, coactivation?, rest?, tension? }`.
+4. **Storage**: `localStorage` keys are prefixed `bpt.` (lang, length, tempo, sound, voice, meter, side, synkinesis, history). The history is an array of `{ date, ts, length, tempo, completed, symmetry?, perExercise?, coactivation?, rest?, tension? }`.
 5. **Sound and voice**: Web Audio tones (`sounds.*`) and `speechSynthesis` in the UI language. `cueState(step, elapsed)` drives both the visible rep cue and the spoken cue.
 6. **Symmetry meter**: MediaPipe Face Landmarker (`@mediapipe/tasks-vision`, version pinned in `MEDIAPIPE_BASE`), loaded via dynamic `import()` only when the meter is enabled.
    - `cameraSource` implements the *activity source* interface: `load / start(onSample) / stop / read(names) → {left, right}`. A future EMG source must implement the same interface.

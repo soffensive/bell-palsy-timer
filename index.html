@@ -998,6 +998,15 @@
         </div>
 
         <div class="setting">
+          <span class="setting-label" data-i18n="tempo.label"></span>
+          <div class="segmented" id="tempoPicker" role="group">
+            <button type="button" data-tempo="calm" data-i18n="tempo.calm"></button>
+            <button type="button" data-tempo="brisk" data-i18n="tempo.brisk"></button>
+          </div>
+          <p class="setting-note" id="tempoNote" data-i18n="tempo.note" hidden></p>
+        </div>
+
+        <div class="setting">
           <div class="toggles">
             <label class="toggle"><input type="checkbox" id="soundToggle" /> <span data-i18n="toggle.sound"></span></label>
             <label class="toggle"><input type="checkbox" id="voiceToggle" /> <span data-i18n="toggle.voice"></span></label>
@@ -1151,6 +1160,11 @@
         "length.short": "Kurz",
         "length.standard": "Standard",
         "length.long": "Lang",
+        "tempo.label": "Tempo",
+        "tempo.calm": "Ruhig",
+        "tempo.brisk": "Zügig",
+        "tempo.note":
+          "Kürzere Übergänge und Pausen bei gleicher Zahl an Wiederholungen. Nur wählen, wenn die Bewegungen trotzdem langsam, klein und kontrolliert bleiben.",
         "toggle.sound": "Töne",
         "toggle.voice": "Sprachansage",
         "preview.title": "Heutige Übungen",
@@ -1264,6 +1278,11 @@
         "length.short": "Short",
         "length.standard": "Standard",
         "length.long": "Long",
+        "tempo.label": "Pace",
+        "tempo.calm": "Calm",
+        "tempo.brisk": "Brisk",
+        "tempo.note":
+          "Shorter transitions and rests with the same number of reps. Only choose this if your movements still stay slow, small and controlled.",
         "toggle.sound": "Sounds",
         "toggle.voice": "Voice cues",
         "preview.title": "Today's exercises",
@@ -1626,11 +1645,15 @@
       long: { count: 9, warmup: 60, cooldown: 120 },
     };
 
-    const PREP_SECONDS = 12; // break before each exercise: let the face go loose
     // Phases of one rep: slowly tense → hold → slowly release → rest.
-    const TENSE_SECONDS = 2;
-    const RELEASE_SECONDS = 2;
-    const SIMPLE_REST_SECONDS = 3; // sounds and stroking: hold → rest only
+    // prep = break before each exercise ("let your face go loose");
+    // rest = as long as the hold, clamped to restMin–restMax;
+    // simpleRest = rest for sounds and stroking (hold → rest only).
+    // Reps and holds are the same in both tempos; only transitions and breaks change.
+    const TEMPOS = {
+      calm: { prep: 12, tense: 2, release: 2, restMin: 4, restMax: 6, simpleRest: 3 },
+      brisk: { prep: 8, tense: 1, release: 1, restMin: 3, restMax: 4, simpleRest: 2 },
+    };
     const DAILY_GOAL = 2;
     const CIRCUMFERENCE = 2 * Math.PI * 94;
 
@@ -1663,7 +1686,12 @@
       meter: store.get("meter", false),
       side: store.get("side", "right"),
       synkinesis: store.get("synkinesis", false),
+      tempo: store.get("tempo", "calm"),
     };
+    if (!TEMPOS[settings.tempo]) settings.tempo = "calm";
+
+    const tempo = () => TEMPOS[settings.tempo];
+    const prepSeconds = () => tempo().prep;
     if (!I18N[settings.lang]) settings.lang = "en";
     if (settings.side !== "left" && settings.side !== "right") settings.side = "right";
     if (!LENGTHS[settings.length]) settings.length = "standard";
@@ -1680,8 +1708,8 @@
     let routine = [];
     let stepIndex = 0;
     let phase = "prep";
-    let timeLeft = PREP_SECONDS;
-    let phaseDuration = PREP_SECONDS;
+    let timeLeft = 0;
+    let phaseDuration = 1;
     let timerId = null;
     let isPaused = false;
     let inSession = false;
@@ -1705,6 +1733,8 @@
       voiceToggle: $("voiceToggle"),
       meterToggle: $("meterToggle"),
       sessionCard: $("sessionCard"),
+      tempoPicker: $("tempoPicker"),
+      tempoNote: $("tempoNote"),
       synkinesisToggle: $("synkinesisToggle"),
       synkinesisNote: $("synkinesisNote"),
       sideSetting: $("sideSetting"),
@@ -1806,7 +1836,7 @@
     }
 
     function totalMinutes() {
-      const seconds = routine.reduce((sum, s) => sum + s.duration + PREP_SECONDS, 0);
+      const seconds = routine.reduce((sum, s) => sum + s.duration + prepSeconds(), 0);
       return Math.max(1, Math.round(seconds / 60));
     }
 
@@ -1827,7 +1857,7 @@
 
     function recordSession(completed) {
       const history = getHistory();
-      const entry = { date: dayKey(), ts: Date.now(), length: settings.length, completed };
+      const entry = { date: dayKey(), ts: Date.now(), length: settings.length, tempo: settings.tempo, completed };
       const symmetry = completed ? sessionSymmetry() : null;
       if (symmetry != null) {
         entry.symmetry = symmetry;
@@ -1991,10 +2021,11 @@
     // Seconds of each phase of one rep, for a (non-massage) exercise.
     function repTiming(step) {
       const simple = Boolean(step.simple);
-      const tense = simple ? 0 : TENSE_SECONDS;
-      const release = simple ? 0 : RELEASE_SECONDS;
-      // rest at least as long as the hold, within 4–6 s
-      const rest = simple ? SIMPLE_REST_SECONDS : Math.min(Math.max(step.hold, 4), 6);
+      const tp = tempo();
+      const tense = simple ? 0 : tp.tense;
+      const release = simple ? 0 : tp.release;
+      // rest as long as the hold, within the tempo's limits
+      const rest = simple ? tp.simpleRest : Math.min(Math.max(step.hold, tp.restMin), tp.restMax);
       return { tense, hold: step.hold, release, rest, cycle: tense + step.hold + release + rest };
     }
 
@@ -2457,6 +2488,10 @@
       els.lengthPicker.querySelectorAll("button").forEach((b) =>
         b.setAttribute("aria-pressed", String(b.dataset.length === settings.length))
       );
+      els.tempoPicker.querySelectorAll("button").forEach((b) =>
+        b.setAttribute("aria-pressed", String(b.dataset.tempo === settings.tempo))
+      );
+      els.tempoNote.hidden = settings.tempo !== "brisk";
       els.soundToggle.checked = settings.sound;
       els.voiceToggle.checked = settings.voice;
       els.meterToggle.checked = settings.meter;
@@ -2673,7 +2708,7 @@
       const step = routine[stepIndex];
       const name = step.name[settings.lang] ?? step.name.en;
 
-      phaseDuration = phase === "prep" ? PREP_SECONDS : step.duration;
+      phaseDuration = phase === "prep" ? prepSeconds() : step.duration;
       timeLeft = phaseDuration;
       lastCueKey = null;
       if (phase === "prep") resetMeasure();
@@ -2822,6 +2857,16 @@
         settings.length = b.dataset.length;
         store.set("length", settings.length);
         routine = buildRoutine(settings.length);
+        renderIntro();
+      })
+    );
+
+    els.tempoPicker.querySelectorAll("button").forEach((b) =>
+      b.addEventListener("click", () => {
+        settings.tempo = b.dataset.tempo;
+        store.set("tempo", settings.tempo);
+        // keep today's exercises, only retime them
+        routine = routine.map((s) => (s.massage ? s : { ...s, duration: stepDuration(s) }));
         renderIntro();
       })
     );
