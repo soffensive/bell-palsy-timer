@@ -24,7 +24,7 @@ Guided facial exercise timer for Bell's palsy (facial nerve palsy) recovery. It 
    - The rep cycle is `floor(duration / reps)` seconds and must be greater than `hold`. Every exercise lasts 60 s.
    - `GROUPS` sets the face areas, top to bottom. Routines are sorted by it.
 3. **`buildRoutine(lengthKey)`**: in synkinesis mode it first picks `ceil(count / 3)` synkinesis exercises. It fills the rest round-robin over the groups (eyes and mouth first), then sorts by group.
-4. **Storage**: `localStorage` keys are prefixed `bpt.` (lang, length, sound, voice, meter, side, synkinesis, history). The history is an array of `{ date, ts, length, completed, symmetry?, perExercise?, coactivation? }`.
+4. **Storage**: `localStorage` keys are prefixed `bpt.` (lang, length, sound, voice, meter, side, synkinesis, history). The history is an array of `{ date, ts, length, completed, symmetry?, perExercise?, coactivation?, rest?, tension? }`.
 5. **Sound and voice**: Web Audio tones (`sounds.*`) and `speechSynthesis` in the UI language. `cueState(step, elapsed)` drives both the visible rep cue and the spoken cue.
 6. **Symmetry meter**: MediaPipe Face Landmarker (`@mediapipe/tasks-vision`, version pinned in `MEDIAPIPE_BASE`), loaded via dynamic `import()` only when the meter is enabled.
    - `cameraSource` implements the *activity source* interface: `load / start(onSample) / stop / read(names) → {left, right}`. A future EMG source must implement the same interface.
@@ -32,7 +32,11 @@ Guided facial exercise timer for Bell's palsy (facial nerve palsy) recovery. It 
    - Co-movement: a `watch` signal on the affected side rising ≥ `COACT_THRESHOLD` during a hold.
    - `SWAP_SIDES = false` has been verified on a real device (a left wink moves the "Left" bar).
 7. **Session layout**: the `.stage` holds the video, the ring, the cue and the meter. When the camera works, `#sessionCard` gets `.has-camera`. The mirror then fills about 58% of the screen height, with the timer in the top-right corner and the cue pill plus a compact meter strip at the bottom. Without a camera, the large ring layout is used. The language switch is hidden during a session (`body[data-screen]`). The whole session must fit on a phone screen (about 412×915 CSS px) without scrolling.
-8. **Session flow**: `startSession → beginPhase("prep" | "active") → advance → finishSession`. `stopSession` clears the timer, speech, camera, wake lock and meter.
+8. **Tension diary and resting asymmetry**:
+   - The diary form on the end screen (`buildDiary`, `saveDiary`) stores `tension: { eye, cheek, mouth, chin, neck }` (0–10) on the session's history entry. It's prefilled with the last ratings.
+   - Resting asymmetry: `collectRest()` samples `eyeOpen*` and `cornerDrop*` from `derivedSignals()` during the last 4 s of each prep. That needs the meter on and at least 20 samples. The medians are stored per person-side as `rest`, and `restView()` turns them into affected-side values at display time.
+   - `renderTrends()` draws the "Verlauf" panel on the start page with sparklines of the last 14 sessions.
+9. **Session flow**: `startSession → beginPhase("prep" | "active") → advance → finishSession`. `stopSession` clears the timer, speech, camera, wake lock and meter.
 
 ## Conventions
 

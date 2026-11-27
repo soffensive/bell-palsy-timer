@@ -113,6 +113,103 @@
     }
 
     /* stats */
+    /* trends (start page) */
+    .trends {
+      background: #f9fbfa;
+      border: 1px solid #e6efea;
+      border-radius: 14px;
+      padding: 10px 14px;
+      margin-bottom: 16px;
+      font-size: 0.82rem;
+    }
+
+    .trends[hidden] {
+      display: none;
+    }
+
+    .trends summary {
+      font-weight: 600;
+      color: #1e4d42;
+      cursor: pointer;
+    }
+
+    .trends h4 {
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: #7a8f86;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin: 10px 0 4px;
+    }
+
+    .trend-row {
+      display: grid;
+      grid-template-columns: 1fr 90px 4.6em;
+      align-items: center;
+      gap: 8px;
+      padding: 2px 0;
+    }
+
+    .trend-row .spark {
+      color: #2e6b5e;
+    }
+
+    .trend-row strong {
+      text-align: right;
+      color: #0f1e19;
+      font-weight: 600;
+    }
+
+    .trend-note {
+      font-size: 0.74rem;
+      color: #5b6d66;
+      line-height: 1.4;
+      margin-top: 6px;
+    }
+
+    /* tension diary (complete screen) */
+    .diary {
+      text-align: left;
+      background: #f2f8f5;
+      border: 1px solid #dce9e3;
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+    }
+
+    .diary h3 {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: #1e4d42;
+    }
+
+    .diary .setting-note {
+      margin: 2px 0 8px;
+    }
+
+    .diary-field {
+      display: grid;
+      grid-template-columns: 4.5em 1fr 1.6em;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.85rem;
+      padding: 3px 0;
+    }
+
+    .diary-field input {
+      width: 100%;
+      accent-color: #2e6b5e;
+    }
+
+    .diary-field output {
+      text-align: right;
+      font-weight: 600;
+    }
+
+    .diary .btn {
+      margin-top: 8px;
+    }
+
     .stats {
       display: flex;
       gap: 8px;
@@ -572,6 +669,11 @@
       padding: 3px 0;
     }
 
+    .results li span:last-child {
+      white-space: nowrap;
+      font-weight: 600;
+    }
+
     .results li.total {
       border-top: 1px solid #e6efea;
       margin-top: 4px;
@@ -870,6 +972,11 @@
 
         <div class="stats" id="introStats"></div>
 
+        <details class="trends" id="trends" open hidden>
+          <summary data-i18n="trends.title"></summary>
+          <div id="trendsBody"></div>
+        </details>
+
         <div class="safety-box">
           <h3 data-i18n="safety.title"></h3>
           <p data-i18n="safety.p1"></p>
@@ -1007,6 +1114,13 @@
 
         <ul class="results" id="symmetryResults" hidden></ul>
 
+        <form class="diary" id="diary">
+          <h3 data-i18n="tension.title"></h3>
+          <p class="setting-note" data-i18n="tension.hint"></p>
+          <div id="diaryFields"></div>
+          <button type="submit" class="btn btn-quiet" id="diarySave" data-i18n="tension.save"></button>
+        </form>
+
         <button class="btn" id="restartBtn" data-i18n="complete.restart"></button>
         <button type="button" class="btn-link" id="homeBtn" data-i18n="complete.home"></button>
       </div>
@@ -1112,6 +1226,28 @@
         "cue.stroke": "Ausstreichen",
         "meter.coact": "⚠ Mitbewegung – kleiner und langsamer",
         "results.coact": "Mitbewegung {n}/{of}",
+        "tension.title": "Wie verspannt fühlt sich dein Gesicht gerade an?",
+        "tension.hint": "0 = ganz locker, 10 = sehr verspannt. Bewerte die betroffene Seite.",
+        "tension.save": "Im Tagebuch speichern",
+        "tension.saved": "Gespeichert ✓",
+        "tarea.eye": "Auge",
+        "tarea.cheek": "Wange",
+        "tarea.mouth": "Mund",
+        "tarea.chin": "Kinn",
+        "tarea.neck": "Hals",
+        "trends.title": "Verlauf",
+        "trends.tension": "Verspannung (0–10, weniger ist besser)",
+        "trends.rest": "Gesicht in Ruhe (Kamera)",
+        "rest.eye": "Augenöffnung",
+        "rest.mouth": "Mundwinkel",
+        "rest.eyeValue": "{n} %",
+        "rest.higher": "+{n} höher",
+        "rest.lower": "{n} tiefer",
+        "rest.level": "gleich",
+        "rest.eyeResult": "Augenöffnung in Ruhe (betroffen ÷ gesund)",
+        "rest.mouthResult": "Mundwinkel in Ruhe (betroffene Seite)",
+        "rest.note":
+          "Gemessen im entspannten Gesicht vor jeder Übung. Augenöffnung: betroffenes ÷ gesundes Auge. Mundwinkel: Höhenunterschied der betroffenen Seite in % der Gesichtsbreite. Ein engeres Auge oder ein höher stehender Mundwinkel in Ruhe kann auf Verspannung hindeuten; ein tieferer Mundwinkel eher auf Schwäche.",
       },
       en: {
         speechLang: "en-US",
@@ -1202,6 +1338,28 @@
         "cue.stroke": "Stroke",
         "meter.coact": "⚠ Co-movement – smaller and slower",
         "results.coact": "co-movement {n}/{of}",
+        "tension.title": "How tense does your face feel right now?",
+        "tension.hint": "0 = completely relaxed, 10 = very tense. Rate the affected side.",
+        "tension.save": "Save to diary",
+        "tension.saved": "Saved ✓",
+        "tarea.eye": "Eye",
+        "tarea.cheek": "Cheek",
+        "tarea.mouth": "Mouth",
+        "tarea.chin": "Chin",
+        "tarea.neck": "Neck",
+        "trends.title": "History",
+        "trends.tension": "Tension (0–10, lower is better)",
+        "trends.rest": "Face at rest (camera)",
+        "rest.eye": "Eye opening",
+        "rest.mouth": "Mouth corner",
+        "rest.eyeValue": "{n}%",
+        "rest.higher": "+{n} higher",
+        "rest.lower": "{n} lower",
+        "rest.level": "level",
+        "rest.eyeResult": "Eye opening at rest (affected ÷ healthy)",
+        "rest.mouthResult": "Mouth corner at rest (affected side)",
+        "rest.note":
+          "Measured on the relaxed face before each exercise. Eye opening: affected ÷ healthy eye. Mouth corner: height difference of the affected side in % of face width. A narrower eye or a raised mouth corner at rest can point to tension; a lower mouth corner rather to weakness.",
       },
     };
 
@@ -1547,6 +1705,11 @@
       meterStatus: $("meterStatus"),
       meterScore: $("meterScore"),
       symmetryResults: $("symmetryResults"),
+      trends: $("trends"),
+      trendsBody: $("trendsBody"),
+      diary: $("diary"),
+      diaryFields: $("diaryFields"),
+      diarySave: $("diarySave"),
       previewList: $("previewList"),
       shuffleBtn: $("shuffleBtn"),
       resetHistoryBtn: $("resetHistoryBtn"),
@@ -1663,6 +1826,7 @@
         entry.perExercise = { ...sessionResults };
       }
       if (completed && Object.keys(sessionCoact).length) entry.coactivation = { ...sessionCoact };
+      if (completed && sessionRestSummary) entry.rest = sessionRestSummary;
       history.push(entry);
       store.set("history", history.slice(-1000));
     }
@@ -1973,7 +2137,17 @@
     // reports one "mouthPucker" value), computed from the face landmarks.
     // Landmark sides follow MediaPipe's convention, like the blendshapes:
     // 291 is the person's left mouth corner, 61 the right one.
-    const LANDMARK = { noseBridge: 168, chin: 152, faceRight: 234, faceLeft: 454, mouthLeft: 291, mouthRight: 61 };
+    const LANDMARK = {
+      noseBridge: 168,
+      chin: 152,
+      faceRight: 234,
+      faceLeft: 454,
+      mouthLeft: 291,
+      mouthRight: 61,
+      // eyes: upper lid, lower lid, outer corner, inner corner
+      eyeLeft: [386, 374, 263, 362],
+      eyeRight: [159, 145, 33, 133],
+    };
     const CORNER_IN_SCALE = 5; // makes a typical pucker (~5% of face width) comparable to blendshape values
 
     function derivedSignals(lm, width, height) {
@@ -1992,9 +2166,21 @@
       const fromMidline = (p) => Math.abs((p.x - top.x) * dy - (p.y - top.y) * dx) / midLen / faceWidth;
       // Rises as the mouth corner moves in towards the midline (pucker, whistle, "O").
       const cornerIn = (i) => (0.5 - fromMidline(pt(i))) * CORNER_IN_SCALE;
+      // Resting-face metrics (see collectRest): eye opening = lid gap ÷ eye width;
+      // corner drop = how far down the midline the mouth corner sits, in face widths.
+      const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+      const eyeOpen = ([up, low, outer, inner]) => dist(pt(up), pt(low)) / dist(pt(outer), pt(inner));
+      const cornerDrop = (i) => {
+        const p = pt(i);
+        return ((p.x - top.x) * dx + (p.y - top.y) * dy) / midLen / faceWidth;
+      };
       return {
         mouthCornerInLeft: cornerIn(LANDMARK.mouthLeft),
         mouthCornerInRight: cornerIn(LANDMARK.mouthRight),
+        eyeOpenLeft: eyeOpen(LANDMARK.eyeLeft),
+        eyeOpenRight: eyeOpen(LANDMARK.eyeRight),
+        cornerDropLeft: cornerDrop(LANDMARK.mouthLeft),
+        cornerDropRight: cornerDrop(LANDMARK.mouthRight),
       };
     }
 
@@ -2074,7 +2260,52 @@
       });
     }
 
+    /* Resting asymmetry: sampled in the last seconds of every "up next"
+       countdown, when the face is relaxed. Stored per person-side, so the
+       affected side can still be changed later. */
+    const REST_KEYS = ["eyeOpenLeft", "eyeOpenRight", "cornerDropLeft", "cornerDropRight"];
+    const REST_MIN_SAMPLES = 20;
+    let sessionRest = null; // key -> samples
+    let sessionRestSummary = null; // key -> median, plus n
+
+    function resetRest() {
+      sessionRest = Object.fromEntries(REST_KEYS.map((k) => [k, []]));
+      sessionRestSummary = null;
+    }
+
+    function collectRest() {
+      if (!inSession || !sessionRest || phase !== "prep" || isPaused || timeLeft > 4) return;
+      const s = activitySource.scores;
+      if (!s || s.eyeOpenLeft == null) return;
+      REST_KEYS.forEach((k) => sessionRest[k].push(s[k]));
+    }
+
+    function summarizeRest() {
+      if (!sessionRest || sessionRest.eyeOpenLeft.length < REST_MIN_SAMPLES) return null;
+      const summary = Object.fromEntries(REST_KEYS.map((k) => [k, +median(sessionRest[k]).toFixed(4)]));
+      summary.n = sessionRest.eyeOpenLeft.length;
+      return summary;
+    }
+
+    // Rest metrics seen from the affected side.
+    function restView(rest) {
+      const aff = settings.side === "left" ? "Left" : "Right";
+      const healthy = aff === "Left" ? "Right" : "Left";
+      return {
+        eye: Math.round((rest["eyeOpen" + aff] / rest["eyeOpen" + healthy]) * 100),
+        // positive = affected mouth corner sits higher, in % of face width
+        mouth: +((rest["cornerDrop" + healthy] - rest["cornerDrop" + aff]) * 100).toFixed(1),
+      };
+    }
+
+    function mouthText(value) {
+      if (Math.abs(value) < 0.5) return t("rest.level");
+      const n = Math.abs(value).toLocaleString(settings.lang, { maximumFractionDigits: 1 });
+      return value > 0 ? t("rest.higher", { n }) : t("rest.lower", { n });
+    }
+
     function onMeterSample() {
+      collectRest();
       const step = routine[stepIndex];
       const show = Boolean(settings.meter && inSession && cameraStream && (step?.meter || step?.watch));
       els.meter.hidden = !show;
@@ -2198,6 +2429,7 @@
         b.setAttribute("aria-pressed", String(b.dataset.side === settings.side))
       );
       renderStats(els.introStats);
+      renderTrends();
     }
 
     function renderComplete() {
@@ -2214,6 +2446,11 @@
           if (c) parts.push((c.n ? "⚠ " : "") + t("results.coact", { n: c.n, of: c.of }));
           return { label: step.name[settings.lang] ?? step.name.en, value: parts.join(" · ") };
         });
+      if (sessionRestSummary) {
+        const rest = restView(sessionRestSummary);
+        rows.push({ label: t("rest.eyeResult"), value: t("rest.eyeValue", { n: rest.eye }) });
+        rows.push({ label: t("rest.mouthResult"), value: mouthText(rest.mouth) });
+      }
       if (total != null) rows.push({ label: t("results.total"), value: `${total} %`, total: true });
 
       els.symmetryResults.hidden = rows.length === 0;
@@ -2279,6 +2516,115 @@
 
     function announce(text) {
       els.liveRegion.textContent = text;
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Tension diary & trends                                              */
+    /* ------------------------------------------------------------------ */
+    const TENSION_AREAS = ["eye", "cheek", "mouth", "chin", "neck"];
+    let lastSessionTs = null; // the history entry the diary is saved to
+
+    // Sliders prefilled with the last saved ratings, so saving is one tap.
+    function buildDiary() {
+      const last = getHistory().filter((s) => s.tension).at(-1)?.tension ?? {};
+      els.diaryFields.innerHTML = "";
+      TENSION_AREAS.forEach((area) => {
+        const value = last[area] ?? 0;
+        const row = document.createElement("label");
+        row.className = "diary-field";
+        row.innerHTML = `<span data-i18n="tarea.${area}">${t(`tarea.${area}`)}</span>
+          <input type="range" min="0" max="10" step="1" name="${area}" value="${value}" />
+          <output>${value}</output>`;
+        const input = row.querySelector("input");
+        input.addEventListener("input", () => (row.querySelector("output").textContent = input.value));
+        els.diaryFields.appendChild(row);
+      });
+      els.diarySave.disabled = false;
+      els.diarySave.dataset.i18n = "tension.save";
+      els.diarySave.textContent = t("tension.save");
+    }
+
+    function saveDiary(event) {
+      event.preventDefault();
+      const tension = Object.fromEntries(
+        TENSION_AREAS.map((area) => [area, Number(els.diary.elements[area].value)])
+      );
+      const history = getHistory();
+      const entry = history.find((s) => s.ts === lastSessionTs) ?? history.at(-1);
+      if (!entry) return;
+      entry.tension = tension;
+      store.set("history", history);
+      els.diarySave.disabled = true;
+      els.diarySave.dataset.i18n = "tension.saved";
+      els.diarySave.textContent = t("tension.saved");
+    }
+
+    function sparkline(values, min, max) {
+      if (values.length < 2) return "<span></span>";
+      if (max - min < 1e-6) {
+        min -= 1;
+        max += 1;
+      }
+      const w = 90;
+      const h = 22;
+      const points = values
+        .map((v, i) => {
+          const x = (i / (values.length - 1)) * (w - 4) + 2;
+          const y = h - 3 - ((Math.min(max, Math.max(min, v)) - min) / (max - min)) * (h - 6);
+          return `${x.toFixed(1)},${y.toFixed(1)}`;
+        })
+        .join(" ");
+      return `<svg class="spark" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" aria-hidden="true">
+        <polyline points="${points}" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" /></svg>`;
+    }
+
+    const TREND_POINTS = 14;
+
+    function trendRow(label, values, min, max, latestText) {
+      const row = document.createElement("div");
+      row.className = "trend-row";
+      row.innerHTML = `<span></span>${sparkline(values, min, max)}<strong></strong>`;
+      row.firstChild.textContent = label;
+      row.lastChild.textContent = latestText;
+      return row;
+    }
+
+    function renderTrends() {
+      const history = getHistory().filter((s) => s.completed);
+      const tensionEntries = history.filter((s) => s.tension).slice(-TREND_POINTS);
+      const restEntries = history.filter((s) => s.rest).slice(-TREND_POINTS);
+      els.trends.hidden = !tensionEntries.length && !restEntries.length;
+      els.trendsBody.innerHTML = "";
+
+      if (tensionEntries.length) {
+        const h4 = document.createElement("h4");
+        h4.textContent = t("trends.tension");
+        els.trendsBody.appendChild(h4);
+        TENSION_AREAS.forEach((area) => {
+          const values = tensionEntries.map((s) => s.tension[area]).filter((v) => typeof v === "number");
+          if (values.length) els.trendsBody.appendChild(trendRow(t(`tarea.${area}`), values, 0, 10, String(values.at(-1))));
+        });
+      }
+
+      if (restEntries.length) {
+        const h4 = document.createElement("h4");
+        h4.textContent = t("trends.rest");
+        els.trendsBody.appendChild(h4);
+        const views = restEntries.map((s) => restView(s.rest));
+        const eyes = views.map((v) => v.eye);
+        const mouths = views.map((v) => v.mouth);
+        els.trendsBody.appendChild(
+          trendRow(t("rest.eye"), eyes, Math.min(...eyes), Math.max(...eyes), t("rest.eyeValue", { n: eyes.at(-1) }))
+        );
+        els.trendsBody.appendChild(
+          trendRow(t("rest.mouth"), mouths, Math.min(...mouths), Math.max(...mouths), mouthText(mouths.at(-1)))
+        );
+        const note = document.createElement("p");
+        note.className = "trend-note";
+        note.textContent = t("rest.note");
+        els.trendsBody.appendChild(note);
+      }
     }
 
     /* ------------------------------------------------------------------ */
@@ -2352,6 +2698,7 @@
       inSession = true;
       sessionResults = {};
       sessionCoact = {};
+      resetRest();
       setPaused(false);
       buildDots();
       showScreen("session");
@@ -2376,7 +2723,10 @@
 
     function finishSession() {
       stopSession();
+      sessionRestSummary = summarizeRest();
       recordSession(true);
+      lastSessionTs = getHistory().at(-1)?.ts ?? null;
+      buildDiary();
       sounds.finish();
       speak(t("announce.done"));
       announce(t("announce.done"));
@@ -2483,6 +2833,7 @@
       }
     });
 
+    els.diary.addEventListener("submit", saveDiary);
     els.beginBtn.addEventListener("click", startSession);
     els.restartBtn.addEventListener("click", () => {
       routine = buildRoutine(settings.length);

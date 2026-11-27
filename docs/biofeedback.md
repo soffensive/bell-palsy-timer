@@ -35,6 +35,13 @@ The camera image is processed locally and never uploaded. The model and the WebA
 - It depends on lighting, head pose and glasses. Face the camera straight on.
 - Check the left/right assignment once on your device: wink with your left eye during a blink exercise and the **left** bar must move. If it doesn't, set `SWAP_SIDES = true` in `index.html`.
 
+### Tension the camera can't see
+
+The camera only sees movement. Muscle tension without visible movement (early recovery, resting hypertonia in synkinesis, a muscle that doesn't fully let go) needs EMG. Until then the app adds two proxies:
+
+- **Tension diary:** after each session you rate eye, cheek, mouth, chin and neck from 0 to 10. The start page shows the trend.
+- **Resting asymmetry:** during the relaxed countdown before each exercise, the camera measures each eye's opening (lid gap ÷ eye width) and how high each mouth corner sits along the face midline. These are reported as affected ÷ healthy eye opening and as the mouth-corner height difference in % of face width. A narrowed eye or a raised mouth corner at rest is a typical outward sign of hypertonia; a lower corner points more to weakness. These are indirect clues, not tension measurements.
+
 ## Option 2: Surface EMG (sEMG)
 
 sEMG measures the electrical activity of the muscle through electrodes on the skin. It can detect activation **before** it becomes visible, which makes it the classic tool for facial biofeedback therapy.
