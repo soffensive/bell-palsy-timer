@@ -25,6 +25,7 @@ Guided facial exercise timer for Bell's palsy (facial nerve palsy) recovery. It 
      - `titleReps`: the title shows "9 reps" instead of "6 × 3 s"
      - `meter`: signal names measured left/right. These are MediaPipe blendshapes (`mouthSmile` → `mouthSmileLeft/Right`) or landmark-derived signals from `derivedSignals()`, e.g. `mouthCornerIn` for pucker/whistle, because `mouthPucker` has no left/right split. Don't mix a derived signal with a blendshape in one `meter` list: `read()` takes the maximum, and derived signals have a much higher resting level.
      - `watch`: blendshapes that must stay still (synkinesis)
+     - `synkWatch`: like `watch`, but only applied in synkinesis mode (`buildRoutine` copies it to `watch`). Regular mouth, cheek, chin and mouth-corner exercises watch the eye (`WATCH_EYES`); eye-closing exercises watch the mouth (`WATCH_MOUTH`). Left out where the watched area moves naturally (half squints, nose wrinkle, frown, eyebrow raise).
      - `synkinesis: true`: used only when synkinesis mode is on
      - `avoidWithSynkinesis`: left out when synkinesis mode is on
    - **Timing** (deliberately slow: quality over quantity, full relaxation between reps). Each rep is: slowly tense → hold `hold` → slowly release → rest, which is as long as the hold, within the tempo's limits (`repTiming()`). An exercise lasts `reps × cycle` (`stepDuration()`). Use 5–6 reps rather than 10.

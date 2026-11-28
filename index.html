@@ -1372,7 +1372,7 @@
         "stats.symChange": "{d} ggü. Vorwoche",
         "toggle.synkinesis": "Synkinesen-Übungen",
         "synkinesis.note":
-          "Für die spätere Phase, wenn sich Gesichtsteile ungewollt mitbewegen (z. B. das Auge beim Lächeln). Übe klein, langsam und entspannt. Mit der Symmetrie-Messung warnt die App bei Mitbewegung. „Hals anspannen“ wird dann ausgelassen.",
+          "Für die spätere Phase, wenn sich Gesichtsteile ungewollt mitbewegen (z. B. das Auge beim Lächeln). Übe klein, langsam und entspannt. Mit der Symmetrie-Messung warnt die App bei Mitbewegung – auch bei den normalen Mund-, Wangen- und Lidschluss-Übungen. „Hals anspannen“ wird dann ausgelassen.",
         "cue.stretch": "Dehnen",
         "cue.stroke": "Ausstreichen",
         "meter.coact": "⚠ Mitbewegung – kleiner und langsamer",
@@ -1512,7 +1512,7 @@
         "stats.symChange": "{d} vs. last week",
         "toggle.synkinesis": "Synkinesis exercises",
         "synkinesis.note":
-          "For the later phase, when parts of the face move along unintentionally (e.g. the eye during a smile). Practise small, slow and relaxed. With symmetry measuring on, the app warns about co-movement. “Neck Tense” is left out.",
+          "For the later phase, when parts of the face move along unintentionally (e.g. the eye during a smile). Practise small, slow and relaxed. With symmetry measuring on, the app warns about co-movement – also in the regular mouth, cheek and eye-closing exercises. “Neck Tense” is left out.",
         "cue.stretch": "Stretch",
         "cue.stroke": "Stroke",
         "meter.coact": "⚠ Co-movement – smaller and slower",
@@ -1577,6 +1577,11 @@
     // group order = top to bottom of the face; routines are sorted by it.
     const GROUPS = ["forehead", "eyes", "nose", "cheeks", "mouth", "chin", "neck"];
 
+    // Co-movement (synkinesis) checks: blendshapes on the affected side that
+    // should stay still. Mouth work tends to pull the eye along, eye closing the mouth.
+    const WATCH_EYES = ["eyeSquint", "eyeBlink"];
+    const WATCH_MOUTH = ["mouthSmile", "mouthStretch"];
+
     const POOL = [
       {
         id: "eyebrowRaise", group: "forehead", reps: 6, hold: 3, meter: ["browOuterUp"],
@@ -1595,7 +1600,7 @@
         },
       },
       {
-        id: "blinkHold", group: "eyes", reps: 6, hold: 3, meter: ["eyeBlink"],
+        id: "blinkHold", group: "eyes", reps: 6, hold: 3, meter: ["eyeBlink"], synkWatch: WATCH_MOUTH,
         name: { de: "Augen schließen", en: "Blink Hold" },
         desc: {
           de: "Schließe sanft beide Augen, halte sie geschlossen und öffne sie wieder. Achte auf eine gleichmäßige Bewegung.",
@@ -1611,7 +1616,7 @@
         },
       },
       {
-        id: "slowClose", group: "eyes", reps: 5, hold: 5, meter: ["eyeBlink"],
+        id: "slowClose", group: "eyes", reps: 5, hold: 5, meter: ["eyeBlink"], synkWatch: WATCH_MOUTH,
         name: { de: "Langsamer Lidschluss", en: "Slow Eye Closure" },
         desc: {
           de: "Schließe die Augen so langsam wie möglich, halte sie sanft geschlossen und öffne sie langsam wieder. Nicht zukneifen.",
@@ -1635,7 +1640,7 @@
         },
       },
       {
-        id: "cheekPuff", group: "cheeks", reps: 5, hold: 5,
+        id: "cheekPuff", group: "cheeks", reps: 5, hold: 5, synkWatch: WATCH_EYES,
         name: { de: "Backen aufblasen", en: "Cheek Puff" },
         desc: {
           de: "Blase beide Backen mit Luft auf und halte. Lass auf der schwächeren Seite keine Luft entweichen.",
@@ -1643,7 +1648,7 @@
         },
       },
       {
-        id: "cheekSuck", group: "cheeks", reps: 5, hold: 5,
+        id: "cheekSuck", group: "cheeks", reps: 5, hold: 5, synkWatch: WATCH_EYES,
         name: { de: "Wangen einsaugen", en: "Cheek Suck-In" },
         desc: {
           de: "Sauge die Wangen sanft zwischen die Zähne ein, wie ein Fischmund. Halten, dann entspannen.",
@@ -1651,7 +1656,7 @@
         },
       },
       {
-        id: "upperLipLift", group: "mouth", reps: 6, hold: 3, meter: ["mouthUpperUp"],
+        id: "upperLipLift", group: "mouth", reps: 6, hold: 3, meter: ["mouthUpperUp"], synkWatch: WATCH_EYES,
         name: { de: "Oberlippe heben", en: "Upper Lip Lift" },
         desc: {
           de: "Hebe die Oberlippe wie beim Zähnefletschen. Halten, dann entspannen. Achte auf Symmetrie.",
@@ -1659,7 +1664,7 @@
         },
       },
       {
-        id: "closedSmile", group: "mouth", reps: 5, hold: 5, meter: ["mouthSmile"],
+        id: "closedSmile", group: "mouth", reps: 5, hold: 5, meter: ["mouthSmile"], synkWatch: WATCH_EYES,
         name: { de: "Lächeln halten", en: "Smile Hold" },
         desc: {
           de: "Lächle sanft mit geschlossenen Lippen und halte. Nutze Spiegel und Finger, um die Bewegung gleichmäßig zu führen.",
@@ -1667,7 +1672,7 @@
         },
       },
       {
-        id: "openSmile", group: "mouth", reps: 5, hold: 5, meter: ["mouthSmile"],
+        id: "openSmile", group: "mouth", reps: 5, hold: 5, meter: ["mouthSmile"], synkWatch: WATCH_EYES,
         name: { de: "Offenes Lächeln", en: "Open Smile" },
         desc: {
           de: "Lächle so, dass die oberen Zähne sichtbar werden. Halten, dann entspannen. Beide Mundwinkel sollen sich gleichmäßig heben.",
@@ -1675,7 +1680,7 @@
         },
       },
       {
-        id: "eoSounds", group: "mouth", reps: 8, hold: 3, simple: true, titleReps: true, cues: ["cue.e", "cue.o"], meter: ["mouthSmile"],
+        id: "eoSounds", group: "mouth", reps: 8, hold: 3, simple: true, titleReps: true, cues: ["cue.e", "cue.o"], meter: ["mouthSmile"], synkWatch: WATCH_EYES,
         name: { de: "„I“ und „U“ sagen", en: "‘E’ and ‘O’ Sounds" },
         desc: {
           de: "Sage abwechselnd langsam „Iiii“ (Lippen breit) und „Uuuu“ (Lippen rund). Beobachte die Mundwinkel im Spiegel.",
@@ -1683,7 +1688,7 @@
         },
       },
       {
-        id: "pucker", group: "mouth", reps: 6, hold: 3, meter: ["mouthCornerIn"],
+        id: "pucker", group: "mouth", reps: 6, hold: 3, meter: ["mouthCornerIn"], synkWatch: WATCH_EYES,
         name: { de: "Kussmund", en: "Kiss / Pucker" },
         desc: {
           de: "Schiebe die Lippen nach vorne wie zu einem Kuss. Halten, dann entspannen. Bewege beide Seiten gleichmäßig.",
@@ -1691,7 +1696,7 @@
         },
       },
       {
-        id: "whistle", group: "mouth", reps: 6, hold: 3, meter: ["mouthCornerIn"],
+        id: "whistle", group: "mouth", reps: 6, hold: 3, meter: ["mouthCornerIn"], synkWatch: WATCH_EYES,
         name: { de: "Pfeifmund", en: "Whistle Shape" },
         desc: {
           de: "Forme die Lippen zu einem kleinen „o“, als würdest du pfeifen. Halten, dann entspannen.",
@@ -1699,7 +1704,7 @@
         },
       },
       {
-        id: "lipPress", group: "mouth", reps: 6, hold: 3, meter: ["mouthPress"],
+        id: "lipPress", group: "mouth", reps: 6, hold: 3, meter: ["mouthPress"], synkWatch: WATCH_EYES,
         name: { de: "Lippen aufeinanderpressen", en: "Lip Press" },
         desc: {
           de: "Presse die Lippen sanft aufeinander, halten, dann entspannen. Die Zähne dabei nicht zusammenbeißen.",
@@ -1707,7 +1712,7 @@
         },
       },
       {
-        id: "pbm", group: "mouth", reps: 9, hold: 2, simple: true, titleReps: true, cues: ["cue.p", "cue.b", "cue.m"],
+        id: "pbm", group: "mouth", reps: 9, hold: 2, simple: true, titleReps: true, cues: ["cue.p", "cue.b", "cue.m"], synkWatch: WATCH_EYES,
         name: { de: "P, B, M sprechen", en: "P, B, M Sounds" },
         desc: {
           de: "Sprich langsam und deutlich „P“, „B“ und „M“. Spüre, wie sich die Lippen gleichmäßig schließen.",
@@ -1715,7 +1720,7 @@
         },
       },
       {
-        id: "lowerLipDown", group: "chin", reps: 6, hold: 3, meter: ["mouthLowerDown"],
+        id: "lowerLipDown", group: "chin", reps: 6, hold: 3, meter: ["mouthLowerDown"], synkWatch: WATCH_EYES,
         name: { de: "Unterlippe senken", en: "Lower Lip Down" },
         desc: {
           de: "Ziehe die Unterlippe nach unten, sodass die unteren Zähne sichtbar werden. Halten, dann entspannen.",
@@ -1723,7 +1728,7 @@
         },
       },
       {
-        id: "chinWrinkle", group: "chin", reps: 6, hold: 3,
+        id: "chinWrinkle", group: "chin", reps: 6, hold: 3, synkWatch: WATCH_EYES,
         name: { de: "Kinn kräuseln", en: "Chin Wrinkle" },
         desc: {
           de: "Schiebe die Unterlippe nach oben und vorne, sodass sich das Kinn kräuselt (Schmollmund). Halten, dann entspannen.",
@@ -1731,7 +1736,7 @@
         },
       },
       {
-        id: "mouthCornersDown", group: "neck", reps: 6, hold: 3, meter: ["mouthFrown", "mouthStretch"],
+        id: "mouthCornersDown", group: "neck", reps: 6, hold: 3, meter: ["mouthFrown", "mouthStretch"], synkWatch: WATCH_EYES,
         name: { de: "Mundwinkel senken", en: "Mouth Corners Down" },
         desc: {
           de: "Ziehe beide Mundwinkel nach unten, wie bei einem traurigen Gesicht. Halten, dann entspannen. Achte im Spiegel darauf, dass beide Seiten gleich weit gehen.",
@@ -1759,7 +1764,7 @@
          side; the meter warns when they move along. */
       {
         id: "smileEyesOpen", group: "mouth", synkinesis: true, reps: 5, hold: 5,
-        meter: ["mouthSmile"], watch: ["eyeSquint", "eyeBlink"],
+        meter: ["mouthSmile"], watch: WATCH_EYES,
         name: { de: "Lächeln mit offenen Augen", en: "Smile with Eyes Open" },
         desc: {
           de: "Lächle langsam und nur ein wenig, während die Augen ganz offen und entspannt bleiben. Beobachte im Spiegel: Wird das Auge kleiner, ist die Bewegung zu groß – lieber kleiner und langsamer.",
@@ -1768,7 +1773,7 @@
       },
       {
         id: "puckerEyesOpen", group: "mouth", synkinesis: true, reps: 5, hold: 5,
-        meter: ["mouthCornerIn"], watch: ["eyeSquint", "eyeBlink"],
+        meter: ["mouthCornerIn"], watch: WATCH_EYES,
         name: { de: "Kussmund mit offenen Augen", en: "Pucker with Eyes Open" },
         desc: {
           de: "Schiebe die Lippen langsam nach vorne, während die Augen offen und entspannt bleiben. Nur so weit bewegen, wie es ohne Mitbewegung des Auges geht.",
@@ -1777,7 +1782,7 @@
       },
       {
         id: "eyeCloseMouthStill", group: "eyes", synkinesis: true, reps: 5, hold: 5,
-        meter: ["eyeBlink"], watch: ["mouthSmile", "mouthStretch"],
+        meter: ["eyeBlink"], watch: WATCH_MOUTH,
         name: { de: "Augen schließen, Mund ruhig", en: "Eye Closure, Mouth Still" },
         desc: {
           de: "Schließe die Augen langsam und sanft, ohne dass sich Mundwinkel oder Wange mitbewegen. Lege bei Bedarf einen Finger an den Mundwinkel, um Mitbewegungen zu spüren.",
@@ -2002,7 +2007,12 @@
 
       return [
         { ...WARMUP, duration: cfg.warmup },
-        ...picked.map((ex) => ({ ...ex, duration: stepDuration(ex) })),
+        // In synkinesis mode regular exercises are checked for co-movement too (`synkWatch`).
+        ...picked.map((ex) => ({
+          ...ex,
+          watch: ex.watch ?? (settings.synkinesis ? ex.synkWatch : undefined),
+          duration: stepDuration(ex),
+        })),
         { ...COOLDOWN, duration: cfg.cooldown },
       ];
     }
