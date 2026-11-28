@@ -640,6 +640,7 @@
     }
 
     .meter-bar {
+      position: relative;
       height: 10px;
       background: #dce9e3;
       border-radius: 999px;
@@ -674,8 +675,32 @@
       color: #0f1e19;
     }
 
-    .meter.no-bars .meter-row {
+    .meter.no-bars .meter-row[data-side] {
       display: none;
+    }
+
+    /* co-movement bar: the marker in the middle is the sensitivity threshold */
+    .meter-coact[hidden] {
+      display: none;
+    }
+
+    .meter-coact .meter-bar span {
+      background: #7a8f87;
+    }
+
+    .meter-coact.is-over .meter-bar span {
+      background: #a1461f;
+    }
+
+    .coact-mark {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      margin-left: -1px;
+      background: #0f1e19;
+      opacity: 0.6;
     }
 
     #meterStatus.is-warning {
@@ -876,7 +901,19 @@
       margin: 0;
     }
 
-    .has-camera .meter.no-bars .meter-row {
+    .has-camera .meter.no-bars .meter-row[data-side] {
+      display: none;
+    }
+
+    .has-camera .meter-row.meter-coact {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .has-camera .meter-row.meter-coact[hidden] {
       display: none;
     }
 
@@ -1063,6 +1100,16 @@
           <p class="setting-note" id="synkinesisNote" data-i18n="synkinesis.note" hidden></p>
         </div>
 
+        <div class="setting" id="coactSetting" hidden>
+          <span class="setting-label" data-i18n="coact.label"></span>
+          <div class="segmented" id="coactPicker" role="group">
+            <button type="button" data-coact="low" data-i18n="coact.low"></button>
+            <button type="button" data-coact="medium" data-i18n="coact.medium"></button>
+            <button type="button" data-coact="high" data-i18n="coact.high"></button>
+          </div>
+          <p class="setting-note" data-i18n="coact.note"></p>
+        </div>
+
         <div class="setting" id="sideSetting" hidden>
           <span class="setting-label" data-i18n="side.label"></span>
           <div class="segmented" id="sidePicker" role="group">
@@ -1150,6 +1197,10 @@
               <div class="meter-row" data-side="right">
                 <span class="meter-side"></span>
                 <div class="meter-bar"><span></span></div>
+              </div>
+              <div class="meter-row meter-coact" id="coactRow" hidden>
+                <span class="meter-side" data-i18n="meter.coactBar"></span>
+                <div class="meter-bar"><span></span><i class="coact-mark"></i></div>
               </div>
               <div class="meter-foot">
                 <span id="meterStatus"></span>
@@ -1326,6 +1377,13 @@
         "cue.stroke": "Ausstreichen",
         "meter.coact": "⚠ Mitbewegung – kleiner und langsamer",
         "results.coact": "Mitbewegung {n}/{of}",
+        "meter.coactBar": "Mitbewegung",
+        "coact.label": "Empfindlichkeit für Mitbewegung",
+        "coact.low": "Gering",
+        "coact.medium": "Mittel",
+        "coact.high": "Hoch",
+        "coact.note":
+          "Hoch erkennt schon kleine Mitbewegungen, schlägt aber auch mal ohne Grund an. Im Training zeigt ein Balken die Mitbewegung der betroffenen Seite; der Strich in der Mitte ist die Warnschwelle.",
         "tension.title": "Wie verspannt fühlt sich dein Gesicht gerade an?",
         "tension.hint": "0 = ganz locker, 10 = sehr verspannt. Bewerte die betroffene Seite.",
         "tension.save": "Im Tagebuch speichern",
@@ -1459,6 +1517,13 @@
         "cue.stroke": "Stroke",
         "meter.coact": "⚠ Co-movement – smaller and slower",
         "results.coact": "co-movement {n}/{of}",
+        "meter.coactBar": "Co-movement",
+        "coact.label": "Co-movement sensitivity",
+        "coact.low": "Low",
+        "coact.medium": "Medium",
+        "coact.high": "High",
+        "coact.note":
+          "High catches even small co-movements but may sometimes warn for no reason. During exercises a bar shows co-movement on the affected side; the line in the middle is the warning threshold.",
         "tension.title": "How tense does your face feel right now?",
         "tension.hint": "0 = completely relaxed, 10 = very tense. Rate the affected side.",
         "tension.save": "Save to diary",
@@ -1787,9 +1852,15 @@
       side: store.get("side", "right"),
       synkinesis: store.get("synkinesis", false),
       tempo: store.get("tempo", "calm"),
+      coactSensitivity: store.get("coactSensitivity", "medium"),
       reminders: store.get("reminders", ["08:00", "18:00"]),
     };
     if (!TEMPOS[settings.tempo]) settings.tempo = "calm";
+    // Co-movement threshold: how far a "watch" signal on the affected side may
+    // rise above rest before it counts. Subtle synkinesis often moves only 0.05–0.15.
+    const COACT_LEVELS = { low: 0.2, medium: 0.1, high: 0.05 };
+    if (!COACT_LEVELS[settings.coactSensitivity]) settings.coactSensitivity = "medium";
+    const coactThreshold = () => COACT_LEVELS[settings.coactSensitivity];
 
     const tempo = () => TEMPOS[settings.tempo];
     const prepSeconds = () => tempo().prep;
@@ -1847,6 +1918,9 @@
       tempoNote: $("tempoNote"),
       synkinesisToggle: $("synkinesisToggle"),
       synkinesisNote: $("synkinesisNote"),
+      coactSetting: $("coactSetting"),
+      coactPicker: $("coactPicker"),
+      coactRow: $("coactRow"),
       sideSetting: $("sideSetting"),
       sidePicker: $("sidePicker"),
       meter: $("meter"),
@@ -1973,7 +2047,10 @@
         entry.symmetry = symmetry;
         entry.perExercise = { ...sessionResults };
       }
-      if (completed && Object.keys(sessionCoact).length) entry.coactivation = { ...sessionCoact };
+      if (completed && Object.keys(sessionCoact).length) {
+        entry.coactivation = { ...sessionCoact };
+        entry.coactLevel = settings.coactSensitivity;
+      }
       if (completed && sessionRestSummary) entry.rest = sessionRestSummary;
       history.push(entry);
       store.set("history", history.slice(-1000));
@@ -2121,6 +2198,7 @@
       };
       return {
         key: `${rep}${part}`,
+        rep,
         part,
         label: `${t("rep")} ${rep + 1}/${step.reps} · ${words[part]}`,
         speech: words[part],
@@ -2230,7 +2308,6 @@
     // If a wink test shows the bars swapped, set this to true.
     const SWAP_SIDES = false;
     const MIN_ACTIVITY = 0.1; // ignore reps where neither side moved noticeably
-    const COACT_THRESHOLD = 0.2; // movement of a "watch" signal that counts as co-movement
     const SAMPLE_INTERVAL_MS = 66; // ~15 measurements per second
 
     // An activity source reports per-side muscle activity (0..1) for a list of
@@ -2389,6 +2466,8 @@
         // synkinesis watch (affected side only)
         watchRest: [],
         watchBase: null,
+        watchKey: null, // rep index while tensing or holding, else null
+        watchSampled: false,
         watchPeak: 0,
         watchReps: 0,
         coactReps: 0,
@@ -2396,14 +2475,20 @@
       };
     }
 
-    function finishRep() {
+    // Co-movement is watched while tensing and holding, one count per rep.
+    function finishWatchRep() {
       if (!measure) return;
-      if (measure.peak && routine[stepIndex]?.watch && measure.watchBase != null) {
+      if (measure.watchSampled) {
         measure.watchReps += 1;
-        if (measure.watchPeak >= COACT_THRESHOLD) measure.coactReps += 1;
+        if (measure.watchPeak >= coactThreshold()) measure.coactReps += 1;
       }
+      measure.watchSampled = false;
       measure.watchPeak = 0;
       measure.coactNow = false;
+    }
+
+    function finishRep() {
+      if (!measure) return;
       if (measure.peak && routine[stepIndex]?.meter) {
         const { left, right } = measure.peak;
         const high = Math.max(left, right);
@@ -2419,12 +2504,20 @@
       const step = routine[stepIndex];
       if (!measure || !(step?.meter || step?.watch)) return;
       finishRep();
+      finishWatchRep();
       if (measure.reps.length) sessionResults[step.id] = Math.round(mean(measure.reps));
       if (measure.watchReps) sessionCoact[step.id] = { n: measure.coactReps, of: measure.watchReps };
     }
 
+    // Fill the co-movement bar: the threshold marker sits in the middle.
+    function setCoactBar(coact) {
+      const fill = Math.min(1, coact / (2 * coactThreshold()));
+      els.coactRow.querySelector(".meter-bar span").style.width = `${fill * 100}%`;
+      els.coactRow.classList.toggle("is-over", coact >= coactThreshold());
+    }
+
     function renderMeterLabels() {
-      els.meter.querySelectorAll(".meter-row").forEach((row) => {
+      els.meter.querySelectorAll(".meter-row[data-side]").forEach((row) => {
         const affected = row.dataset.side === settings.side;
         row.classList.toggle("is-affected", affected);
         row.querySelector(".meter-side").textContent =
@@ -2433,7 +2526,7 @@
     }
 
     function setBars(activity) {
-      els.meter.querySelectorAll(".meter-row").forEach((row) => {
+      els.meter.querySelectorAll(".meter-row[data-side]").forEach((row) => {
         const value = activity[row.dataset.side] / (measure?.max || 1);
         row.querySelector(".meter-bar span").style.width = `${Math.min(100, value * 100)}%`;
       });
@@ -2503,7 +2596,9 @@
       // Watched signal on the affected side (synkinesis exercises).
       const watched = raw && step.watch ? activitySource.read(step.watch)[settings.side] : null;
 
+      els.coactRow.hidden = !step.watch;
       let activity = { left: 0, right: 0 };
+      let coact = 0;
       if (raw && measure && !isPaused) {
         if (phase === "prep") {
           // Face at rest before the exercise: collect the baseline.
@@ -2530,12 +2625,18 @@
             measure.peak.right = Math.max(measure.peak.right, activity.right);
           }
 
+          const watchKey = cue.part === "tense" || cue.part === "hold" ? cue.rep : null;
+          if (watchKey !== measure.watchKey) {
+            finishWatchRep();
+            measure.watchKey = watchKey;
+          }
           if (watched != null) {
             measure.watchBase ??= median(measure.watchRest);
-            const coact = Math.max(0, watched - measure.watchBase);
-            if (repKey) {
+            coact = Math.max(0, watched - measure.watchBase);
+            if (watchKey != null) {
+              measure.watchSampled = true;
               measure.watchPeak = Math.max(measure.watchPeak, coact);
-              if (coact >= COACT_THRESHOLD && !measure.coactNow) {
+              if (coact >= coactThreshold() && !measure.coactNow) {
                 measure.coactNow = true;
                 sounds.warn();
               }
@@ -2547,6 +2648,7 @@
       if (measure?.coactNow) status = t("meter.coact");
       els.meterStatus.classList.toggle("is-warning", Boolean(measure?.coactNow));
       setBars(activity);
+      if (step.watch) setCoactBar(coact);
       els.meterStatus.textContent = status;
       els.meterScore.textContent = measure?.lastScore != null ? t("meter.score", { n: measure.lastScore }) : "";
     }
@@ -2608,6 +2710,10 @@
       els.synkinesisToggle.checked = settings.synkinesis;
       els.synkinesisNote.hidden = !settings.synkinesis;
       els.sideSetting.hidden = !settings.meter;
+      els.coactSetting.hidden = !(settings.meter && settings.synkinesis);
+      els.coactPicker.querySelectorAll("button").forEach((b) =>
+        b.setAttribute("aria-pressed", String(b.dataset.coact === settings.coactSensitivity))
+      );
       els.sidePicker.querySelectorAll("button").forEach((b) =>
         b.setAttribute("aria-pressed", String(b.dataset.side === settings.side))
       );
@@ -3123,6 +3229,14 @@
       store.set("meter", settings.meter);
       renderIntro();
     });
+
+    els.coactPicker.querySelectorAll("button").forEach((b) =>
+      b.addEventListener("click", () => {
+        settings.coactSensitivity = b.dataset.coact;
+        store.set("coactSensitivity", settings.coactSensitivity);
+        renderIntro();
+      })
+    );
 
     els.sidePicker.querySelectorAll("button").forEach((b) =>
       b.addEventListener("click", () => {

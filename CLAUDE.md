@@ -36,12 +36,13 @@ Guided facial exercise timer for Bell's palsy (facial nerve palsy) recovery. It 
    - Changing the tempo on the start page retimes the current routine without reshuffling it.
    - `GROUPS` sets the face areas, top to bottom. Routines are sorted by it.
 3. **`buildRoutine(lengthKey)`**: in synkinesis mode it first picks `ceil(count / 3)` synkinesis exercises. It fills the rest round-robin over the groups (eyes and mouth first), then sorts by group.
-4. **Storage**: `localStorage` keys are prefixed `bpt.` (lang, length, tempo, sound, voice, meter, side, synkinesis, reminders, history). The history is an array of `{ date, ts, length, tempo, completed, symmetry?, perExercise?, coactivation?, rest?, tension? }`.
+4. **Storage**: `localStorage` keys are prefixed `bpt.` (lang, length, tempo, sound, voice, meter, side, synkinesis, coactSensitivity, reminders, history). The history is an array of `{ date, ts, length, tempo, completed, symmetry?, perExercise?, coactivation?, coactLevel?, rest?, tension? }`.
 5. **Sound and voice**: Web Audio tones (`sounds.*`) and `speechSynthesis` in the UI language. `cueState(step, elapsed)` drives both the visible rep cue and the spoken cue.
 6. **Symmetry meter**: MediaPipe Face Landmarker (`@mediapipe/tasks-vision`, version pinned in `MEDIAPIPE_BASE`), loaded via dynamic `import()` only when the meter is enabled.
    - `cameraSource` implements the *activity source* interface: `load / start(onSample) / stop / read(names) → {left, right}`. A future EMG source must implement the same interface.
    - The resting baseline is recorded during the 6 s prep. The per-side peak is taken during each hold. Rep symmetry is `min / max`.
-   - Co-movement: a `watch` signal on the affected side rising ≥ `COACT_THRESHOLD` during a hold.
+   - Co-movement: a `watch` signal on the affected side rising above its resting median by ≥ `coactThreshold()` while tensing or holding, counted once per rep (`finishWatchRep()`). The threshold comes from the sensitivity setting (`settings.coactSensitivity`, `COACT_LEVELS`: low 0.2 / medium 0.1 (default) / high 0.05), shown on the start page when meter and synkinesis mode are both on. The level used is stored as `coactLevel` on the history entry.
+   - During `watch` exercises the meter shows a co-movement bar (`#coactRow`, `setCoactBar()`). Its full width is 2 × the threshold, so the threshold marker always sits in the middle.
    - `SWAP_SIDES = false` has been verified on a real device (a left wink moves the "Left" bar).
 7. **Session layout**: the `.stage` holds the video, the ring, the cue and the meter. When the camera works, `#sessionCard` gets `.has-camera`. The mirror then fills about 58% of the screen height, with the timer in the top-right corner and the cue pill plus a compact meter strip at the bottom. Without a camera, the large ring layout is used. The language switch is hidden during a session (`body[data-screen]`). The whole session must fit on a phone screen (about 412×915 CSS px) without scrolling.
 8. **App, reminders and backup** (the "App & Daten" card on the start page):
