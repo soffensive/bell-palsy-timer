@@ -1171,7 +1171,7 @@
 
         <!-- With a camera, the stage shows the mirror image with the timer, cue
              and meter on top of it. Without one, it shows the large ring. -->
-        <div class="stage">
+        <div class="stage" id="stage">
           <video id="mirror" autoplay playsinline muted hidden></video>
 
           <div class="ring-wrap" id="ringWrap">
@@ -1321,6 +1321,29 @@
         "area.3": "Rund um die Nase",
         "area.4": "Kieferlinie",
         "area.5": "Unter den Augen",
+        "synkArea.0": "Stirn",
+        "synkArea.1": "Schläfen",
+        "synkArea.2": "Wangen · nach außen",
+        "synkArea.3": "Kinn · zur Mitte",
+        "synkArea.4": "Hals · betroffene Seite",
+        "cue.breatheIn": "Durch die Nase einatmen",
+        "cue.breatheOut": "Durch den Mund ausatmen",
+        "cue.press": "Drücken",
+        "cue.eyeTop": "Oben",
+        "cue.eyeSide": "Seitlich",
+        "cue.eyeUnder": "Unten",
+        "cue.upperLip": "Oberlippe",
+        "cue.lowerLip": "Unterlippe",
+        "cue.neckFront": "Vorne",
+        "cue.neckMid": "Mitte",
+        "cue.neckBack": "Hinten",
+        "cue.clock0": "12 Uhr",
+        "cue.clock1": "5 nach",
+        "cue.clock2": "10 nach",
+        "cue.clock3": "Viertel nach",
+        "cue.clock4": "20 nach",
+        "cue.clock5": "25 nach",
+        "cue.clock6": "Halb",
         "announce.prep": "Als Nächstes: {name}.",
         "announce.now": "Jetzt: {name}.",
         "announce.done": "Geschafft! Einheit abgeschlossen.",
@@ -1372,7 +1395,7 @@
         "stats.symChange": "{d} ggü. Vorwoche",
         "toggle.synkinesis": "Synkinesen-Übungen",
         "synkinesis.note":
-          "Für die spätere Phase, wenn sich Gesichtsteile ungewollt mitbewegen (z. B. das Auge beim Lächeln). Übe klein, langsam und entspannt. Mit der Symmetrie-Messung warnt die App bei Mitbewegung – auch bei den normalen Mund-, Wangen- und Lidschluss-Übungen. „Hals anspannen“ wird dann ausgelassen.",
+          "Für die spätere Phase, wenn sich Gesichtsteile ungewollt mitbewegen (z. B. das Auge beim Lächeln). Die Einheit besteht dann vor allem aus Massage, Dehnungen der betroffenen Seite und Entspannung, dazu wenige kleine, langsame Bewegungen. Sprich das Programm am besten mit deiner Therapeutin / deinem Therapeuten ab. Mit der Symmetrie-Messung warnt die App bei den Bewegungsübungen, wenn sich etwas mitbewegt. „Hals anspannen“ wird dann ausgelassen.",
         "cue.stretch": "Dehnen",
         "cue.stroke": "Ausstreichen",
         "meter.coact": "⚠ Mitbewegung – kleiner und langsamer",
@@ -1461,6 +1484,29 @@
         "area.3": "Around the nose",
         "area.4": "Jawline",
         "area.5": "Under the eyes",
+        "synkArea.0": "Forehead",
+        "synkArea.1": "Temples",
+        "synkArea.2": "Cheeks · outward",
+        "synkArea.3": "Chin · towards the middle",
+        "synkArea.4": "Neck · affected side",
+        "cue.breatheIn": "Breathe in through your nose",
+        "cue.breatheOut": "Breathe out through your mouth",
+        "cue.press": "Press",
+        "cue.eyeTop": "Top",
+        "cue.eyeSide": "Side",
+        "cue.eyeUnder": "Under",
+        "cue.upperLip": "Upper lip",
+        "cue.lowerLip": "Lower lip",
+        "cue.neckFront": "Front",
+        "cue.neckMid": "Middle",
+        "cue.neckBack": "Back",
+        "cue.clock0": "12 o'clock",
+        "cue.clock1": "5 past",
+        "cue.clock2": "10 past",
+        "cue.clock3": "Quarter past",
+        "cue.clock4": "20 past",
+        "cue.clock5": "25 past",
+        "cue.clock6": "Half past",
         "announce.prep": "Up next: {name}.",
         "announce.now": "Now: {name}.",
         "announce.done": "Well done! Routine complete.",
@@ -1512,7 +1558,7 @@
         "stats.symChange": "{d} vs. last week",
         "toggle.synkinesis": "Synkinesis exercises",
         "synkinesis.note":
-          "For the later phase, when parts of the face move along unintentionally (e.g. the eye during a smile). Practise small, slow and relaxed. With symmetry measuring on, the app warns about co-movement – also in the regular mouth, cheek and eye-closing exercises. “Neck Tense” is left out.",
+          "For the later phase, when parts of the face move along unintentionally (e.g. the eye during a smile). Sessions then consist mainly of massage, stretches of the affected side and relaxation, plus a few small, slow movements. Best agree on the programme with your therapist. With symmetry measuring on, the app warns about co-movement during the movement exercises. “Neck Tense” is left out.",
         "cue.stretch": "Stretch",
         "cue.stroke": "Stroke",
         "meter.coact": "⚠ Co-movement – smaller and slower",
@@ -1552,7 +1598,8 @@
     /* ------------------------------------------------------------------ */
     /* Exercises                                                           */
     /* ------------------------------------------------------------------ */
-    const MASSAGE_AREAS = 6;
+    // Massage areas: cue key and share of the massage time.
+    const MASSAGE_AREAS = [0, 1, 2, 3, 4, 5].map((i) => ({ key: `area.${i}`, weight: 1 }));
 
     const WARMUP = {
       id: "warmup",
@@ -1573,6 +1620,36 @@
         en: "Repeat the same gentle massage as the warm-up to relax the face. {n} seconds per area.",
       },
     };
+
+    /* Synkinesis mode (after Facial Palsy UK, "Management of Synkinesis"):
+       the warm-up is a firm massage weighted like the video (2 : 1 : 3 : 2 : 3
+       minutes) and the session ends with a guided relaxation. */
+    const SYNK_MASSAGE = {
+      id: "synkMassage",
+      massage: true,
+      areas: [2, 1, 3, 2, 3].map((weight, i) => ({ key: `synkArea.${i}`, weight })),
+      name: { de: "Massage", en: "Massage" },
+      desc: {
+        de: "Massiere mit festem Druck der Fingerkuppen in kleinen, langsamen Kreisen. Die Finger bleiben an einer Stelle auf der Haut, sodass sich der Muskel darunter mitbewegt – nicht über die Haut reiben. Wangen in drei Linien nach außen, das Kinn von außen zur Mitte, den Hals auf der betroffenen Seite in drei Linien vom Kiefer zum Schlüsselbein. Stütze die Ellbogen auf, wenn das angenehmer ist.",
+        en: "Massage with firm pressure from your finger pads in small, slow circles. Keep your fingers in one spot on the skin so the muscle underneath moves – don't rub over the skin. Cheeks in three lines outward, the chin from the outside towards the middle, the neck on the affected side in three lines from the jaw to the collarbone. Rest your elbows on a table if that's more comfortable.",
+      },
+    };
+
+    const RELAXATION = {
+      id: "relax",
+      relax: true,
+      name: { de: "Entspannung", en: "Relaxation" },
+      desc: {
+        de: "Setz dich bequem hin, die Füße flach auf dem Boden. Leg die Hände an die Wangen und lass ihr Gewicht die Wangen sanft nach unten sinken. Schau nach unten in deinen Schoß, ohne die Augen zu schließen. Atme durch die Nase ein und durch den Mund aus und lass das Gesicht ganz locker werden. Tut auch zwischendurch gut: 5 Minuten, bis zu 3-mal am Tag.",
+        en: "Sit comfortably with your feet flat on the floor. Rest your hands on your cheeks and let their weight gently draw your cheeks down. Look down into your lap without closing your eyes. Breathe in through your nose and out through your mouth, and let your face go completely loose. Also good on its own: 5 minutes, up to 3 times a day.",
+      },
+    };
+    const BREATH_IN = 4; // seconds of the relaxation's breathing cue
+    const BREATH_OUT = 6;
+    const BREATHS_SPOKEN = 3; // then the voice goes quiet
+
+    // Massage and relaxation run as one flow, without reps.
+    const isFlow = (step) => Boolean(step.massage || step.relax);
 
     // group order = top to bottom of the face; routines are sorted by it.
     const GROUPS = ["forehead", "eyes", "nose", "cheeks", "mouth", "chin", "neck"];
@@ -1789,16 +1866,87 @@
           en: "Close your eyes slowly and gently without your mouth corner or cheek moving along. Rest a finger on the mouth corner to feel any co-movement.",
         },
       },
+      /* Synkinesis stretches and massage (`stretch: true`), after Facial Palsy
+         UK, "Stretches for the Tight Side". Synkinesis routines are built
+         mostly from these. `cueBlock` = reps per cue word (positions in blocks). */
       {
-        id: "cheekStretch", group: "cheeks", synkinesis: true, reps: 3, hold: 15, cues: ["cue.stretch"],
-        name: { de: "Wangendehnung von innen", en: "Inner Cheek Stretch" },
+        id: "foreheadStretch", group: "forehead", synkinesis: true, stretch: true, reps: 5, hold: 3, simple: true, cues: ["cue.stretch"],
+        name: { de: "Stirn dehnen", en: "Forehead Stretch" },
         desc: {
-          de: "Mit sauberen Händen den Daumen auf der betroffenen Seite innen an die Wange legen, den Zeigefinger außen. Die Wange sanft nach außen dehnen und halten, dann lösen. Es darf nicht wehtun.",
-          en: "With clean hands, place your thumb inside the cheek on the affected side and your index finger outside. Gently stretch the cheek outward and hold, then release. It shouldn't hurt.",
+          de: "Leg die Finger beider Hände in die Mitte der Stirn und drück fest auf. Zieh eine Hand nach oben zum Haaransatz und die andere nach unten zur Augenbraue. Es darf nicht wehtun.",
+          en: "Place the fingers of both hands in the middle of your forehead and press firmly. Pull one hand up towards the hairline and the other down towards the eyebrow. It shouldn't hurt.",
         },
       },
       {
-        id: "chinRelax", group: "chin", synkinesis: true, reps: 8, hold: 4, simple: true, cues: ["cue.stroke"],
+        id: "eyeStretches", group: "eyes", synkinesis: true, stretch: true, reps: 15, hold: 3, simple: true, titleReps: true,
+        cues: ["cue.eyeTop", "cue.eyeSide", "cue.eyeUnder"], cueBlock: 5,
+        name: { de: "Rund ums Auge dehnen", en: "Eye Area Stretches" },
+        desc: {
+          de: "Je 5-mal auf der betroffenen Seite. Oben: Finger in die Mitte der Augenbraue legen und nach außen zum Brauenende ziehen. Seitlich: Finger neben den äußeren Augenwinkel, eine Hand nach oben, die andere nach unten ziehen. Unten: Finger unter das Unterlid, eine Hand Richtung Nase, die andere Richtung Ohr ziehen. Sanft, nie auf den Augapfel drücken.",
+          en: "5 times each on the affected side. Top: place your fingers in the middle of the eyebrow and pull outward to its end. Side: fingers next to the outer corner of the eye, pull one hand up and the other down. Under: fingers below the lower eyelid, pull one hand towards the nose and the other towards the ear. Gently, never press on the eyeball.",
+        },
+      },
+      {
+        id: "eyelidStretch", group: "eyes", synkinesis: true, stretch: true, reps: 3, hold: 20, cues: ["cue.stretch"],
+        name: { de: "Augenlid dehnen", en: "Eyelid Stretch" },
+        desc: {
+          de: "Hilft, wenn sich das Auge nicht ganz schließt oder du unvollständig blinzelst. Halte das Lid mit einem Finger sanft geschlossen und heb mit der anderen Hand die Augenbraue an, sodass sich das Lid dehnt. Halten, dann lösen. Kein Druck aufs Auge.",
+          en: "Helps if your eye doesn't close fully or you blink incompletely. Hold the eyelid gently closed with one finger and lift the eyebrow with the other hand so the lid stretches. Hold, then release. No pressure on the eye.",
+        },
+      },
+      {
+        id: "nostrilStretch", group: "nose", synkinesis: true, stretch: true, reps: 5, hold: 3, simple: true, cues: ["cue.stretch"],
+        name: { de: "Nasenflügel dehnen", en: "Nostril Stretch" },
+        desc: {
+          de: "Mit sauberen Händen: Leg den Daumen innen in das Nasenloch der betroffenen Seite und streich mit einem Finger außen über den Muskel am Nasenflügel.",
+          en: "With clean hands: place your thumb inside the nostril on the affected side and slide a finger over the muscle on the outside of the nostril.",
+        },
+      },
+      {
+        id: "cheekClock", group: "cheeks", synkinesis: true, stretch: true, reps: 35, hold: 2, simple: true, titleReps: true,
+        cues: ["cue.clock0", "cue.clock1", "cue.clock2", "cue.clock3", "cue.clock4", "cue.clock5", "cue.clock6"], cueBlock: 5,
+        name: { de: "Wangen-Uhr", en: "Cheek Clock Stretch" },
+        desc: {
+          de: "Mit sauberen Händen: Daumen innen in die Wange der betroffenen Seite, Finger außen, fest greifen und die Wange entlang einer Linie ziehen – je 5-mal an 7 Positionen wie auf einem Zifferblatt: 12 Uhr neben der Nase, 5 nach am äußeren Augenwinkel, 10 nach am Wangenknochen, Viertel nach vom Ohrläppchen, 20 und 25 nach von der Kieferlinie nach oben, halb vom Kinn gerade nach oben.",
+          en: "With clean hands: thumb inside the cheek on the affected side, fingers outside, grip firmly and pull the cheek along a line – 5 times at each of 7 positions like on a clock face: 12 o'clock next to the nose, 5 past at the outer corner of the eye, 10 past along the cheekbone, quarter past from the earlobe, 20 and 25 past from the jawline upward, half past from the chin straight up.",
+        },
+      },
+      {
+        id: "cheekStretch", group: "cheeks", synkinesis: true, stretch: true, reps: 3, hold: 20, cues: ["cue.stretch"],
+        name: { de: "Wange nach außen dehnen", en: "Outward Cheek Stretch" },
+        desc: {
+          de: "Mit sauberen Händen: Leg einen Fingerknöchel an die leicht geschlossenen Zähne, den Zeigefinger innen in die Wange der betroffenen Seite. Beuge die Fingerspitze nach außen, sodass sich die Wange von den Zähnen weg dehnt. Halten, dann lösen. Es darf nicht wehtun.",
+          en: "With clean hands: rest a knuckle against your lightly closed teeth with your index finger inside the cheek on the affected side. Bend the fingertip outward so the cheek stretches away from the teeth. Hold, then release. It shouldn't hurt.",
+        },
+      },
+      {
+        id: "triggerPoint", group: "cheeks", synkinesis: true, stretch: true, reps: 1, hold: 120, simple: true, cues: ["cue.press"],
+        name: { de: "Verspannte Punkte lösen", en: "Trigger Point Release" },
+        desc: {
+          de: "Such auf der betroffenen Seite eine verspannte, druckempfindliche Stelle, z. B. in der Wange, am Kinn oder an der Stirn. Drück 2 Minuten lang fest und gleichmäßig direkt darauf – fest, aber gut aushaltbar. So lässt der Muskel langsam los.",
+          en: "Find a tight, tender spot on the affected side, e.g. in the cheek, chin or forehead. Press firmly and steadily right on it for 2 minutes – firm, but comfortably bearable. This helps the muscle let go.",
+        },
+      },
+      {
+        id: "lipStretch", group: "mouth", synkinesis: true, stretch: true, reps: 6, hold: 20,
+        cues: ["cue.upperLip", "cue.lowerLip"], cueBlock: 3,
+        name: { de: "Lippen dehnen", en: "Lip Stretches" },
+        desc: {
+          de: "Leg einen Finger in die Mitte der Oberlippe und einen an den Mundwinkel der betroffenen Seite und zieh sie sanft auseinander. Halten, dann lösen. Erst 3-mal die Oberlippe, dann 3-mal die Unterlippe.",
+          en: "Place one finger in the middle of the upper lip and one at the corner of the mouth on the affected side and gently pull them apart. Hold, then release. First 3 times for the upper lip, then 3 times for the lower lip.",
+        },
+      },
+      {
+        id: "neckSideStretch", group: "neck", synkinesis: true, stretch: true, reps: 15, hold: 3, simple: true, titleReps: true,
+        cues: ["cue.neckFront", "cue.neckMid", "cue.neckBack"], cueBlock: 5,
+        name: { de: "Hals dehnen, betroffene Seite", en: "Neck Stretch, Affected Side" },
+        desc: {
+          de: "Neig den Kopf von der betroffenen Seite weg. Leg die Hände auf die Mitte des Halses und zieh eine nach oben Richtung Kiefer, die andere nach unten Richtung Schlüsselbein. Je 5-mal vorne, in der Mitte und hinten am Hals. Bei Halssträngen nur nach Rücksprache mit deiner Therapeutin / deinem Therapeuten.",
+          en: "Tilt your head away from the affected side. Place your hands on the middle of the neck and pull one up towards the jaw and the other down towards the collarbone. 5 times each at the front, middle and back of the neck. If you have neck bands, only after asking your therapist.",
+        },
+      },
+      {
+        id: "chinRelax", group: "chin", synkinesis: true, stretch: true, reps: 8, hold: 4, simple: true, cues: ["cue.stroke"],
         name: { de: "Kinn lockern", en: "Chin Release" },
         desc: {
           de: "Lege die Fingerspitzen unter die Unterlippe und streiche das Kinn sanft nach unten aus. Lass Kinn und Unterlippe dabei ganz locker – dieser Muskel ist bei Synkinesien oft verspannt.",
@@ -1809,10 +1957,13 @@
 
     // Exercise length follows from its reps (see repTiming), so the counts
     // here keep each routine at about 5 / 10 / 15 minutes.
+    // `synk`: synkinesis mode – massage and relaxation seconds, seconds of
+    // stretching (stretches vary from 30 s to 3 min, so they are picked by time),
+    // and how many synkinesis movements and regular (co-movement checked) exercises.
     const LENGTHS = {
-      short: { count: 3, warmup: 30, cooldown: 30 },
-      standard: { count: 5, warmup: 60, cooldown: 120 },
-      long: { count: 9, warmup: 60, cooldown: 120 },
+      short: { count: 3, warmup: 30, cooldown: 30, synk: { massage: 60, relax: 60, stretchTime: 90, movements: 1, regular: 0 } },
+      standard: { count: 5, warmup: 60, cooldown: 120, synk: { massage: 100, relax: 100, stretchTime: 260, movements: 1, regular: 0 } },
+      long: { count: 9, warmup: 60, cooldown: 120, synk: { massage: 150, relax: 150, stretchTime: 380, movements: 1, regular: 1 } },
     };
 
     // Phases of one rep: slowly tense → hold → slowly release → rest.
@@ -1929,6 +2080,7 @@
       sideSetting: $("sideSetting"),
       sidePicker: $("sidePicker"),
       meter: $("meter"),
+      stage: $("stage"),
       meterStatus: $("meterStatus"),
       meterScore: $("meterScore"),
       symmetryResults: $("symmetryResults"),
@@ -1979,54 +2131,75 @@
 
     function buildRoutine(lengthKey) {
       const cfg = LENGTHS[lengthKey];
-
-      // With synkinesis mode on, about a third of the routine are synkinesis
-      // exercises and strengthening that can worsen synkinesis is left out.
-      // With it off, synkinesis exercises are not used.
-      const allowed = POOL.filter((ex) => (settings.synkinesis ? !ex.avoidWithSynkinesis : !ex.synkinesis));
-      const synk = shuffle(allowed.filter((ex) => ex.synkinesis)).slice(0, Math.ceil(cfg.count / 3));
-      const regular = allowed.filter((ex) => !ex.synkinesis);
-
-      // Bucket the regular pool by face area, shuffle each bucket.
-      const buckets = {};
-      GROUPS.forEach((g) => (buckets[g] = shuffle(regular.filter((ex) => ex.group === g))));
-
-      // Round-robin over groups so even short routines cover several areas.
-      // Eyes and mouth come first: they matter most for daily function.
-      const order = ["eyes", "mouth", ...shuffle(GROUPS.filter((g) => g !== "eyes" && g !== "mouth"))];
-      const picked = [...synk];
-      while (picked.length < cfg.count && order.some((g) => buckets[g].length)) {
-        for (const g of order) {
-          if (picked.length >= cfg.count) break;
-          if (buckets[g].length) picked.push(buckets[g].pop());
-        }
-      }
-
-      // Natural flow: top of the face to the bottom.
-      picked.sort((a, b) => GROUPS.indexOf(a.group) - GROUPS.indexOf(b.group));
-
+      if (settings.synkinesis) return buildSynkRoutine(cfg.synk);
+      const picked = pickByGroups(POOL.filter((ex) => !ex.synkinesis), cfg.count);
       return [
         { ...WARMUP, duration: cfg.warmup },
-        // In synkinesis mode regular exercises are checked for co-movement too (`synkWatch`).
-        ...picked.map((ex) => ({
-          ...ex,
-          watch: ex.watch ?? (settings.synkinesis ? ex.synkWatch : undefined),
-          duration: stepDuration(ex),
-        })),
+        ...sortByGroup(picked).map(timed),
         { ...COOLDOWN, duration: cfg.cooldown },
       ];
     }
 
+    /* Synkinesis mode: massage, then mostly stretches of the tight side, a few
+       slow controlled movements with co-movement checks, and relaxation at the
+       end. Strengthening that can worsen synkinesis is left out. */
+    function buildSynkRoutine(synk) {
+      const synkPool = POOL.filter((ex) => ex.synkinesis);
+      const regular = POOL.filter((ex) => !ex.synkinesis && !ex.avoidWithSynkinesis && ex.synkWatch);
+      const picked = [
+        ...pickByTime(synkPool.filter((ex) => ex.stretch), synk.stretchTime),
+        ...shuffle(synkPool.filter((ex) => !ex.stretch)).slice(0, synk.movements),
+        ...pickByGroups(regular, synk.regular),
+      ];
+      return [
+        { ...SYNK_MASSAGE, duration: synk.massage },
+        // regular exercises are checked for co-movement too (`synkWatch`)
+        ...sortByGroup(picked).map((ex) => timed({ ...ex, watch: ex.watch ?? ex.synkWatch })),
+        { ...RELAXATION, duration: synk.relax },
+      ];
+    }
+
+    // Round-robin over face areas so even short routines cover several areas.
+    // Eyes and mouth come first: they matter most for daily function.
+    function pickByGroups(pool, count) {
+      const buckets = {};
+      GROUPS.forEach((g) => (buckets[g] = shuffle(pool.filter((ex) => ex.group === g))));
+      const order = ["eyes", "mouth", ...shuffle(GROUPS.filter((g) => g !== "eyes" && g !== "mouth"))];
+      const picked = [];
+      while (picked.length < count && order.some((g) => buckets[g].length)) {
+        for (const g of order) {
+          if (picked.length >= count) break;
+          if (buckets[g].length) picked.push(buckets[g].pop());
+        }
+      }
+      return picked;
+    }
+
+    // Random exercises whose durations add up to at most `seconds`.
+    function pickByTime(pool, seconds) {
+      let left = seconds;
+      return shuffle(pool).filter((ex) => {
+        const fits = stepDuration(ex) <= left;
+        if (fits) left -= stepDuration(ex);
+        return fits;
+      });
+    }
+
+    // Natural flow: top of the face to the bottom.
+    const sortByGroup = (list) => [...list].sort((a, b) => GROUPS.indexOf(a.group) - GROUPS.indexOf(b.group));
+    const timed = (ex) => ({ ...ex, duration: stepDuration(ex) });
+
     function stepTitle(step) {
       const name = step.name[settings.lang] ?? step.name.en;
-      if (step.massage) return name;
+      if (isFlow(step)) return name;
       const detail = step.titleReps ? t("reps", { r: step.reps }) : t("repsHold", { r: step.reps, h: step.hold });
       return `${name} (${detail})`;
     }
 
     function stepDescription(step) {
       const desc = step.desc[settings.lang] ?? step.desc.en;
-      return step.massage ? desc.replaceAll("{n}", Math.round(step.duration / MASSAGE_AREAS)) : desc;
+      const areas = step.areas ?? MASSAGE_AREAS;
+      return step.massage ? desc.replaceAll("{n}", Math.round(step.duration / areas.length)) : desc;
     }
 
     function totalMinutes() {
@@ -2179,10 +2352,23 @@
     /* Which cue applies `elapsed` seconds into the active phase of `step`. */
     function cueState(step, elapsed) {
       if (step.massage) {
-        const seg = step.duration / MASSAGE_AREAS;
-        const idx = Math.min(MASSAGE_AREAS - 1, Math.floor(elapsed / seg));
-        const area = t(`area.${idx}`);
+        // each area gets its share of the time
+        const areas = step.areas ?? MASSAGE_AREAS;
+        const total = areas.reduce((sum, a) => sum + a.weight, 0);
+        let idx = 0;
+        let end = (areas[0].weight / total) * step.duration;
+        while (elapsed >= end && idx < areas.length - 1) {
+          idx += 1;
+          end += (areas[idx].weight / total) * step.duration;
+        }
+        const area = t(areas[idx].key);
         return { key: `area${idx}`, label: area, speech: area, hold: false };
+      }
+      if (step.relax) {
+        const breath = Math.floor(elapsed / (BREATH_IN + BREATH_OUT));
+        const part = elapsed - breath * (BREATH_IN + BREATH_OUT) < BREATH_IN ? "in" : "out";
+        const label = t(part === "in" ? "cue.breatheIn" : "cue.breatheOut");
+        return { key: `breath${breath}${part}`, label, speech: breath < BREATHS_SPOKEN ? label : null, hold: false };
       }
 
       const timing = repTiming(step);
@@ -2197,7 +2383,7 @@
         within -= timing[name];
       }
 
-      const cueWord = step.cues ? t(step.cues[rep % step.cues.length]) : null;
+      const cueWord = step.cues ? t(step.cues[Math.floor(rep / (step.cueBlock ?? 1)) % step.cues.length]) : null;
       const words = {
         // stretches use their cue word ("Stretch") for moving in
         tense: cueWord ?? t("cue.tense"),
@@ -2216,7 +2402,7 @@
       };
     }
 
-    // Seconds of each phase of one rep, for a (non-massage) exercise.
+    // Seconds of each phase of one rep, for an exercise (not massage or relaxation).
     function repTiming(step) {
       const simple = Boolean(step.simple);
       const tp = tempo();
@@ -2248,7 +2434,7 @@
 
       if (settings.voice && state.speech) {
         speak(state.speech);
-      } else if (!isFirst && !step.massage) {
+      } else if (!isFirst && !isFlow(step)) {
         // Tones mark the start of moving in and of letting go.
         // The first cue coincides with the start sound; don't double up.
         if (state.part === "tense" || (step.simple && state.part === "hold")) sounds.hold();
@@ -2293,6 +2479,7 @@
         els.mirror.hidden = false;
         els.mirrorNote.hidden = true;
         els.sessionCard.classList.add("has-camera");
+        fitStage();
       } catch {
         els.mirror.hidden = true;
         els.mirrorNote.hidden = false;
@@ -2803,6 +2990,17 @@
         phase === "prep" ? t("upNext") : t("stepOf", { i: stepIndex + 1, n: routine.length });
       els.stepName.textContent = stepTitle(step);
       els.stepDesc.textContent = stepDescription(step);
+      fitStage();
+    }
+
+    // The session must fit the screen: with a long description, the camera
+    // stage gives up the height the page would otherwise overflow by.
+    const STAGE_MIN = 220;
+    function fitStage() {
+      els.stage.style.height = "";
+      if (!els.sessionCard.classList.contains("has-camera")) return;
+      const over = document.documentElement.scrollHeight - window.innerHeight;
+      if (over > 0) els.stage.style.height = `${Math.max(STAGE_MIN, els.stage.offsetHeight - over)}px`;
     }
 
     function crossfade(updateFn) {
@@ -3217,7 +3415,7 @@
         settings.tempo = b.dataset.tempo;
         store.set("tempo", settings.tempo);
         // keep today's exercises, only retime them
-        routine = routine.map((s) => (s.massage ? s : { ...s, duration: stepDuration(s) }));
+        routine = routine.map((s) => (isFlow(s) ? s : { ...s, duration: stepDuration(s) }));
         renderIntro();
       })
     );
@@ -3238,6 +3436,10 @@
       settings.meter = els.meterToggle.checked;
       store.set("meter", settings.meter);
       renderIntro();
+    });
+
+    window.addEventListener("resize", () => {
+      if (inSession) fitStage();
     });
 
     els.coactPicker.querySelectorAll("button").forEach((b) =>

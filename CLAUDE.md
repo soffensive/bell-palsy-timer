@@ -17,7 +17,9 @@ Guided facial exercise timer for Bell's palsy (facial nerve palsy) recovery. It 
 
 1. **Translations (`I18N`)**: `de` and `en`. Every key must exist in **both** languages. Use `t("key", { var })` with `{var}` placeholders. Static elements use `data-i18n="key"` and are filled in by `applyLanguage()`.
 2. **Exercises**:
-   - `WARMUP` and `COOLDOWN` are always first and last.
+   - `WARMUP` and `COOLDOWN` are always first and last in normal mode. In synkinesis mode they are replaced by `SYNK_MASSAGE` and `RELAXATION`. These "flow" steps (`isFlow()`) have no reps:
+     - massage steps have `areas: [{ key, weight }]` (default `MASSAGE_AREAS`: six equal areas); `cueState` splits the time by weight. `SYNK_MASSAGE` uses 2 : 1 : 3 : 2 : 3 like the video.
+     - `RELAXATION` (`relax: true`) cues breathing in (4 s) and out (6 s), spoken only for the first `BREATHS_SPOKEN` breaths.
    - `POOL` holds the random exercises: `{ id, group, reps, hold, name: {de,en}, desc: {de,en} }`.
    - Optional fields:
      - `cues`: cue words per rep. For stretches they replace "Slowly tense" (e.g. "Stretch"); for `simple` exercises they replace "Hold" (e.g. "P", "Stroke").
@@ -25,8 +27,10 @@ Guided facial exercise timer for Bell's palsy (facial nerve palsy) recovery. It 
      - `titleReps`: the title shows "9 reps" instead of "6 × 3 s"
      - `meter`: signal names measured left/right. These are MediaPipe blendshapes (`mouthSmile` → `mouthSmileLeft/Right`) or landmark-derived signals from `derivedSignals()`, e.g. `mouthCornerIn` for pucker/whistle, because `mouthPucker` has no left/right split. Don't mix a derived signal with a blendshape in one `meter` list: `read()` takes the maximum, and derived signals have a much higher resting level.
      - `watch`: blendshapes that must stay still (synkinesis)
-     - `synkWatch`: like `watch`, but only applied in synkinesis mode (`buildRoutine` copies it to `watch`). Regular mouth, cheek, chin and mouth-corner exercises watch the eye (`WATCH_EYES`); eye-closing exercises watch the mouth (`WATCH_MOUTH`). Left out where the watched area moves naturally (half squints, nose wrinkle, frown, eyebrow raise).
+     - `synkWatch`: like `watch`, but only applied in synkinesis mode (`buildSynkRoutine` copies it to `watch`). Regular mouth, cheek, chin and mouth-corner exercises watch the eye (`WATCH_EYES`); eye-closing exercises watch the mouth (`WATCH_MOUTH`). Left out where the watched area moves naturally (half squints, nose wrinkle, frown, eyebrow raise).
      - `synkinesis: true`: used only when synkinesis mode is on
+     - `stretch: true`: a synkinesis massage/stretch (tight side, after Facial Palsy UK's "Management of Synkinesis" videos, linked in the README). Synkinesis movements are `synkinesis` without `stretch`.
+     - `cueBlock: n`: each cue word is used for `n` reps in a row (positions in blocks, e.g. 5 × top, 5 × side, 5 × under)
      - `avoidWithSynkinesis`: left out when synkinesis mode is on
    - **Timing** (deliberately slow: quality over quantity, full relaxation between reps). Each rep is: slowly tense → hold `hold` → slowly release → rest, which is as long as the hold, within the tempo's limits (`repTiming()`). An exercise lasts `reps × cycle` (`stepDuration()`). Use 5–6 reps rather than 10.
    - The **tempo** setting (`settings.tempo`, `TEMPOS`) changes only transitions and breaks, not reps or holds:
@@ -36,7 +40,8 @@ Guided facial exercise timer for Bell's palsy (facial nerve palsy) recovery. It 
    - `LENGTHS` counts (3 / 5 / 9 exercises) keep calm routines at about 5 / 10 / 15 minutes; brisk ones are about 20 % shorter. Recheck the totals when changing timing.
    - Changing the tempo on the start page retimes the current routine without reshuffling it.
    - `GROUPS` sets the face areas, top to bottom. Routines are sorted by it.
-3. **`buildRoutine(lengthKey)`**: in synkinesis mode it first picks `ceil(count / 3)` synkinesis exercises. It fills the rest round-robin over the groups (eyes and mouth first), then sorts by group.
+3. **`buildRoutine(lengthKey)`**: normal mode picks `count` regular exercises round-robin over the groups (eyes and mouth first, `pickByGroups`), then sorts by group. Synkinesis mode (`buildSynkRoutine`, settings in `LENGTHS[len].synk`): massage → stretches picked by time budget (`stretchTime`, `pickByTime`, because stretches take 30 s to 3 min) + `movements` synkinesis movements + `regular` exercises that have `synkWatch` → relaxation. Calm totals stay at about 5 / 10 / 15 min in both modes; recheck when changing stretches or budgets.
+   - The camera stage shrinks to fit long descriptions (`fitStage()`, min `STAGE_MIN`).
 4. **Storage**: `localStorage` keys are prefixed `bpt.` (lang, length, tempo, sound, voice, meter, side, synkinesis, coactSensitivity, reminders, history). The history is an array of `{ date, ts, length, tempo, completed, symmetry?, perExercise?, coactivation?, coactLevel?, rest?, tension? }`.
 5. **Sound and voice**: Web Audio tones (`sounds.*`) and `speechSynthesis` in the UI language. `cueState(step, elapsed)` drives both the visible rep cue and the spoken cue.
 6. **Symmetry meter**: MediaPipe Face Landmarker (`@mediapipe/tasks-vision`, version pinned in `MEDIAPIPE_BASE`), loaded via dynamic `import()` only when the meter is enabled.
